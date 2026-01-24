@@ -1,11 +1,8 @@
 package com.lutz.algashop.ordering.domain.entity;
 
 import com.lutz.algashop.ordering.domain.exception.CustomerArchivedException;
-import com.lutz.algashop.ordering.domain.vo.Birthdate;
-import com.lutz.algashop.ordering.domain.vo.CustomerId;
-import com.lutz.algashop.ordering.domain.vo.FullName;
+import com.lutz.algashop.ordering.domain.vo.*;
 
-import com.lutz.algashop.ordering.domain.vo.LoyaltyPoints;
 import org.junit.jupiter.api.*;
 
 import java.time.LocalDate;
@@ -20,7 +17,7 @@ public class CustomerTest {
 	String invalidEmailStub = "invalid-email";
 	String validEmailStub = "valid@email.com";
 	String validPhone = "123123123";
-	String validDocument = "123123123";
+	Document validDocument = new Document("123123123");
 	Boolean promotionNotificationAllowedStub = false;
 	OffsetDateTime registeredAtStub = OffsetDateTime.now();
 
@@ -86,7 +83,7 @@ public class CustomerTest {
 			Assertions.assertNotEquals(validEmailStub, sut.email());
 			Assertions.assertEquals("Archived -", sut.fullName().toString());
 			Assertions.assertEquals("0", sut.phone()); // will break when phone validations are added to model
-			Assertions.assertEquals("0", sut.document()); // will break when document validations are added to model
+			Assertions.assertEquals(new Document("0").toString(), sut.document().toString()); // will break when document validations are added to model
 		}
 
 		@Test
