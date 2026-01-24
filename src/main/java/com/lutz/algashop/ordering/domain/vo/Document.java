@@ -12,6 +12,6 @@ public record Document(String document) {
 
 	@Override
 	public String toString() {
-		return document;
+		return document();
 	}
 }

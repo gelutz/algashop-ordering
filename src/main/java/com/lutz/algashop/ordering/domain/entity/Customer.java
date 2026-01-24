@@ -1,7 +1,6 @@
 package com.lutz.algashop.ordering.domain.entity;
 
 import com.lutz.algashop.ordering.domain.exception.CustomerArchivedException;
-import com.lutz.algashop.ordering.domain.validation.FieldValidator;
 import com.lutz.algashop.ordering.domain.vo.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -19,7 +18,7 @@ public class Customer {
     private CustomerId id;
     private FullName fullName;
     private Birthdate birthdate;
-    private String email;
+    private Email email;
     private String phone;
     private Document document;
     private Boolean promotionNotificationAllowed;
@@ -29,7 +28,7 @@ public class Customer {
     private LoyaltyPoints loyaltyPoints;
 
     // new customer
-    public Customer(CustomerId id, FullName fullName, Birthdate birthDate, String email, String phone, Document document, Boolean promotionNotificationAllowed, OffsetDateTime registeredAt) {
+    public Customer(CustomerId id, FullName fullName, Birthdate birthDate, Email email, String phone, Document document, Boolean promotionNotificationAllowed, OffsetDateTime registeredAt) {
         setId(id);
         setFullName(fullName);
         setBirthdate(birthDate.date());
@@ -43,7 +42,7 @@ public class Customer {
     }
 
     // existing customer
-    public Customer(CustomerId id, FullName fullName, Birthdate birthDate, String email, String phone, Document document, Boolean promotionNotificationAllowed, Boolean archived, OffsetDateTime registeredAt, OffsetDateTime archivedAt, LoyaltyPoints loyaltyPoints) {
+    public Customer(CustomerId id, FullName fullName, Birthdate birthDate, Email email, String phone, Document document, Boolean promotionNotificationAllowed, Boolean archived, OffsetDateTime registeredAt, OffsetDateTime archivedAt, LoyaltyPoints loyaltyPoints) {
         setId(id);
         setFullName(fullName);
         setBirthdate(birthDate.date());
@@ -61,7 +60,7 @@ public class Customer {
         canChange();
 
         this.setFullName(new FullName("Archived", "-"));
-        this.setEmail(UUID.randomUUID() + "@archived.com");
+        this.setEmail(new Email(UUID.randomUUID() + "@archived.com"));
         this.setPhone("0");
         this.setDocument(new Document("0"));
         this.setBirthdate(null);
@@ -87,7 +86,7 @@ public class Customer {
         canChange();
         this.setFullName(fullName);
     };
-    public void changeEmail(String email) {
+    public void changeEmail(Email email) {
         canChange();
         this.setEmail(email);
     };
@@ -146,8 +145,7 @@ public class Customer {
         this.birthdate = new Birthdate(birthdate);
     }
 
-    private void setEmail(String email) {
-        FieldValidator.requireValidEmail(email);
+    private void setEmail(Email email) {
         this.email = email;
     }
 

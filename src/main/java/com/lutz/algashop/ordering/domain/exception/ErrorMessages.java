@@ -2,6 +2,8 @@ package com.lutz.algashop.ordering.domain.exception;
 
 public class ErrorMessages {
 	public static class Validation {
+		public static final String EMAIL_IS_NULL = "Validation - Email is null.";
+		public static final String EMAIL_IS_BLANK = "Validation - Email is blank.";
 		public static final String EMAIL_IS_INVALID = "Validation - Email is invalid.";
 
 		public static final String FULL_NAME_IS_NULL = "Validation - FullName cannot be null.";

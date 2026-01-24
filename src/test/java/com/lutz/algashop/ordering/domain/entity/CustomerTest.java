@@ -14,50 +14,11 @@ public class CustomerTest {
 	CustomerId idStub = new CustomerId();
 	FullName fullNameStub = new FullName("John", "Doe");
 	Birthdate birthDateStub = new Birthdate(LocalDate.now().minusYears(10));
-	String invalidEmailStub = "invalid-email";
-	String validEmailStub = "valid@email.com";
+	Email validEmailStub = new Email("valid@email.com");
 	String validPhone = "123123123";
 	Document validDocument = new Document("123123123");
 	Boolean promotionNotificationAllowedStub = false;
 	OffsetDateTime registeredAtStub = OffsetDateTime.now();
-
-	@Nested
-	@DisplayName("Customer constructor and setters tests")
-	class SettersTests {
-		@Test
-		void givenInvalidEmailConstructorShouldThrowIllegalArgumentException() {
-			Assertions.assertThrows(IllegalArgumentException.class, () -> {
-				new Customer(
-						idStub,
-						fullNameStub,
-						birthDateStub,
-						invalidEmailStub,
-						validPhone,
-						validDocument,
-						promotionNotificationAllowedStub,
-						registeredAtStub
-				);
-			});
-		}
-
-		@Test
-		void givenValidEmailChangeEmailShouldThrowIllegalArgumentException() {
-			Customer customer = new Customer(
-					idStub,
-					fullNameStub,
-					birthDateStub,
-					validEmailStub,
-					validPhone,
-					validDocument,
-					promotionNotificationAllowedStub,
-					registeredAtStub
-			);
-
-			Assertions.assertThrows(IllegalArgumentException.class, () -> {
-				customer.changeEmail(invalidEmailStub);
-			});
-		}
-	}
 
 	@Nested
 	@DisplayName("Customer#archive tests")
@@ -97,7 +58,7 @@ public class CustomerTest {
 		void givenArchivedUserAnyChangeShouldThrowCustomerArchivedException() {
 			sut.archive();
 
-			Assertions.assertThrows(CustomerArchivedException.class, () -> sut.changeEmail("anything"));
+			Assertions.assertThrows(CustomerArchivedException.class, () -> sut.changeEmail(new Email("valid@email.com")));
 			Assertions.assertThrows(CustomerArchivedException.class, () -> sut.changeName(new FullName("anything", "anything")));
 			Assertions.assertThrows(CustomerArchivedException.class, () -> sut.changePhone("anything"));
 			Assertions.assertThrows(CustomerArchivedException.class, () -> sut.disablePromotionNotifications());
