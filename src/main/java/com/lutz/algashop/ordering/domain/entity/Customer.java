@@ -1,5 +1,6 @@
 package com.lutz.algashop.ordering.domain.entity;
 
+import com.lutz.algashop.ordering.domain.exception.CustomerArchivedException;
 import com.lutz.algashop.ordering.domain.exception.ErrorMessages;
 import com.lutz.algashop.ordering.utils.Validation;
 import lombok.EqualsAndHashCode;
@@ -56,55 +57,43 @@ public class Customer {
         setLoyaltyPoints(loyaltyPoints);
     }
 
-    public void addLoyaltyPoints(int points) {};
-    public void archive() {};
+    public void archive() {
+        this.setFullName("Archived");
+        this.setEmail(UUID.randomUUID() + "@archived.com");
+        this.setPhone("0");
+        this.setDocument("0");
+        this.setBirthdate(null);
+        this.setArchived(true);
+        this.setArchivedAt(OffsetDateTime.now());
+        this.setPromotionNotificationAllowed(false);
+    }
+
+    public void addLoyaltyPoints(int points) {
+    };
     public void enablePromotionNotifications() {
+        canChange();
         this.setPromotionNotificationAllowed(true);
     };
     public void disablePromotionNotifications() {
+        canChange();
         this.setPromotionNotificationAllowed(false);
     };
-
     public void changeName(String fullName) {
+        canChange();
         this.setFullName(fullName);
     };
     public void changeEmail(String email) {
+        canChange();
         this.setEmail(email);
     };
     public void changePhone(String phone) {
+        canChange();
         this.setPhone(phone);
     };
 
     public void setId(UUID id) {
         Objects.requireNonNull(id);
         this.id = id;
-    }
-
-
-
-    private void setFullName(String fullName) {
-        Objects.requireNonNull(fullName, ErrorMessages.Validation.FULL_NAME_IS_NULL);
-        if (fullName.isBlank()) throw new IllegalArgumentException(ErrorMessages.Validation.FULL_NAME_IS_BLANK);
-
-        this.fullName = fullName;
-    }
-
-    private void setBirthdate(LocalDate birthdate) {
-        if (birthdate == null) {
-            this.birthdate = null;
-            return;
-        }
-
-        if (birthdate.isBefore(LocalDate.now())) {
-            throw new IllegalArgumentException(ErrorMessages.Validation.BIRTHDATE_MUST_IN_PAST);
-        }
-
-        this.birthdate = birthdate;
-    }
-
-    private void setEmail(String email) {
-        Validation.requireValidEmail(email);
-        this.email = email;
     }
 
     public void setPhone(String phone) {
@@ -139,5 +128,35 @@ public class Customer {
     public void setLoyaltyPoints(Integer loyaltyPoints) {
         Objects.requireNonNull(loyaltyPoints);
         this.loyaltyPoints = loyaltyPoints;
+    }
+
+
+    private void setFullName(String fullName) {
+        Objects.requireNonNull(fullName, ErrorMessages.Validation.FULL_NAME_IS_NULL);
+        if (fullName.isBlank()) throw new IllegalArgumentException(ErrorMessages.Validation.FULL_NAME_IS_BLANK);
+
+        this.fullName = fullName;
+    }
+
+    private void setBirthdate(LocalDate birthdate) {
+        if (birthdate == null) {
+            this.birthdate = null;
+            return;
+        }
+
+        if (birthdate.isAfter(LocalDate.now())) {
+            throw new IllegalArgumentException(ErrorMessages.Validation.BIRTHDATE_MUST_IN_PAST);
+        }
+
+        this.birthdate = birthdate;
+    }
+
+    private void setEmail(String email) {
+        Validation.requireValidEmail(email);
+        this.email = email;
+    }
+
+    private void canChange() {
+        if (archived()) throw new CustomerArchivedException();
     }
 }

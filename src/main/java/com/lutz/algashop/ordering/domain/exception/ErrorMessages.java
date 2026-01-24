@@ -10,4 +10,6 @@ public class ErrorMessages {
 
 		public static final String EMAIL_IS_INVALID = "Validation - Email is invalid";
 	}
+
+	public static final String CUSTOMER_ARCHIVED = "This customer is already archived.";
 }
