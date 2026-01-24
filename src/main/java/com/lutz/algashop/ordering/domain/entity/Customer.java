@@ -19,7 +19,7 @@ public class Customer {
     private FullName fullName;
     private Birthdate birthdate;
     private Email email;
-    private String phone;
+    private Phone phone;
     private Document document;
     private Boolean promotionNotificationAllowed;
     private Boolean archived;
@@ -28,7 +28,7 @@ public class Customer {
     private LoyaltyPoints loyaltyPoints;
 
     // new customer
-    public Customer(CustomerId id, FullName fullName, Birthdate birthDate, Email email, String phone, Document document, Boolean promotionNotificationAllowed, OffsetDateTime registeredAt) {
+    public Customer(CustomerId id, FullName fullName, Birthdate birthDate, Email email, Phone phone, Document document, Boolean promotionNotificationAllowed, OffsetDateTime registeredAt) {
         setId(id);
         setFullName(fullName);
         setBirthdate(birthDate.date());
@@ -42,7 +42,7 @@ public class Customer {
     }
 
     // existing customer
-    public Customer(CustomerId id, FullName fullName, Birthdate birthDate, Email email, String phone, Document document, Boolean promotionNotificationAllowed, Boolean archived, OffsetDateTime registeredAt, OffsetDateTime archivedAt, LoyaltyPoints loyaltyPoints) {
+    public Customer(CustomerId id, FullName fullName, Birthdate birthDate, Email email, Phone phone, Document document, Boolean promotionNotificationAllowed, Boolean archived, OffsetDateTime registeredAt, OffsetDateTime archivedAt, LoyaltyPoints loyaltyPoints) {
         setId(id);
         setFullName(fullName);
         setBirthdate(birthDate.date());
@@ -61,7 +61,7 @@ public class Customer {
 
         this.setFullName(new FullName("Archived", "-"));
         this.setEmail(new Email(UUID.randomUUID() + "@archived.com"));
-        this.setPhone("0");
+        this.setPhone(new Phone("0"));
         this.setDocument(new Document("0"));
         this.setBirthdate(null);
         this.setArchived(true);
@@ -90,7 +90,7 @@ public class Customer {
         canChange();
         this.setEmail(email);
     };
-    public void changePhone(String phone) {
+    public void changePhone(Phone phone) {
         canChange();
         this.setPhone(phone);
     };
@@ -99,8 +99,7 @@ public class Customer {
         this.id = id;
     }
 
-    public void setPhone(String phone) {
-        Objects.requireNonNull(phone);
+    public void setPhone(Phone phone) {
         this.phone = phone;
     }
 

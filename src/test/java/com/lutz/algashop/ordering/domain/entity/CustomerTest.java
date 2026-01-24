@@ -15,7 +15,7 @@ public class CustomerTest {
 	FullName fullNameStub = new FullName("John", "Doe");
 	Birthdate birthDateStub = new Birthdate(LocalDate.now().minusYears(10));
 	Email validEmailStub = new Email("valid@email.com");
-	String validPhone = "123123123";
+	Phone validPhone = new Phone("123123123");
 	Document validDocument = new Document("123123123");
 	Boolean promotionNotificationAllowedStub = false;
 	OffsetDateTime registeredAtStub = OffsetDateTime.now();
@@ -60,7 +60,7 @@ public class CustomerTest {
 
 			Assertions.assertThrows(CustomerArchivedException.class, () -> sut.changeEmail(new Email("valid@email.com")));
 			Assertions.assertThrows(CustomerArchivedException.class, () -> sut.changeName(new FullName("anything", "anything")));
-			Assertions.assertThrows(CustomerArchivedException.class, () -> sut.changePhone("anything"));
+			Assertions.assertThrows(CustomerArchivedException.class, () -> sut.changePhone(new Phone("123123123")));
 			Assertions.assertThrows(CustomerArchivedException.class, () -> sut.disablePromotionNotifications());
 			Assertions.assertThrows(CustomerArchivedException.class, () -> sut.enablePromotionNotifications());
 		}

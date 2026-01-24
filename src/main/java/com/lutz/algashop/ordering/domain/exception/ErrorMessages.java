@@ -14,6 +14,9 @@ public class ErrorMessages {
 
 		public static final String DOCUMENT_IS_NULL = "Validation - Document cannot be null.";
 		public static final String DOCUMENT_IS_BLANK = "Validation - Document cannot be blank.";
+
+		public static final String PHONE_IS_NULL = "Validation - Phone cannot be null.";
+		public static final String PHONE_IS_BLANK = "Validation - Phone cannot be blank.";
 	}
 
 	public static final String CUSTOMER_ARCHIVED = "This customer is already archived.";
