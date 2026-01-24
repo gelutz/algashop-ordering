@@ -1,8 +1,8 @@
 package com.lutz.algashop.ordering.domain.entity;
 
 import com.lutz.algashop.ordering.domain.exception.CustomerArchivedException;
-import com.lutz.algashop.ordering.domain.exception.ErrorMessages;
 import com.lutz.algashop.ordering.domain.validation.EmailValidator;
+import com.lutz.algashop.ordering.domain.vo.Birthdate;
 import com.lutz.algashop.ordering.domain.vo.CustomerId;
 import com.lutz.algashop.ordering.domain.vo.FullName;
 import com.lutz.algashop.ordering.domain.vo.LoyaltyPoints;
@@ -21,7 +21,7 @@ import java.util.UUID;
 public class Customer {
     private CustomerId id;
     private FullName fullName;
-    private LocalDate birthdate;
+    private Birthdate birthdate;
     private String email;
     private String phone;
     private String document;
@@ -32,10 +32,10 @@ public class Customer {
     private LoyaltyPoints loyaltyPoints;
 
     // new customer
-    public Customer(CustomerId id, FullName fullName, LocalDate birthDate, String email, String phone, String document, Boolean promotionNotificationAllowed, OffsetDateTime registeredAt) {
+    public Customer(CustomerId id, FullName fullName, Birthdate birthDate, String email, String phone, String document, Boolean promotionNotificationAllowed, OffsetDateTime registeredAt) {
         setId(id);
         setFullName(fullName);
-        setBirthdate(birthDate);
+        setBirthdate(birthDate.date());
         setEmail(email);
         setPhone(phone);
         setDocument(document);
@@ -46,10 +46,10 @@ public class Customer {
     }
 
     // existing customer
-    public Customer(CustomerId id, FullName fullName, LocalDate birthDate, String email, String phone, String document, Boolean promotionNotificationAllowed, Boolean archived, OffsetDateTime registeredAt, OffsetDateTime archivedAt, LoyaltyPoints loyaltyPoints) {
+    public Customer(CustomerId id, FullName fullName, Birthdate birthDate, String email, String phone, String document, Boolean promotionNotificationAllowed, Boolean archived, OffsetDateTime registeredAt, OffsetDateTime archivedAt, LoyaltyPoints loyaltyPoints) {
         setId(id);
         setFullName(fullName);
-        setBirthdate(birthDate);
+        setBirthdate(birthDate.date());
         setEmail(email);
         setPhone(phone);
         setDocument(document);
@@ -148,11 +148,7 @@ public class Customer {
             return;
         }
 
-        if (birthdate.isAfter(LocalDate.now())) {
-            throw new IllegalArgumentException(ErrorMessages.Validation.BIRTHDATE_MUST_IN_PAST);
-        }
-
-        this.birthdate = birthdate;
+        this.birthdate = new Birthdate(birthdate);
     }
 
     private void setEmail(String email) {

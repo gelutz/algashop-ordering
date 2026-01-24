@@ -1,6 +1,7 @@
 package com.lutz.algashop.ordering.domain.entity;
 
 import com.lutz.algashop.ordering.domain.exception.CustomerArchivedException;
+import com.lutz.algashop.ordering.domain.vo.Birthdate;
 import com.lutz.algashop.ordering.domain.vo.CustomerId;
 import com.lutz.algashop.ordering.domain.vo.FullName;
 
@@ -15,7 +16,7 @@ public class CustomerTest {
 
 	CustomerId idStub = new CustomerId();
 	FullName fullNameStub = new FullName("John", "Doe");
-	LocalDate birthDateStub = LocalDate.now().minusYears(10);
+	Birthdate birthDateStub = new Birthdate(LocalDate.now().minusYears(10));
 	String invalidEmailStub = "invalid-email";
 	String validEmailStub = "valid@email.com";
 	String validPhone = "123123123";
