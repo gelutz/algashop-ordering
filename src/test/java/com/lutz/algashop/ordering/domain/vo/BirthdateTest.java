@@ -21,4 +21,14 @@ class BirthdateTest {
 
 		Assertions.assertEquals(ErrorMessages.Validation.BIRTHDATE_IS_IN_FUTURE, exception.getMessage());
 	}
+
+	@Test
+	void givenValidDateShouldBeAbleToGenerateAgeValue() {
+		LocalDate today = LocalDate.of(2026, 1, 25);
+		Birthdate bd = new Birthdate(LocalDate.of(2000, 8, 15));
+		Assertions.assertEquals(25, bd.age(today));
+
+		bd = new Birthdate(LocalDate.of(2000, 1, 1));
+		Assertions.assertEquals(26, bd.age(today));
+	}
 }

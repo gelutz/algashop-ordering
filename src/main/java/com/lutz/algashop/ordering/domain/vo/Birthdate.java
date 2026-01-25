@@ -16,7 +16,11 @@ public record Birthdate(LocalDate date) {
 	}
 
 	public long age() {
-		return ChronoUnit.YEARS.between(date(),LocalDate.now());
+		return age(LocalDate.now());
+	}
+
+	public long age(LocalDate reference) {
+		return ChronoUnit.YEARS.between(date(), reference);
 	}
 
 	@Override
