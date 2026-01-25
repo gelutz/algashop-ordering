@@ -4,11 +4,11 @@ import com.lutz.algashop.ordering.domain.exception.CustomerArchivedException;
 import com.lutz.algashop.ordering.domain.vo.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.experimental.Accessors;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
-import java.util.Objects;
 import java.util.UUID;
 
 @Getter
@@ -21,6 +21,7 @@ public class Customer {
     private Email email;
     private Phone phone;
     private Document document;
+    private Address address;
     private Boolean promotionNotificationAllowed;
     private Boolean archived;
     private OffsetDateTime registeredAt;
@@ -28,13 +29,14 @@ public class Customer {
     private LoyaltyPoints loyaltyPoints;
 
     // new customer
-    public Customer(CustomerId id, FullName fullName, Birthdate birthDate, Email email, Phone phone, Document document, Boolean promotionNotificationAllowed, OffsetDateTime registeredAt) {
+    public Customer(CustomerId id, FullName fullName, Birthdate birthDate, Email email, Phone phone, Document document, Address address, Boolean promotionNotificationAllowed, OffsetDateTime registeredAt) {
         setId(id);
         setFullName(fullName);
         setBirthdate(birthDate.date());
         setEmail(email);
         setPhone(phone);
         setDocument(document);
+        setAddress(address);
         setPromotionNotificationAllowed(promotionNotificationAllowed);
         setRegisteredAt(registeredAt);
         setArchived(false);
@@ -42,13 +44,14 @@ public class Customer {
     }
 
     // existing customer
-    public Customer(CustomerId id, FullName fullName, Birthdate birthDate, Email email, Phone phone, Document document, Boolean promotionNotificationAllowed, Boolean archived, OffsetDateTime registeredAt, OffsetDateTime archivedAt, LoyaltyPoints loyaltyPoints) {
+    public Customer(CustomerId id, FullName fullName, Birthdate birthDate, Email email, Phone phone, Document document, Address address, Boolean promotionNotificationAllowed, Boolean archived, OffsetDateTime registeredAt, OffsetDateTime archivedAt, LoyaltyPoints loyaltyPoints) {
         setId(id);
         setFullName(fullName);
         setBirthdate(birthDate.date());
         setEmail(email);
         setPhone(phone);
         setDocument(document);
+        setAddress(address);
         setPromotionNotificationAllowed(promotionNotificationAllowed);
         setArchived(archived);
         setRegisteredAt(registeredAt);
@@ -67,6 +70,14 @@ public class Customer {
         this.setArchived(true);
         this.setArchivedAt(OffsetDateTime.now());
         this.setPromotionNotificationAllowed(false);
+
+        this.setAddress(address()
+                .toBuilder()
+                    .street("anon")
+                    .number("000")
+                    .city("anon")
+                    .state("anon")
+                .build());
     }
 
     public void addLoyaltyPoints(LoyaltyPoints points) {
@@ -94,39 +105,44 @@ public class Customer {
         canChange();
         this.setPhone(phone);
     };
+    public void changeAddress(Address address) {
+        canChange();
+        this.setAddress(address);
+    };
 
-    public void setId(CustomerId id) {
+    private void setId(CustomerId id) {
         this.id = id;
     }
 
-    public void setPhone(Phone phone) {
+    private void setPhone(Phone phone) {
         this.phone = phone;
     }
 
-    public void setDocument(Document document) {
+    private void setDocument(Document document) {
         this.document = document;
     }
 
-    public void setPromotionNotificationAllowed(Boolean promotionNotificationAllowed) {
-        Objects.requireNonNull(promotionNotificationAllowed);
+    private void setAddress(@NonNull Address address) {
+        this.address = address;
+    }
+
+    private void setPromotionNotificationAllowed(@NonNull Boolean promotionNotificationAllowed) {
         this.promotionNotificationAllowed = promotionNotificationAllowed;
     }
 
-    public void setArchived(Boolean archived) {
-        Objects.requireNonNull(archived);
+    private void setArchived(@NonNull Boolean archived) {
         this.archived = archived;
     }
 
-    public void setRegisteredAt(OffsetDateTime registeredAt) {
-        Objects.requireNonNull(registeredAt);
+    private void setRegisteredAt(@NonNull OffsetDateTime registeredAt) {
         this.registeredAt = registeredAt;
     }
 
-    public void setArchivedAt(OffsetDateTime archivedAt) {
+    private void setArchivedAt(OffsetDateTime archivedAt) {
         this.archivedAt = archivedAt;
     }
 
-    public void setLoyaltyPoints(LoyaltyPoints loyaltyPoints) {
+    private void setLoyaltyPoints(LoyaltyPoints loyaltyPoints) {
         this.loyaltyPoints = loyaltyPoints;
     }
 

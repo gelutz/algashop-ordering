@@ -19,6 +19,16 @@ public class CustomerTest {
 	Document validDocument = new Document("123123123");
 	Boolean promotionNotificationAllowedStub = false;
 	OffsetDateTime registeredAtStub = OffsetDateTime.now();
+	ZipCode validZipCode = new ZipCode("123123");
+	Address validAddress = Address.builder()
+	                              .street("This street")
+	                              .number("102")
+	                              .complement("near the thing")
+	                              .neighborhood("that one")
+	                              .city("Brooklyn")
+	                              .state("New York")
+	                              .zipCode(validZipCode)
+	                              .build();
 
 	@Nested
 	@DisplayName("Customer#archive tests")
@@ -32,6 +42,7 @@ public class CustomerTest {
 					validEmailStub,
 					validPhone,
 					validDocument,
+					validAddress,
 					promotionNotificationAllowedStub,
 					registeredAtStub
 			);
@@ -43,8 +54,8 @@ public class CustomerTest {
 
 			Assertions.assertNotEquals(validEmailStub, sut.email());
 			Assertions.assertEquals("Archived -", sut.fullName().toString());
-			Assertions.assertEquals("0", sut.phone()); // will break when phone validations are added to model
-			Assertions.assertEquals(new Document("0").toString(), sut.document().toString()); // will break when document validations are added to model
+			Assertions.assertEquals(new Phone("0"), sut.phone());
+			Assertions.assertEquals(new Document("0").toString(), sut.document().toString());
 		}
 
 		@Test
@@ -58,11 +69,15 @@ public class CustomerTest {
 		void givenArchivedUserAnyChangeShouldThrowCustomerArchivedException() {
 			sut.archive();
 
-			Assertions.assertThrows(CustomerArchivedException.class, () -> sut.changeEmail(new Email("valid@email.com")));
-			Assertions.assertThrows(CustomerArchivedException.class, () -> sut.changeName(new FullName("anything", "anything")));
+			Assertions.assertThrows(CustomerArchivedException.class,
+					() -> sut.changeEmail(new Email("valid@email.com")));
+			Assertions.assertThrows(CustomerArchivedException.class,
+					() -> sut.changeName(new FullName("anything", "anything")));
 			Assertions.assertThrows(CustomerArchivedException.class, () -> sut.changePhone(new Phone("123123123")));
 			Assertions.assertThrows(CustomerArchivedException.class, () -> sut.disablePromotionNotifications());
 			Assertions.assertThrows(CustomerArchivedException.class, () -> sut.enablePromotionNotifications());
+			Assertions.assertThrows(CustomerArchivedException.class,
+					() -> sut.changeAddress(sut.address().toBuilder().build()));
 		}
 	}
 
@@ -77,6 +92,7 @@ public class CustomerTest {
 					validEmailStub,
 					validPhone,
 					validDocument,
+					validAddress,
 					promotionNotificationAllowedStub,
 					registeredAtStub
 			);
@@ -96,7 +112,8 @@ public class CustomerTest {
 		void givenValidCustomerAndInvalidPointsAddLoyaltyPointsShouldThrowIllegalArgumentException() {
 			int newPoints = 0;
 
-			Assertions.assertThrows(IllegalArgumentException.class, () -> sut.addLoyaltyPoints(new LoyaltyPoints(newPoints)));
+			Assertions.assertThrows(IllegalArgumentException.class,
+					() -> sut.addLoyaltyPoints(new LoyaltyPoints(newPoints)));
 		}
 	}
 }
