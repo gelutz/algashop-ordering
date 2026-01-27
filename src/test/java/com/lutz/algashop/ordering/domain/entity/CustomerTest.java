@@ -2,23 +2,12 @@ package com.lutz.algashop.ordering.domain.entity;
 
 import com.lutz.algashop.ordering.domain.exception.CustomerArchivedException;
 import com.lutz.algashop.ordering.domain.vo.*;
-
 import org.junit.jupiter.api.*;
 
 import java.time.LocalDate;
-import java.time.OffsetDateTime;
 
 public class CustomerTest {
-	private Customer sut;
-
-	CustomerId idStub = new CustomerId();
-	FullName fullNameStub = new FullName("John", "Doe");
-	Birthdate birthDateStub = new Birthdate(LocalDate.now().minusYears(10));
 	Email validEmailStub = new Email("valid@email.com");
-	Phone validPhone = new Phone("123123123");
-	Document validDocument = new Document("123123123");
-	Boolean promotionNotificationAllowedStub = false;
-	OffsetDateTime registeredAtStub = OffsetDateTime.now();
 	ZipCode validZipCode = new ZipCode("123123");
 	Address validAddress = Address.builder()
 	                              .street("This street")
@@ -30,22 +19,22 @@ public class CustomerTest {
 	                              .zipCode(validZipCode)
 	                              .build();
 
+	private Customer sut;
+	private final Customer.NewCustomerBuilder newCustomerBuilder = Customer.newCustomerBuilder()
+	                                                                       .fullName(new FullName("John", "Doe"))
+	                                                                       .birthDate(new Birthdate(LocalDate.now().minusYears(10)))
+	                                                                       .email(validEmailStub)
+	                                                                       .phone(new Phone("123123123"))
+	                                                                       .document(new Document("123123123"))
+	                                                                       .address(validAddress)
+	                                                                       .promotionNotificationAllowed(false);
+
 	@Nested
 	@DisplayName("Customer#archive tests")
 	class ArchiveTests {
 		@BeforeEach
 		void setup() {
-			sut = new Customer(
-					idStub,
-					fullNameStub,
-					birthDateStub,
-					validEmailStub,
-					validPhone,
-					validDocument,
-					validAddress,
-					promotionNotificationAllowedStub,
-					registeredAtStub
-			);
+			sut = newCustomerBuilder.build();
 		}
 
 		@Test
@@ -82,20 +71,11 @@ public class CustomerTest {
 	}
 
 	@Nested
-	class LoyaltyPointsTests {
+	@DisplayName("Customer#addLoyaltyPoints tests")
+	class AddLoyaltyPointsTests {
 		@BeforeEach
 		void setup() {
-			sut = new Customer(
-					idStub,
-					fullNameStub,
-					birthDateStub,
-					validEmailStub,
-					validPhone,
-					validDocument,
-					validAddress,
-					promotionNotificationAllowedStub,
-					registeredAtStub
-			);
+			sut = newCustomerBuilder.build();
 		}
 
 		@Test
