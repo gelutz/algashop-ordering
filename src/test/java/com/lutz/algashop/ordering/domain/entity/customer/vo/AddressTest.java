@@ -1,5 +1,7 @@
-package com.lutz.algashop.ordering.domain.vo;
+package com.lutz.algashop.ordering.domain.entity.customer.vo;
 
+import com.lutz.algashop.ordering.domain.entity.customer.vo.Address;
+import com.lutz.algashop.ordering.domain.entity.customer.vo.ZipCode;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

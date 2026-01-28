@@ -1,7 +1,7 @@
-package com.lutz.algashop.ordering.domain.entity;
+package com.lutz.algashop.ordering.domain.entity.customer;
 
+import com.lutz.algashop.ordering.domain.entity.customer.vo.*;
 import com.lutz.algashop.ordering.domain.exception.CustomerArchivedException;
-import com.lutz.algashop.ordering.domain.vo.*;
 import org.junit.jupiter.api.*;
 
 import java.time.LocalDate;

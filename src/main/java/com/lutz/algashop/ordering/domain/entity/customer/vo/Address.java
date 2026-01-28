@@ -1,4 +1,4 @@
-package com.lutz.algashop.ordering.domain.vo;
+package com.lutz.algashop.ordering.domain.entity.customer.vo;
 
 import com.lutz.algashop.ordering.domain.validation.FieldValidator;
 import lombok.Builder;

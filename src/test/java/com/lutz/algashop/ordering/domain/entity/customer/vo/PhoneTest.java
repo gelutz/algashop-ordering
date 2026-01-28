@@ -1,10 +1,9 @@
-package com.lutz.algashop.ordering.domain.vo;
+package com.lutz.algashop.ordering.domain.entity.customer.vo;
 
+import com.lutz.algashop.ordering.domain.entity.customer.vo.Phone;
 import com.lutz.algashop.ordering.domain.exception.ErrorMessages;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class PhoneTest {
 	@Test

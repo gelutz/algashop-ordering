@@ -1,5 +1,6 @@
-package com.lutz.algashop.ordering.domain.vo;
+package com.lutz.algashop.ordering.domain.entity.customer.vo;
 
+import com.lutz.algashop.ordering.domain.entity.customer.vo.LoyaltyPoints;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
