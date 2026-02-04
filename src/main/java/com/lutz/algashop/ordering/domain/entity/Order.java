@@ -1,12 +1,15 @@
 package com.lutz.algashop.ordering.domain.entity;
 
 import com.lutz.algashop.ordering.domain.entity.customer.vo.CustomerId;
+import com.lutz.algashop.ordering.domain.exception.CannotChangeOrderStatusException;
 import com.lutz.algashop.ordering.domain.vo.*;
 import lombok.Builder;
 import lombok.NonNull;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -69,7 +72,90 @@ public class Order {
 				null,
 				new HashSet<>()
 		);
+	}
 
+	public void addItem(ProductId productId, ProductName productName, Money price, Quantity quantity) {
+		if (this.items == null) this.setItems(new HashSet<>());
+
+		this.items.add(OrderItem.newOrderBuilder()
+		                        .orderId(id())
+		                        .productId(productId)
+		                        .productName(productName)
+		                        .price(price)
+		                        .quantity(quantity)
+		                        .build());
+
+		this.recalculateTotals();
+	}
+
+	public void place() {
+		this.changeStatus(OrderStatus.PLACED);
+	}
+
+	private void changeStatus(@NonNull OrderStatus orderStatus) {
+		if (this.status().cannotChangeTo(orderStatus)) {
+			throw new CannotChangeOrderStatusException(this.id(), this.status(), orderStatus);
+		}
+	}
+
+	public BillingInfo billingInfo() {
+		return billingInfo;
+	}
+
+	public OrderId id() {
+		return id;
+	}
+
+	public CustomerId customerId() {
+		return customerId;
+	}
+
+	public Money totalAmount() {
+		return totalAmount;
+	}
+
+	public Quantity itemsAmount() {
+		return itemsAmount;
+	}
+
+	public OffsetDateTime placedAt() {
+		return placedAt;
+	}
+
+	public OffsetDateTime paidAt() {
+		return paidAt;
+	}
+
+	public OffsetDateTime canceledAt() {
+		return canceledAt;
+	}
+
+	public OffsetDateTime readyAt() {
+		return readyAt;
+	}
+
+	public ShippingInfo shippingInfo() {
+		return shippingInfo;
+	}
+
+	public OrderStatus status() {
+		return status;
+	}
+
+	public PaymentMethod paymentMethod() {
+		return paymentMethod;
+	}
+
+	public Money shippingCost() {
+		return shippingCost;
+	}
+
+	public LocalDate expectedDeliveryDate() {
+		return expectedDeliveryDate;
+	}
+
+	public Set<OrderItem> items() {
+		return Collections.unmodifiableSet(this.items);
 	}
 
 	private void setId(@NonNull OrderId id) {
@@ -145,63 +231,21 @@ public class Order {
 		return Objects.hashCode(id);
 	}
 
-	public BillingInfo billingInfo() {
-		return billingInfo;
-	}
+	private void recalculateTotals() {
+		BigDecimal totalItemsCost = this.items()
+		                                .stream()
+		                                .map(i -> i.totalAmount().value())
+		                                .reduce(BigDecimal.ZERO, (BigDecimal::add));
 
-	public OrderId id() {
-		return id;
-	}
+		Integer itemsQuantitySum = this.items()
+		                               .stream()
+		                               .map(i -> i.quantity().value())
+		                               .reduce(0, Integer::sum);
 
-	public CustomerId customerId() {
-		return customerId;
-	}
+		BigDecimal shippingCost = this.shippingCost() == null ? BigDecimal.ZERO : this.shippingCost().value();
+		BigDecimal totalAmount = totalItemsCost.add(shippingCost);
 
-	public Money totalAmount() {
-		return totalAmount;
-	}
-
-	public Quantity itemsAmount() {
-		return itemsAmount;
-	}
-
-	public OffsetDateTime placedAt() {
-		return placedAt;
-	}
-
-	public OffsetDateTime paidAt() {
-		return paidAt;
-	}
-
-	public OffsetDateTime canceledAt() {
-		return canceledAt;
-	}
-
-	public OffsetDateTime readyAt() {
-		return readyAt;
-	}
-
-	public ShippingInfo shippingInfo() {
-		return shippingInfo;
-	}
-
-	public OrderStatus status() {
-		return status;
-	}
-
-	public PaymentMethod paymentMethod() {
-		return paymentMethod;
-	}
-
-	public Money shippingCost() {
-		return shippingCost;
-	}
-
-	public LocalDate expectedDeliveryDate() {
-		return expectedDeliveryDate;
-	}
-
-	public Set<OrderItem> items() {
-		return items;
+		this.setTotalAmount(new Money(totalAmount));
+		this.setItemsAmount(new Quantity(itemsQuantitySum));
 	}
 }

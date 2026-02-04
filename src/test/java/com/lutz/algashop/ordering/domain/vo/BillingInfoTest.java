@@ -1,9 +1,9 @@
 package com.lutz.algashop.ordering.domain.vo;
 
 import com.lutz.algashop.ordering.domain.entity.customer.vo.*;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -40,44 +40,35 @@ class BillingInfoTest {
                 .build();
 
         assertNotNull(billingInfo);
-        Assertions.assertEquals(fullName, billingInfo.fullName());
-        Assertions.assertEquals(document, billingInfo.document());
-        Assertions.assertEquals(phone, billingInfo.phone());
-        Assertions.assertEquals(address, billingInfo.address());
+        assertEquals(fullName, billingInfo.fullName());
+        assertEquals(document, billingInfo.document());
+        assertEquals(phone, billingInfo.phone());
+        assertEquals(address, billingInfo.address());
     }
 
     @Test
-    void shouldThrowExceptionWhenFullNameIsNull() {
+    void shouldThrowExceptionWhenRequiredFieldIsNull() {
         assertThrows(NullPointerException.class, () -> BillingInfo.builder()
                 .fullName(null)
                 .document(createValidDocument())
                 .phone(createValidPhone())
                 .address(createValidAddress())
                 .build());
-    }
 
-    @Test
-    void shouldThrowExceptionWhenDocumentIsNull() {
         assertThrows(NullPointerException.class, () -> BillingInfo.builder()
                 .fullName(createValidFullName())
                 .document(null)
                 .phone(createValidPhone())
                 .address(createValidAddress())
                 .build());
-    }
 
-    @Test
-    void shouldThrowExceptionWhenPhoneIsNull() {
         assertThrows(NullPointerException.class, () -> BillingInfo.builder()
                 .fullName(createValidFullName())
                 .document(createValidDocument())
                 .phone(null)
                 .address(createValidAddress())
                 .build());
-    }
 
-    @Test
-    void shouldThrowExceptionWhenAddressIsNull() {
         assertThrows(NullPointerException.class, () -> BillingInfo.builder()
                 .fullName(createValidFullName())
                 .document(createValidDocument())

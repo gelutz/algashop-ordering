@@ -1,5 +1,8 @@
 package com.lutz.algashop.ordering.domain.exception;
 
+import com.lutz.algashop.ordering.domain.entity.OrderStatus;
+import com.lutz.algashop.ordering.domain.vo.OrderId;
+
 public class ErrorMessages {
 	public static class Validation {
 		public static String fieldIsNullMessage(String field) {
@@ -28,4 +31,12 @@ public class ErrorMessages {
 	}
 
 	public static final String CUSTOMER_ARCHIVED = "This customer is already archived.";
+
+
+	public static String orderStatusCannotBeChanged(OrderId orderId, OrderStatus oldStatus, OrderStatus newStatus) {
+		return String.format(
+				"Order [%s]: Order status [%s] cannot be changed to [%s].",
+				orderId, oldStatus, newStatus
+		                    );
+	}
 }
