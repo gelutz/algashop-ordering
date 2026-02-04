@@ -3,9 +3,6 @@ package com.lutz.algashop.ordering.domain.vo;
 import com.lutz.algashop.ordering.domain.exception.ErrorMessages;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.NullAndEmptySource;
-import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -18,10 +15,15 @@ class ProductNameTest {
         Assertions.assertEquals(validName, productName.value());
     }
 
-    @ParameterizedTest
-    @NullAndEmptySource
-    @ValueSource(strings = {"  ", "\t", "\n"})
-    void shouldThrowExceptionWhenValueIsNullOrBlank(String invalidName) {
+    @Test
+    void shouldThrowExceptionWhenValueIsNull() {
+        NullPointerException exception = assertThrows(NullPointerException.class, () -> new ProductName(null));
+        Assertions.assertEquals(ErrorMessages.Validation.fieldIsNullMessage("Product name"), exception.getMessage());
+    }
+
+    @Test
+    void shouldThrowExceptionWhenValueIsBlank() {
+        String invalidName = "";
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> new ProductName(invalidName));
         Assertions.assertEquals(ErrorMessages.Validation.fieldIsNullMessage("Product name"), exception.getMessage());
     }

@@ -1,15 +1,14 @@
 package com.lutz.algashop.ordering.domain.vo;
 
-import com.lutz.algashop.ordering.domain.entity.customer.vo.Address;
-import com.lutz.algashop.ordering.domain.entity.customer.vo.Document;
-import com.lutz.algashop.ordering.domain.entity.customer.vo.FullName;
-import com.lutz.algashop.ordering.domain.entity.customer.vo.Phone;
+import com.lutz.algashop.ordering.domain.entity.customer.vo.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+// desativa warning sobre passar null para parametros anotados com @NotNull do lombok
+@SuppressWarnings("DataFlowIssue")
 class ShippingInfoTest {
 
     private FullName createValidFullName() {
@@ -21,11 +20,11 @@ class ShippingInfoTest {
     }
 
     private Phone createValidPhone() {
-        return new Phone("11", "987654321");
+        return new Phone("11987654321");
     }
 
     private Address createValidAddress() {
-        return new Address("Street", "123", "Neighborhood", "City", "State", "12345-678");
+        return new Address("Street", "123", "Neighborhood", "City", "State", "12345-678", new ZipCode("123123"));
     }
 
     @Test

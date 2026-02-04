@@ -1,9 +1,6 @@
 package com.lutz.algashop.ordering.domain.vo;
 
-import com.lutz.algashop.ordering.domain.entity.customer.vo.Address;
-import com.lutz.algashop.ordering.domain.entity.customer.vo.Document;
-import com.lutz.algashop.ordering.domain.entity.customer.vo.FullName;
-import com.lutz.algashop.ordering.domain.entity.customer.vo.Phone;
+import com.lutz.algashop.ordering.domain.entity.customer.vo.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -21,11 +18,11 @@ class BillingInfoTest {
     }
 
     private Phone createValidPhone() {
-        return new Phone("21", "998765432");
+        return new Phone("21998765432");
     }
 
     private Address createValidAddress() {
-        return new Address("Billing Street", "456", "Billing Neighborhood", "Billing City", "Billing State", "98765-432");
+        return new Address("Billing Street", "456", "Billing Neighborhood", "Billing City", "Billing State", "98765-432", new ZipCode("123123123"));
     }
 
     @Test

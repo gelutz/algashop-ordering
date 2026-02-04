@@ -1,19 +1,12 @@
 package com.lutz.algashop.ordering.domain.entity;
 
-import com.lutz.algashop.ordering.domain.vo.Money;
-import com.lutz.algashop.ordering.domain.vo.ProductId;
-import com.lutz.algashop.ordering.domain.vo.ProductName;
-import com.lutz.algashop.ordering.domain.vo.Quantity;
-import org.junit.jupiter.api.Assertions;
+import com.lutz.algashop.ordering.domain.vo.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 class OrderItemTest {
 
@@ -27,9 +20,9 @@ class OrderItemTest {
 
     @BeforeEach
     void setUp() {
-        orderItemId = new OrderItemId(UUID.randomUUID());
-        orderId = new OrderId(UUID.randomUUID());
-        productId = new ProductId(UUID.randomUUID());
+        orderItemId = new OrderItemId();
+        orderId = new OrderId();
+        productId = new ProductId();
         productName = new ProductName("Test Product Name");
         price = new Money(new BigDecimal("10.00"));
         quantity = new Quantity(2);
@@ -90,9 +83,9 @@ class OrderItemTest {
                 .totalAmount(totalAmount)
                 .build();
 
-        OrderItemId newOrderItemId = new OrderItemId(UUID.randomUUID());
-        OrderId newOrderId = new OrderId(UUID.randomUUID());
-        ProductId newProductId = new ProductId(UUID.randomUUID());
+        OrderItemId newOrderItemId = new OrderItemId();
+        OrderId newOrderId = new OrderId();
+        ProductId newProductId = new ProductId();
         ProductName newProductName = new ProductName("New Product Name");
         Money newPrice = new Money(new BigDecimal("15.00"));
         Quantity newQuantity = new Quantity(3);
