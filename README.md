@@ -57,6 +57,24 @@ The core domain entity with the following capabilities:
 ./gradlew build
 ```
 
+### Git Hooks Setup
+
+This project uses a pre-commit hook that automatically runs tests before each commit to ensure code quality.
+
+#### Setup Instructions
+
+To configure git hooks for this project:
+
+```bash
+# Move the pre-commit hook to the project directory
+mv .git/hooks/pre-commit .githooks/
+
+# Configure git to use the local hooks directory
+git config --local core.hooksPath .githooks/
+```
+
+The pre-commit hook runs `./gradlew test` and will abort the commit if tests fail.
+
 ## Architecture
 
 - **Package**: `com.lutz.algashop.ordering`

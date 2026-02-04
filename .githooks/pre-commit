@@ -1,0 +1,20 @@
+#!/bin/sh
+
+echo "Running Gradle tests..."
+
+# Use wrapper if it exists (recommended)
+if [ -f "./gradlew" ]; then
+  ./gradlew test
+else
+  gradle test
+fi
+
+RESULT=$?
+
+if [ $RESULT -ne 0 ]; then
+  echo "❌ Tests failed. Commit aborted."
+  exit 1
+fi
+
+echo "✅ Tests passed. Proceeding with commit."
+exit 0
