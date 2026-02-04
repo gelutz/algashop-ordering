@@ -68,8 +68,7 @@ class MoneyTest {
 	void shouldDivideMoneyByMoneyCorrectly() {
 		Money moneyOne = new Money("10.00");
 		Money moneyTwo = new Money("2.00");
-		// The divide method currently does multiply, let's test it as is.
-		Money expected = new Money("20.00"); // 10.00 * 2.00
+		Money expected = new Money("5.00"); // 10.00 / 2.00
 
 		Money result = moneyOne.divide(moneyTwo);
 

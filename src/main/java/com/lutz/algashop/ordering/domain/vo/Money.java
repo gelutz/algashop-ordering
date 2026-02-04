@@ -8,12 +8,14 @@ import java.math.RoundingMode;
 
 
 public record Money(BigDecimal value) {
+	private static final RoundingMode roundingMode = RoundingMode.HALF_EVEN;
 	public static Money ZERO = (new Money("0")).clone();
+
 	public Money {
 		if (value.compareTo(BigDecimal.ZERO) < 0) {
 			throw new IllegalArgumentException(ErrorMessages.Validation.VALUE_IS_NEGATIVE_OR_ZERO);
 		}
-		value = value.setScale(2, RoundingMode.HALF_EVEN);
+		value = value.setScale(2, roundingMode);
 	}
 
 	public Money(String value) {
@@ -32,7 +34,7 @@ public record Money(BigDecimal value) {
 	}
 
 	public Money divide(Money target) {
-		return new Money(this.value().multiply(target.value()));
+		return new Money(this.value().divide(target.value(), roundingMode));
 	}
 
 	public int compareTo(Money target) {
