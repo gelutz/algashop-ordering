@@ -32,25 +32,8 @@ public class Customer {
 
 	// new customer
 	@Builder(builderClassName = "NewCustomerBuilder", builderMethodName = "newCustomerBuilder")
-	private static Customer from(FullName fullName, Birthdate birthDate, Email email, Phone phone, Document document, Address address, Boolean promotionNotificationAllowed) {
-		return new Customer(
-				new CustomerId(),
-				fullName,
-				birthDate,
-				email,
-				phone,
-				document,
-				address,
-				promotionNotificationAllowed,
-				false,
-				OffsetDateTime.now(),
-				null,
-				LoyaltyPoints.ZERO
-		);
-	}
-
-	private Customer(CustomerId id, FullName fullName, Birthdate birthDate, Email email, Phone phone, Document document, Address address, Boolean promotionNotificationAllowed, Boolean archived, OffsetDateTime registeredAt, OffsetDateTime archivedAt, LoyaltyPoints loyaltyPoints) {
-		setId(id);
+	private Customer(FullName fullName, Birthdate birthDate, Email email, Phone phone, Document document, Address address, Boolean promotionNotificationAllowed) {
+		setId(new CustomerId());
 		setFullName(fullName);
 		setBirthdate(birthDate.date());
 		setEmail(email);
@@ -58,10 +41,10 @@ public class Customer {
 		setDocument(document);
 		setAddress(address);
 		setPromotionNotificationAllowed(promotionNotificationAllowed);
-		setArchived(archived);
-		setRegisteredAt(registeredAt);
-		setArchivedAt(archivedAt);
-		setLoyaltyPoints(loyaltyPoints);
+		setArchived(false);
+		setRegisteredAt(OffsetDateTime.now());
+		setArchivedAt(null);
+		setLoyaltyPoints(LoyaltyPoints.ZERO);
 	}
 
 	public void archive() {
