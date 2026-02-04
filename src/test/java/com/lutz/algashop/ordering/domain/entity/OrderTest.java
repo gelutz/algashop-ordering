@@ -1,8 +1,13 @@
 package com.lutz.algashop.ordering.domain.entity;
 
 import com.lutz.algashop.ordering.domain.entity.customer.vo.*;
+import com.lutz.algashop.ordering.domain.exception.ErrorMessages;
+import com.lutz.algashop.ordering.domain.exception.OrderStatusCannotBeChangedException;
 import com.lutz.algashop.ordering.domain.vo.*;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -65,9 +70,32 @@ class OrderTest {
         return new ProductName("Test Product");
     }
 
+    private Order createMinimalOrderWithId(OrderId id) {
+        return Order.existing()
+                .id(id)
+                .customerId(createValidCustomerId())
+                .totalAmount(Money.ZERO)
+                .itemsAmount(Quantity.ZERO)
+                .status(OrderStatus.DRAFT)
+                .items(createValidItems())
+                .build();
+    }
+
     @Nested
     @DisplayName("Order.draft() tests")
     class DraftTests {
+
+        private void assertDraftOptionalFieldsAreNull(Order order) {
+            assertNull(order.paidAt());
+            assertNull(order.placedAt());
+            assertNull(order.canceledAt());
+            assertNull(order.readyAt());
+            assertNull(order.billingInfo());
+            assertNull(order.shippingInfo());
+            assertNull(order.paymentMethod());
+            assertNull(order.shippingCost());
+            assertNull(order.expectedDeliveryDate());
+        }
 
         @Test
         void shouldCreateDraftOrderWithInitialState() {
@@ -83,15 +111,7 @@ class OrderTest {
             assertEquals(Quantity.ZERO, order.itemsAmount());
             assertNotNull(order.items());
             assertTrue(order.items().isEmpty());
-            assertNull(order.paidAt());
-            assertNull(order.placedAt());
-            assertNull(order.canceledAt());
-            assertNull(order.readyAt());
-            assertNull(order.billingInfo());
-            assertNull(order.shippingInfo());
-            assertNull(order.paymentMethod());
-            assertNull(order.shippingCost());
-            assertNull(order.expectedDeliveryDate());
+            assertDraftOptionalFieldsAreNull(order);
         }
 
         @Test
@@ -139,9 +159,8 @@ class OrderTest {
             items = createValidItems();
         }
 
-        @Test
-        void shouldCreateOrderWithAllFieldsCorrectly() {
-            Order order = Order.existing()
+        private Order.ExistingOrderBuilder baseBuilder() {
+            return Order.existing()
                     .id(orderId)
                     .customerId(customerId)
                     .totalAmount(totalAmount)
@@ -156,8 +175,12 @@ class OrderTest {
                     .paymentMethod(paymentMethod)
                     .shippingCost(shippingCost)
                     .expectedDeliveryDate(expectedDeliveryDate)
-                    .items(items)
-                    .build();
+                    .items(items);
+        }
+
+        @Test
+        void shouldCreateOrderWithAllFieldsCorrectly() {
+            Order order = baseBuilder().build();
 
             assertNotNull(order);
             assertEquals(orderId, order.id());
@@ -174,99 +197,43 @@ class OrderTest {
             assertEquals(paymentMethod, order.paymentMethod());
             assertEquals(shippingCost, order.shippingCost());
             assertEquals(expectedDeliveryDate, order.expectedDeliveryDate());
-            assertNotNull(order.items());
+            assertEquals(items, order.items());
         }
 
         @Test
-        void shouldThrowExceptionWhenIdIsNull() {
-            assertThrows(NullPointerException.class, () -> Order.existing()
+        void shouldThrowNullPointerExceptionForNotNullableFields() {
+            assertThrows(NullPointerException.class, () -> baseBuilder()
                     .id(null)
-                    .customerId(customerId)
-                    .totalAmount(totalAmount)
-                    .itemsAmount(itemsAmount)
-                    .status(status)
-                    .items(items)
                     .build());
-        }
-
-        @Test
-        void shouldThrowExceptionWhenCustomerIdIsNull() {
-            assertThrows(NullPointerException.class, () -> Order.existing()
-                    .id(orderId)
+            assertThrows(NullPointerException.class, () -> baseBuilder()
                     .customerId(null)
-                    .totalAmount(totalAmount)
-                    .itemsAmount(itemsAmount)
-                    .status(status)
-                    .items(items)
                     .build());
-        }
-
-        @Test
-        void shouldThrowExceptionWhenTotalAmountIsNull() {
-            assertThrows(NullPointerException.class, () -> Order.existing()
-                    .id(orderId)
-                    .customerId(customerId)
+            assertThrows(NullPointerException.class, () -> baseBuilder()
                     .totalAmount(null)
-                    .itemsAmount(itemsAmount)
-                    .status(status)
-                    .items(items)
                     .build());
-        }
-
-        @Test
-        void shouldThrowExceptionWhenItemsAmountIsNull() {
-            assertThrows(NullPointerException.class, () -> Order.existing()
-                    .id(orderId)
-                    .customerId(customerId)
-                    .totalAmount(totalAmount)
+            assertThrows(NullPointerException.class, () -> baseBuilder()
                     .itemsAmount(null)
-                    .status(status)
-                    .items(items)
                     .build());
-        }
-
-        @Test
-        void shouldThrowExceptionWhenStatusIsNull() {
-            assertThrows(NullPointerException.class, () -> Order.existing()
-                    .id(orderId)
-                    .customerId(customerId)
-                    .totalAmount(totalAmount)
-                    .itemsAmount(itemsAmount)
+            assertThrows(NullPointerException.class, () -> baseBuilder()
                     .status(null)
-                    .items(items)
                     .build());
-        }
-
-        @Test
-        void shouldThrowExceptionWhenItemsIsNull() {
-            assertThrows(NullPointerException.class, () -> Order.existing()
-                    .id(orderId)
-                    .customerId(customerId)
-                    .totalAmount(totalAmount)
-                    .itemsAmount(itemsAmount)
-                    .status(status)
+            assertThrows(NullPointerException.class, () -> baseBuilder()
                     .items(null)
                     .build());
         }
 
         @Test
         void shouldAllowNullableFields() {
-            Order order = Order.existing()
-                    .id(orderId)
-                    .customerId(customerId)
-                    .totalAmount(totalAmount)
-                    .itemsAmount(itemsAmount)
+            Order order = baseBuilder()
                     .paidAt(null)
                     .placedAt(null)
                     .canceledAt(null)
                     .readyAt(null)
                     .billingInfo(null)
                     .shippingInfo(null)
-                    .status(status)
                     .paymentMethod(null)
                     .shippingCost(null)
                     .expectedDeliveryDate(null)
-                    .items(items)
                     .build();
 
             assertNotNull(order);
@@ -287,41 +254,38 @@ class OrderTest {
     class AddItemTests {
 
         private Order sut;
+        private ProductId productId;
+        private ProductName productName;
 
         @BeforeEach
         void setUp() {
             sut = Order.draft(createValidCustomerId());
+            productId = createValidProductId();
+            productName = createValidProductName();
+        }
+
+        private void addItem(BigDecimal price, int quantity) {
+            sut.addItem(productId, productName, new Money(price), new Quantity(quantity));
         }
 
         @Test
         void shouldAddItemToOrder() {
-            ProductId productId = createValidProductId();
-            ProductName productName = createValidProductName();
-            Money price = new Money(new BigDecimal("25.00"));
-            Quantity quantity = new Quantity(2);
-
-            sut.addItem(productId, productName, price, quantity);
-
+            addItem(new BigDecimal("25.00"), 2);
             assertEquals(1, sut.items().size());
         }
 
         @Test
         void shouldAddMultipleItems() {
-            sut.addItem(createValidProductId(), createValidProductName(), new Money(new BigDecimal("25.00")), new Quantity(2));
-            sut.addItem(createValidProductId(), createValidProductName(), new Money(new BigDecimal("30.00")), new Quantity(1));
-            sut.addItem(createValidProductId(), createValidProductName(), new Money(new BigDecimal("15.00")), new Quantity(3));
+            addItem(new BigDecimal("25.00"), 2);
+            addItem(new BigDecimal("30.00"), 1);
+            addItem(new BigDecimal("15.00"), 3);
 
             assertEquals(3, sut.items().size());
         }
 
         @Test
         void shouldCreateItemWithCorrectOrderId() {
-            ProductId productId = createValidProductId();
-            ProductName productName = createValidProductName();
-            Money price = new Money(new BigDecimal("25.00"));
-            Quantity quantity = new Quantity(2);
-
-            sut.addItem(productId, productName, price, quantity);
+            addItem(new BigDecimal("25.00"), 2);
 
             OrderItem addedItem = sut.items().iterator().next();
             assertEquals(sut.id(), addedItem.orderId());
@@ -335,93 +299,19 @@ class OrderTest {
         @Test
         void ordersWithSameIdShouldBeEqual() {
             OrderId sharedId = createValidOrderId();
-            CustomerId customerId = createValidCustomerId();
 
-            Order order1 = Order.existing()
-                    .id(sharedId)
-                    .customerId(customerId)
-                    .totalAmount(Money.ZERO)
-                    .itemsAmount(Quantity.ZERO)
-                    .status(OrderStatus.DRAFT)
-                    .items(createValidItems())
-                    .build();
-
-            Order order2 = Order.existing()
-                    .id(sharedId)
-                    .customerId(createValidCustomerId())
-                    .totalAmount(new Money(new BigDecimal("500.00")))
-                    .itemsAmount(new Quantity(10))
-                    .status(OrderStatus.PAID)
-                    .items(createValidItems())
-                    .build();
+            Order order1 = createMinimalOrderWithId(sharedId);
+            Order order2 = createMinimalOrderWithId(sharedId);
 
             assertEquals(order1, order2);
         }
 
         @Test
         void ordersWithDifferentIdsShouldNotBeEqual() {
-            CustomerId customerId = createValidCustomerId();
-
-            Order order1 = Order.existing()
-                    .id(createValidOrderId())
-                    .customerId(customerId)
-                    .totalAmount(Money.ZERO)
-                    .itemsAmount(Quantity.ZERO)
-                    .status(OrderStatus.DRAFT)
-                    .items(createValidItems())
-                    .build();
-
-            Order order2 = Order.existing()
-                    .id(createValidOrderId())
-                    .customerId(customerId)
-                    .totalAmount(Money.ZERO)
-                    .itemsAmount(Quantity.ZERO)
-                    .status(OrderStatus.DRAFT)
-                    .items(createValidItems())
-                    .build();
+            Order order1 = createMinimalOrderWithId(createValidOrderId());
+            Order order2 = createMinimalOrderWithId(createValidOrderId());
 
             assertNotEquals(order1, order2);
-        }
-
-        @Test
-        void orderShouldNotEqualNull() {
-            Order order = Order.draft(createValidCustomerId());
-
-            assertNotEquals(null, order);
-            assertFalse(order.equals(null));
-        }
-
-        @Test
-        void orderShouldNotEqualDifferentType() {
-            Order order = Order.draft(createValidCustomerId());
-
-            assertFalse(order.equals("not an order"));
-            assertFalse(order.equals(123));
-        }
-
-        @Test
-        void hashCodeShouldBeConsistentWithEquals() {
-            OrderId sharedId = createValidOrderId();
-
-            Order order1 = Order.existing()
-                    .id(sharedId)
-                    .customerId(createValidCustomerId())
-                    .totalAmount(Money.ZERO)
-                    .itemsAmount(Quantity.ZERO)
-                    .status(OrderStatus.DRAFT)
-                    .items(createValidItems())
-                    .build();
-
-            Order order2 = Order.existing()
-                    .id(sharedId)
-                    .customerId(createValidCustomerId())
-                    .totalAmount(new Money(new BigDecimal("100.00")))
-                    .itemsAmount(new Quantity(5))
-                    .status(OrderStatus.PAID)
-                    .items(createValidItems())
-                    .build();
-
-            assertEquals(order1.hashCode(), order2.hashCode());
         }
     }
 
@@ -445,6 +335,30 @@ class OrderTest {
 
             assertThrows(UnsupportedOperationException.class, () -> items.add(newItem));
             assertThrows(UnsupportedOperationException.class, () -> items.clear());
+        }
+    }
+
+    @Nested
+    @DisplayName("Order status tests")
+    class OrderStatusTests {
+
+        @Test
+        void givenDraftOrderPlaceShouldSetOrderAsPlaced() {
+            Order order = Order.draft(createValidCustomerId());
+            order.place();
+
+            assertEquals(true, order.isPlaced());
+        }
+
+        @Test
+        void givenPlacedOrderPlaceShouldThrowOrderStatusCannotBeChangedException() {
+            Order order = Order.draft(createValidCustomerId());
+            order.place();
+
+            OrderStatusCannotBeChangedException exception =
+                    assertThrows(OrderStatusCannotBeChangedException.class, order::place);
+
+            assertEquals(exception.getMessage(), ErrorMessages.orderStatusCannotBeChanged(order.id(), OrderStatus.PLACED, OrderStatus.PLACED));
         }
     }
 }

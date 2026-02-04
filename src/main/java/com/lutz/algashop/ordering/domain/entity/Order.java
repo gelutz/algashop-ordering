@@ -1,7 +1,7 @@
 package com.lutz.algashop.ordering.domain.entity;
 
 import com.lutz.algashop.ordering.domain.entity.customer.vo.CustomerId;
-import com.lutz.algashop.ordering.domain.exception.CannotChangeOrderStatusException;
+import com.lutz.algashop.ordering.domain.exception.OrderStatusCannotBeChangedException;
 import com.lutz.algashop.ordering.domain.vo.*;
 import lombok.Builder;
 import lombok.NonNull;
@@ -92,10 +92,20 @@ public class Order {
 		this.changeStatus(OrderStatus.PLACED);
 	}
 
-	private void changeStatus(@NonNull OrderStatus orderStatus) {
-		if (this.status().cannotChangeTo(orderStatus)) {
-			throw new CannotChangeOrderStatusException(this.id(), this.status(), orderStatus);
-		}
+	public boolean isDraft() {
+		return OrderStatus.DRAFT.equals(this.status());
+	}
+	public boolean isPlaced() {
+		return OrderStatus.PLACED.equals(this.status());
+	}
+	public boolean isPaid() {
+		return OrderStatus.PAID.equals(this.status());
+	}
+	public boolean isReady() {
+		return OrderStatus.PLACED.equals(this.status());
+	}
+	public boolean isCanceled() {
+		return OrderStatus.PLACED.equals(this.status());
 	}
 
 	public BillingInfo billingInfo() {
@@ -247,5 +257,12 @@ public class Order {
 
 		this.setTotalAmount(new Money(totalAmount));
 		this.setItemsAmount(new Quantity(itemsQuantitySum));
+	}
+	private void changeStatus(@NonNull OrderStatus orderStatus) {
+		if (this.status().cannotChangeTo(orderStatus)) {
+			throw new OrderStatusCannotBeChangedException(this.id(), this.status(), orderStatus);
+		}
+
+		this.setStatus(orderStatus);
 	}
 }
