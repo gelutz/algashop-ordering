@@ -68,92 +68,12 @@ class OrderItemTest {
         assertEquals(productName, orderItem.productName());
         assertEquals(price, orderItem.price());
         assertEquals(quantity, orderItem.quantity());
-        assertEquals(Money.ZERO, orderItem.totalAmount()); // Should be ZERO
-    }
-
-    @Test
-    void settersShouldUpdateFieldsCorrectly() {
-        OrderItem orderItem = OrderItem.existing()
-                .id(orderItemId)
-                .orderId(orderId)
-                .productId(productId)
-                .productName(productName)
-                .price(price)
-                .quantity(quantity)
-                .totalAmount(totalAmount)
-                .build();
-
-        OrderItemId newOrderItemId = new OrderItemId();
-        OrderId newOrderId = new OrderId();
-        ProductId newProductId = new ProductId();
-        ProductName newProductName = new ProductName("New Product Name");
-        Money newPrice = new Money(new BigDecimal("15.00"));
-        Quantity newQuantity = new Quantity(3);
-        Money newTotalAmount = new Money(new BigDecimal("45.00"));
-
-        orderItem.setId(newOrderItemId);
-        orderItem.setOrderId(newOrderId);
-        orderItem.setProductId(newProductId);
-        orderItem.setProductName(newProductName);
-        orderItem.setPrice(newPrice);
-        orderItem.setQuantity(newQuantity);
-        orderItem.setTotalAmount(newTotalAmount);
-
-        assertEquals(newOrderItemId, orderItem.id());
-        assertEquals(newOrderId, orderItem.orderId());
-        assertEquals(newProductId, orderItem.productId());
-        assertEquals(newProductName, orderItem.productName());
-        assertEquals(newPrice, orderItem.price());
-        assertEquals(newQuantity, orderItem.quantity());
-        assertEquals(newTotalAmount, orderItem.totalAmount());
-    }
-
-    // Test @NonNull validations for setters
-    @Test
-    void setIdShouldThrowExceptionWhenNull() {
-        OrderItem orderItem = OrderItem.existing().id(orderItemId).orderId(orderId).productId(productId).productName(productName).price(price).quantity(quantity).totalAmount(totalAmount).build();
-        assertThrows(NullPointerException.class, () -> orderItem.setId(null));
-    }
-
-    @Test
-    void setOrderIdShouldThrowExceptionWhenNull() {
-        OrderItem orderItem = OrderItem.existing().id(orderItemId).orderId(orderId).productId(productId).productName(productName).price(price).quantity(quantity).totalAmount(totalAmount).build();
-        assertThrows(NullPointerException.class, () -> orderItem.setOrderId(null));
-    }
-
-    @Test
-    void setProductIdShouldThrowExceptionWhenNull() {
-        OrderItem orderItem = OrderItem.existing().id(orderItemId).orderId(orderId).productId(productId).productName(productName).price(price).quantity(quantity).totalAmount(totalAmount).build();
-        assertThrows(NullPointerException.class, () -> orderItem.setProductId(null));
-    }
-
-    @Test
-    void setProductNameShouldThrowExceptionWhenNull() {
-        OrderItem orderItem = OrderItem.existing().id(orderItemId).orderId(orderId).productId(productId).productName(productName).price(price).quantity(quantity).totalAmount(totalAmount).build();
-        assertThrows(NullPointerException.class, () -> orderItem.setProductName(null));
-    }
-
-    @Test
-    void setPriceShouldThrowExceptionWhenNull() {
-        OrderItem orderItem = OrderItem.existing().id(orderItemId).orderId(orderId).productId(productId).productName(productName).price(price).quantity(quantity).totalAmount(totalAmount).build();
-        assertThrows(NullPointerException.class, () -> orderItem.setPrice(null));
-    }
-
-    @Test
-    void setQuantityShouldThrowExceptionWhenNull() {
-        OrderItem orderItem = OrderItem.existing().id(orderItemId).orderId(orderId).productId(productId).productName(productName).price(price).quantity(quantity).totalAmount(totalAmount).build();
-        assertThrows(NullPointerException.class, () -> orderItem.setQuantity(null));
-    }
-
-    @Test
-    void setTotalAmountShouldThrowExceptionWhenNull() {
-        OrderItem orderItem = OrderItem.existing().id(orderItemId).orderId(orderId).productId(productId).productName(productName).price(price).quantity(quantity).totalAmount(totalAmount).build();
-        assertThrows(NullPointerException.class, () -> orderItem.setTotalAmount(null));
+        assertEquals(orderItem.price().multiply(orderItem.quantity()), orderItem.totalAmount()); // Should be the product of price * quantity
     }
 
     // Test @NonNull validations for newOrderBuilder static method
     @Test
-    void newOrderBuilderShouldThrowExceptionWhenOrderIdIsNull() {
+    void newOrderBuilderShouldThrowExceptionWhenRequiredFieldIsNull() {
         assertThrows(NullPointerException.class, () -> OrderItem.newOrderBuilder()
                 .orderId(null)
                 .productId(productId)
@@ -161,10 +81,7 @@ class OrderItemTest {
                 .price(price)
                 .quantity(quantity)
                 .build());
-    }
 
-    @Test
-    void newOrderBuilderShouldThrowExceptionWhenProductIdIsNull() {
         assertThrows(NullPointerException.class, () -> OrderItem.newOrderBuilder()
                 .orderId(orderId)
                 .productId(null)
@@ -172,10 +89,7 @@ class OrderItemTest {
                 .price(price)
                 .quantity(quantity)
                 .build());
-    }
 
-    @Test
-    void newOrderBuilderShouldThrowExceptionWhenProductNameIsNull() {
         assertThrows(NullPointerException.class, () -> OrderItem.newOrderBuilder()
                 .orderId(orderId)
                 .productId(productId)
@@ -183,10 +97,7 @@ class OrderItemTest {
                 .price(price)
                 .quantity(quantity)
                 .build());
-    }
 
-    @Test
-    void newOrderBuilderShouldThrowExceptionWhenPriceIsNull() {
         assertThrows(NullPointerException.class, () -> OrderItem.newOrderBuilder()
                 .orderId(orderId)
                 .productId(productId)
@@ -194,10 +105,7 @@ class OrderItemTest {
                 .price(null)
                 .quantity(quantity)
                 .build());
-    }
 
-    @Test
-    void newOrderBuilderShouldThrowExceptionWhenQuantityIsNull() {
         assertThrows(NullPointerException.class, () -> OrderItem.newOrderBuilder()
                 .orderId(orderId)
                 .productId(productId)

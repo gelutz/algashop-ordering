@@ -26,7 +26,7 @@ public class OrderItem {
 
 	@Builder(builderClassName = "NewOrderBuilder", builderMethodName = "newOrderBuilder")
 	private static OrderItem from(OrderId orderId, ProductId productId, ProductName productName, Money price, Quantity quantity) {
-		return new OrderItem(
+		OrderItem o = new OrderItem(
 				new OrderItemId(),
 				orderId,
 				productId,
@@ -35,33 +35,37 @@ public class OrderItem {
 				quantity,
 				Money.ZERO
 		);
+
+		o.recalculateTotals();
+
+		return o;
 	}
 
-	public void setId(@NonNull OrderItemId id) {
+	private void setId(@NonNull OrderItemId id) {
 		this.id = id;
 	}
 
-	public void setOrderId(@NonNull OrderId orderId) {
+	private void setOrderId(@NonNull OrderId orderId) {
 		this.orderId = orderId;
 	}
 
-	public void setProductId(@NonNull ProductId productId) {
+	private void setProductId(@NonNull ProductId productId) {
 		this.productId = productId;
 	}
 
-	public void setProductName(@NonNull ProductName productName) {
+	private void setProductName(@NonNull ProductName productName) {
 		this.productName = productName;
 	}
 
-	public void setPrice(@NonNull Money price) {
+	private void setPrice(@NonNull Money price) {
 		this.price = price;
 	}
 
-	public void setQuantity(@NonNull Quantity quantity) {
+	private void setQuantity(@NonNull Quantity quantity) {
 		this.quantity = quantity;
 	}
 
-	public void setTotalAmount(@NonNull Money totalAmount) {
+	private void setTotalAmount(@NonNull Money totalAmount) {
 		this.totalAmount = totalAmount;
 	}
 
@@ -91,5 +95,9 @@ public class OrderItem {
 
 	public Money totalAmount() {
 		return totalAmount;
+	}
+
+	private void recalculateTotals() {
+		this.setTotalAmount(this.price().multiply(this.quantity()));
 	}
 }
