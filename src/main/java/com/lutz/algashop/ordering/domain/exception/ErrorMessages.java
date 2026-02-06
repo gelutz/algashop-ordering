@@ -3,8 +3,10 @@ package com.lutz.algashop.ordering.domain.exception;
 import com.lutz.algashop.ordering.domain.entity.OrderStatus;
 import com.lutz.algashop.ordering.domain.vo.OrderId;
 
+import java.time.LocalDate;
+
 public class ErrorMessages {
-	public static class Validation {
+	public static class Fields {
 		public static String fieldIsNullMessage(String field) {
 			return field + " is null.";
 		}
@@ -30,13 +32,25 @@ public class ErrorMessages {
 		public static final String VALUE_IS_NEGATIVE_OR_ZERO = "Cannot instantiate with negative (or zero) value.";
 	}
 
+	public static class Orders {
+		public static String orderCannotBePlacedException(OrderId orderId) {
+			return orderMessageWrapper(orderId, "The order could not be placed.");
+		}
+
+		public static String orderExpectedDeliveryDateIsInvalid(OrderId orderId, LocalDate expectedDeliveryDate) {
+			return orderMessageWrapper(orderId, String.format("The delivery date cannot be set to a past date (%s).", expectedDeliveryDate));
+		}
+		public static String orderStatusCannotBeChanged(OrderId orderId, OrderStatus oldStatus, OrderStatus newStatus) {
+			return orderMessageWrapper(orderId, String.format(
+					"Order status [%s] cannot be changed to [%s].",oldStatus, newStatus
+			                                                 ));
+		}
+
+		private static String orderMessageWrapper(OrderId orderId, String message) {
+			return String.format("Order [%s]: %s", orderId, message);
+		}
+	}
+
 	public static final String CUSTOMER_ARCHIVED = "This customer is already archived.";
 
-
-	public static String orderStatusCannotBeChanged(OrderId orderId, OrderStatus oldStatus, OrderStatus newStatus) {
-		return String.format(
-				"Order [%s]: Order status [%s] cannot be changed to [%s].",
-				orderId, oldStatus, newStatus
-		                    );
-	}
 }

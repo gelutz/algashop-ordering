@@ -1,6 +1,9 @@
 package com.lutz.algashop.ordering.domain.entity;
 
 import com.lutz.algashop.ordering.domain.entity.customer.vo.CustomerId;
+import com.lutz.algashop.ordering.domain.exception.ErrorMessages;
+import com.lutz.algashop.ordering.domain.exception.InvalidShippingDeliveryDateException;
+import com.lutz.algashop.ordering.domain.exception.OrderCannotBePlacedException;
 import com.lutz.algashop.ordering.domain.exception.OrderStatusCannotBeChangedException;
 import com.lutz.algashop.ordering.domain.vo.*;
 import lombok.Builder;
@@ -89,6 +92,16 @@ public class Order {
 	}
 
 	public void place() {
+		Objects.requireNonNull(shippingInfo(), ErrorMessages.Orders.orderCannotBePlacedException(this.id()));
+		Objects.requireNonNull(shippingCost(), ErrorMessages.Orders.orderCannotBePlacedException(this.id()));
+		Objects.requireNonNull(billingInfo(), ErrorMessages.Orders.orderCannotBePlacedException(this.id()));
+		Objects.requireNonNull(paymentMethod(), ErrorMessages.Orders.orderCannotBePlacedException(this.id()));
+		Objects.requireNonNull(expectedDeliveryDate(), ErrorMessages.Orders.orderCannotBePlacedException(this.id()));
+		Objects.requireNonNull(items(), ErrorMessages.Orders.orderCannotBePlacedException(this.id()));
+
+		if (items.isEmpty()) throw new OrderCannotBePlacedException(this.id());
+
+		this.setPlacedAt(OffsetDateTime.now());
 		this.changeStatus(OrderStatus.PLACED);
 	}
 
@@ -106,6 +119,26 @@ public class Order {
 	}
 	public boolean isCanceled() {
 		return OrderStatus.PLACED.equals(this.status());
+	}
+
+	public void changePaymentMethod(@NonNull PaymentMethod paymentMethod) {
+		this.setPaymentMethod(paymentMethod);
+	}
+
+	public void changeBillingInfo(@NonNull BillingInfo billingInfo) {
+		this.setBillingInfo(billingInfo);
+	}
+
+	public void changeShippingInfo(@NonNull ShippingInfo shippingInfo, @NonNull Money shippingCost, @NonNull LocalDate expectedDeliveryDate) {
+		this.setShippingInfo(shippingInfo);
+
+		if (expectedDeliveryDate.isBefore(LocalDate.now())) {
+			throw new InvalidShippingDeliveryDateException(this.id(), expectedDeliveryDate);
+		}
+
+		this.setShippingCost(shippingCost);
+		this.setExpectedDeliveryDate(expectedDeliveryDate);
+		this.recalculateTotals();
 	}
 
 	public BillingInfo billingInfo() {

@@ -18,14 +18,14 @@ class ProductNameTest {
     @Test
     void shouldThrowExceptionWhenValueIsNull() {
         NullPointerException exception = assertThrows(NullPointerException.class, () -> new ProductName(null));
-        Assertions.assertEquals(ErrorMessages.Validation.fieldIsNullMessage("Product name"), exception.getMessage());
+        Assertions.assertEquals(ErrorMessages.Fields.fieldIsNullMessage("Product name"), exception.getMessage());
     }
 
     @Test
     void shouldThrowExceptionWhenValueIsBlank() {
         String invalidName = "";
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> new ProductName(invalidName));
-        Assertions.assertEquals(ErrorMessages.Validation.fieldIsNullMessage("Product name"), exception.getMessage());
+        Assertions.assertEquals(ErrorMessages.Fields.fieldIsNullMessage("Product name"), exception.getMessage());
     }
 
     @Test

@@ -7,8 +7,8 @@ import java.util.Objects;
 
 public record ProductName(String value) {
 	public ProductName {
-		Objects.requireNonNull(value, ErrorMessages.Validation.fieldIsNullMessage("Product name"));
-		FieldValidator.requireNonBlank(value, ErrorMessages.Validation.fieldIsNullMessage("Product name"));
+		Objects.requireNonNull(value, ErrorMessages.Fields.fieldIsNullMessage("Product name"));
+		FieldValidator.requireNonBlank(value, ErrorMessages.Fields.fieldIsNullMessage("Product name"));
 	}
 
 	@Override

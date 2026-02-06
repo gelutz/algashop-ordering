@@ -2,6 +2,7 @@ package com.lutz.algashop.ordering.domain.entity;
 
 import com.lutz.algashop.ordering.domain.entity.customer.vo.*;
 import com.lutz.algashop.ordering.domain.exception.ErrorMessages;
+import com.lutz.algashop.ordering.domain.exception.InvalidShippingDeliveryDateException;
 import com.lutz.algashop.ordering.domain.exception.OrderStatusCannotBeChangedException;
 import com.lutz.algashop.ordering.domain.vo.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +18,6 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SuppressWarnings("DataFlowIssue")
 class OrderTest {
 
     private CustomerId createValidCustomerId() {
@@ -341,24 +341,70 @@ class OrderTest {
     @Nested
     @DisplayName("Order status tests")
     class OrderStatusTests {
+        private Order sut;
+
+        @BeforeEach
+        void setup() {
+            sut = Order.draft(createValidCustomerId());
+        }
 
         @Test
         void givenDraftOrderPlaceShouldSetOrderAsPlaced() {
-            Order order = Order.draft(createValidCustomerId());
-            order.place();
+            sut.place();
 
-            assertEquals(true, order.isPlaced());
+	        assertTrue(sut.isPlaced());
         }
 
         @Test
         void givenPlacedOrderPlaceShouldThrowOrderStatusCannotBeChangedException() {
-            Order order = Order.draft(createValidCustomerId());
-            order.place();
+            sut.place();
 
             OrderStatusCannotBeChangedException exception =
-                    assertThrows(OrderStatusCannotBeChangedException.class, order::place);
+                    assertThrows(OrderStatusCannotBeChangedException.class, sut::place);
 
-            assertEquals(exception.getMessage(), ErrorMessages.orderStatusCannotBeChanged(order.id(), OrderStatus.PLACED, OrderStatus.PLACED));
+            assertEquals(exception.getMessage(), ErrorMessages.Orders.orderStatusCannotBeChanged(sut.id(), OrderStatus.PLACED, OrderStatus.PLACED));
+        }
+    }
+
+    @Nested
+    @DisplayName("Order#changeShippingInfo tests")
+    class ChangeShippingInfoTests {
+        private Order sut;
+        private final ShippingInfo shippingInfo = createValidShippingInfo();
+        private final Money shippingCost = new Money(new BigDecimal("10.00"));
+        private final LocalDate expectedDeliveryDate = LocalDate.now().minusDays(1);
+
+        @BeforeEach
+        void setup() {
+            sut = Order.draft(createValidCustomerId());
+        }
+
+        @Test
+        void givenPastExpectedDeliveryDateChangeShippingInfoShouldThrowInvalidShippingDeliveryDateException() {
+            InvalidShippingDeliveryDateException exception =
+                    assertThrows(InvalidShippingDeliveryDateException.class,
+                            () -> sut.changeShippingInfo(shippingInfo, shippingCost, expectedDeliveryDate));
+
+            assertEquals(
+                    ErrorMessages.Orders.orderExpectedDeliveryDateIsInvalid(sut.id(), expectedDeliveryDate),
+                    exception.getMessage()
+            );
+        }
+
+        @Test
+        void givenValidShippingInfoChangeShippingInfoShouldUpdateFieldsAndRecalculateTotals() {
+            Order order = Order.draft(createValidCustomerId());
+            ShippingInfo shippingInfo = createValidShippingInfo();
+            Money shippingCost = new Money(new BigDecimal("10.00"));
+            LocalDate expectedDeliveryDate = LocalDate.now().plusDays(3);
+
+            order.changeShippingInfo(shippingInfo, shippingCost, expectedDeliveryDate);
+
+            assertEquals(shippingInfo, order.shippingInfo());
+            assertEquals(shippingCost, order.shippingCost());
+            assertEquals(expectedDeliveryDate, order.expectedDeliveryDate());
+            assertEquals(shippingCost, order.totalAmount());
+            assertEquals(Quantity.ZERO, order.itemsAmount());
         }
     }
 }

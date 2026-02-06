@@ -8,10 +8,10 @@ import java.util.Objects;
 
 public record Birthdate(LocalDate date) {
 	public Birthdate {
-		Objects.requireNonNull(date, ErrorMessages.Validation.BIRTHDATE_IS_NULL);
+		Objects.requireNonNull(date, ErrorMessages.Fields.BIRTHDATE_IS_NULL);
 
 		if (date.isAfter(LocalDate.now())) {
-			throw new IllegalArgumentException(ErrorMessages.Validation.BIRTHDATE_IS_IN_FUTURE);
+			throw new IllegalArgumentException(ErrorMessages.Fields.BIRTHDATE_IS_IN_FUTURE);
 		}
 	}
 

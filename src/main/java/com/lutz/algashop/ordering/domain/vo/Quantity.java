@@ -8,9 +8,9 @@ public record Quantity(Integer value) implements Comparable<Quantity> {
 	public static Quantity ZERO = (new Quantity(0)).clone();
 
 	public Quantity {
-		Objects.requireNonNull(value, ErrorMessages.Validation.VALUE_IS_NULL);
+		Objects.requireNonNull(value, ErrorMessages.Fields.VALUE_IS_NULL);
 		if (value < 0) {
-			throw new IllegalArgumentException(ErrorMessages.Validation.VALUE_IS_NEGATIVE);
+			throw new IllegalArgumentException(ErrorMessages.Fields.VALUE_IS_NEGATIVE);
 		}
 	}
 

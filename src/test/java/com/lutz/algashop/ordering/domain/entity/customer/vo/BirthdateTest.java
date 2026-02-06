@@ -1,6 +1,5 @@
 package com.lutz.algashop.ordering.domain.entity.customer.vo;
 
-import com.lutz.algashop.ordering.domain.entity.customer.vo.Birthdate;
 import com.lutz.algashop.ordering.domain.exception.ErrorMessages;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -12,7 +11,7 @@ class BirthdateTest {
 	@Test
 	void givenNullDateShouldThrowException() {
 		NullPointerException exception = Assertions.assertThrows(NullPointerException.class, () -> new Birthdate(null));
-		Assertions.assertEquals(ErrorMessages.Validation.BIRTHDATE_IS_NULL, exception.getMessage());
+		Assertions.assertEquals(ErrorMessages.Fields.BIRTHDATE_IS_NULL, exception.getMessage());
 	}
 
 	@Test
@@ -20,7 +19,7 @@ class BirthdateTest {
 		IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class,
 				() -> new Birthdate(LocalDate.now().plusYears(1)));
 
-		Assertions.assertEquals(ErrorMessages.Validation.BIRTHDATE_IS_IN_FUTURE, exception.getMessage());
+		Assertions.assertEquals(ErrorMessages.Fields.BIRTHDATE_IS_IN_FUTURE, exception.getMessage());
 	}
 
 	@Test

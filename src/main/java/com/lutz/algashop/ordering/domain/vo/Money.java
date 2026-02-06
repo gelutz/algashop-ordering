@@ -13,7 +13,7 @@ public record Money(BigDecimal value) {
 
 	public Money {
 		if (value.compareTo(BigDecimal.ZERO) < 0) {
-			throw new IllegalArgumentException(ErrorMessages.Validation.VALUE_IS_NEGATIVE_OR_ZERO);
+			throw new IllegalArgumentException(ErrorMessages.Fields.VALUE_IS_NEGATIVE_OR_ZERO);
 		}
 		value = value.setScale(2, roundingMode);
 	}
@@ -28,7 +28,7 @@ public record Money(BigDecimal value) {
 
 	public Money multiply(Quantity target) {
 		if (BigDecimal.ONE.compareTo(new BigDecimal(target.value())) > 0) {
-			throw new IllegalArgumentException(ErrorMessages.Validation.VALUE_IS_NEGATIVE);
+			throw new IllegalArgumentException(ErrorMessages.Fields.VALUE_IS_NEGATIVE);
 		}
 		return new Money(this.value().multiply(new BigDecimal(target.value())));
 	}

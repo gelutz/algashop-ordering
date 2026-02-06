@@ -1,7 +1,6 @@
 package com.lutz.algashop.ordering.domain.vo;
 
 import com.lutz.algashop.ordering.domain.exception.ErrorMessages;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,13 +25,13 @@ class QuantityTest {
     @Test
     void shouldThrowExceptionWhenValueIsNull() {
         NullPointerException exception = assertThrows(NullPointerException.class, () -> new Quantity(null));
-        assertEquals(ErrorMessages.Validation.VALUE_IS_NULL, exception.getMessage());
+        assertEquals(ErrorMessages.Fields.VALUE_IS_NULL, exception.getMessage());
     }
 
     @Test
     void shouldThrowExceptionWhenValueIsNegative() {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> new Quantity(-1));
-        assertEquals(ErrorMessages.Validation.VALUE_IS_NEGATIVE, exception.getMessage());
+        assertEquals(ErrorMessages.Fields.VALUE_IS_NEGATIVE, exception.getMessage());
     }
 
     @Test

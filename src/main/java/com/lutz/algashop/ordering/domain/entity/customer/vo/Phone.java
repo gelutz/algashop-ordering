@@ -7,8 +7,8 @@ import java.util.Objects;
 
 public record Phone(String phone) {
 	public Phone {
-		Objects.requireNonNull(phone, ErrorMessages.Validation.PHONE_IS_NULL);
-		FieldValidator.requireNonBlank(phone, ErrorMessages.Validation.PHONE_IS_BLANK);
+		Objects.requireNonNull(phone, ErrorMessages.Fields.PHONE_IS_NULL);
+		FieldValidator.requireNonBlank(phone, ErrorMessages.Fields.PHONE_IS_BLANK);
 	}
 
 	@Override
