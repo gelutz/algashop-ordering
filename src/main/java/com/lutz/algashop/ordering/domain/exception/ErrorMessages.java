@@ -1,8 +1,8 @@
 package com.lutz.algashop.ordering.domain.exception;
 
-import com.lutz.algashop.ordering.domain.entity.OrderStatus;
-import com.lutz.algashop.ordering.domain.vo.OrderId;
-import com.lutz.algashop.ordering.domain.vo.OrderItemId;
+import com.lutz.algashop.ordering.domain.entity.order.OrderStatus;
+import com.lutz.algashop.ordering.domain.entity.order.vo.OrderId;
+import com.lutz.algashop.ordering.domain.entity.order.vo.OrderItemId;
 
 import java.time.LocalDate;
 

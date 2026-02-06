@@ -1,11 +1,11 @@
 package com.lutz.algashop.ordering.domain.entity.builder;
 
-import com.lutz.algashop.ordering.domain.entity.Order;
-import com.lutz.algashop.ordering.domain.entity.OrderItem;
-import com.lutz.algashop.ordering.domain.entity.OrderStatus;
-import com.lutz.algashop.ordering.domain.entity.PaymentMethod;
+import com.lutz.algashop.ordering.domain.entity.order.Order;
+import com.lutz.algashop.ordering.domain.entity.order.OrderItem;
+import com.lutz.algashop.ordering.domain.entity.order.OrderStatus;
+import com.lutz.algashop.ordering.domain.entity.order.PaymentMethod;
 import com.lutz.algashop.ordering.domain.entity.customer.vo.*;
-import com.lutz.algashop.ordering.domain.vo.*;
+import com.lutz.algashop.ordering.domain.entity.order.vo.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

@@ -1,4 +1,4 @@
-package com.lutz.algashop.ordering.domain.vo;
+package com.lutz.algashop.ordering.domain.entity.order.vo;
 
 import com.lutz.algashop.ordering.domain.entity.customer.vo.Address;
 import com.lutz.algashop.ordering.domain.entity.customer.vo.Document;

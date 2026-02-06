@@ -1,5 +1,7 @@
-package com.lutz.algashop.ordering.domain.vo;
+package com.lutz.algashop.ordering.domain.entity.customer.order.vo;
 
+import com.lutz.algashop.ordering.domain.entity.order.vo.Money;
+import com.lutz.algashop.ordering.domain.entity.order.vo.Quantity;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

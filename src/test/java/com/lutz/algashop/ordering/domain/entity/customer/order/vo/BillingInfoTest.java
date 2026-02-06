@@ -1,18 +1,17 @@
-package com.lutz.algashop.ordering.domain.vo;
+package com.lutz.algashop.ordering.domain.entity.customer.order.vo;
 
 import com.lutz.algashop.ordering.domain.entity.customer.vo.*;
+import com.lutz.algashop.ordering.domain.entity.order.vo.BillingInfo;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-// desativa warning sobre passar null para parametros anotados com @NotNull do lombok
-@SuppressWarnings("DataFlowIssue")
-class ShippingInfoTest {
+class BillingInfoTest {
 
     private FullName createValidFullName() {
-        return new FullName("John", "Doe");
+        return new FullName("Jane", "Doe");
     }
 
     private Document createValidDocument() {
@@ -20,58 +19,58 @@ class ShippingInfoTest {
     }
 
     private Phone createValidPhone() {
-        return new Phone("11987654321");
+        return new Phone("21998765432");
     }
 
     private Address createValidAddress() {
-        return new Address("Street", "123", "Neighborhood", "City", "State", "12345-678", new ZipCode("123123"));
+        return new Address("Billing Street", "456", "Billing Neighborhood", "Billing City", "Billing State", "98765-432", new ZipCode("123123123"));
     }
 
     @Test
-    void shouldCreateShippingInfoWithAllValidFields() {
+    void shouldCreateBillingInfoWithAllValidFields() {
         FullName fullName = createValidFullName();
         Document document = createValidDocument();
         Phone phone = createValidPhone();
         Address address = createValidAddress();
 
-        ShippingInfo shippingInfo = ShippingInfo.builder()
-                .fullName(fullName)
-                .document(document)
-                .phone(phone)
-                .address(address)
-                .build();
+        BillingInfo billingInfo = BillingInfo.builder()
+                                             .fullName(fullName)
+                                             .document(document)
+                                             .phone(phone)
+                                             .address(address)
+                                             .build();
 
-        assertNotNull(shippingInfo);
-        assertEquals(fullName, shippingInfo.fullName());
-        assertEquals(document, shippingInfo.document());
-        assertEquals(phone, shippingInfo.phone());
-        assertEquals(address, shippingInfo.address());
+        assertNotNull(billingInfo);
+        assertEquals(fullName, billingInfo.fullName());
+        assertEquals(document, billingInfo.document());
+        assertEquals(phone, billingInfo.phone());
+        assertEquals(address, billingInfo.address());
     }
 
     @Test
     void shouldThrowExceptionWhenRequiredFieldIsNull() {
-        assertThrows(NullPointerException.class, () -> ShippingInfo.builder()
+        assertThrows(NullPointerException.class, () -> BillingInfo.builder()
                 .fullName(null)
                 .document(createValidDocument())
                 .phone(createValidPhone())
                 .address(createValidAddress())
                 .build());
 
-        assertThrows(NullPointerException.class, () -> ShippingInfo.builder()
+        assertThrows(NullPointerException.class, () -> BillingInfo.builder()
                 .fullName(createValidFullName())
                 .document(null)
                 .phone(createValidPhone())
                 .address(createValidAddress())
                 .build());
 
-        assertThrows(NullPointerException.class, () -> ShippingInfo.builder()
+        assertThrows(NullPointerException.class, () -> BillingInfo.builder()
                 .fullName(createValidFullName())
                 .document(createValidDocument())
                 .phone(null)
                 .address(createValidAddress())
                 .build());
 
-        assertThrows(NullPointerException.class, () -> ShippingInfo.builder()
+        assertThrows(NullPointerException.class, () -> BillingInfo.builder()
                 .fullName(createValidFullName())
                 .document(createValidDocument())
                 .phone(createValidPhone())

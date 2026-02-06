@@ -1,6 +1,6 @@
-package com.lutz.algashop.ordering.domain.entity;
+package com.lutz.algashop.ordering.domain.entity.order;
 
-import com.lutz.algashop.ordering.domain.vo.*;
+import com.lutz.algashop.ordering.domain.entity.order.vo.*;
 import lombok.Builder;
 import lombok.NonNull;
 

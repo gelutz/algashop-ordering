@@ -1,6 +1,7 @@
-package com.lutz.algashop.ordering.domain.entity;
+package com.lutz.algashop.ordering.domain.entity.customer.order;
 
-import com.lutz.algashop.ordering.domain.vo.*;
+import com.lutz.algashop.ordering.domain.entity.order.OrderItem;
+import com.lutz.algashop.ordering.domain.entity.order.vo.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -32,14 +33,14 @@ class OrderItemTest {
     @Test
     void existingBuilderShouldCreateOrderItemCorrectly() {
         OrderItem orderItem = OrderItem.existing()
-                .id(orderItemId)
-                .orderId(orderId)
-                .productId(productId)
-                .productName(productName)
-                .price(price)
-                .quantity(quantity)
-                .totalAmount(totalAmount)
-                .build();
+                                       .id(orderItemId)
+                                       .orderId(orderId)
+                                       .productId(productId)
+                                       .productName(productName)
+                                       .price(price)
+                                       .quantity(quantity)
+                                       .totalAmount(totalAmount)
+                                       .build();
 
         assertNotNull(orderItem);
         assertEquals(orderItemId, orderItem.id());

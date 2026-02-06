@@ -1,4 +1,4 @@
-package com.lutz.algashop.ordering.domain.vo;
+package com.lutz.algashop.ordering.domain.entity.order.vo;
 
 import com.lutz.algashop.ordering.domain.exception.ErrorMessages;
 
@@ -15,7 +15,7 @@ public record Quantity(Integer value) implements Comparable<Quantity> {
 	}
 
 
-	protected Quantity clone() {
+	public Quantity clone() {
 		return new Quantity(this.value());
 	}
 

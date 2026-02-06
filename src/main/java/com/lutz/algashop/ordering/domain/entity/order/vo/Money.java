@@ -1,4 +1,4 @@
-package com.lutz.algashop.ordering.domain.vo;
+package com.lutz.algashop.ordering.domain.entity.order.vo;
 
 import com.lutz.algashop.ordering.domain.exception.ErrorMessages;
 import lombok.NonNull;
@@ -42,7 +42,7 @@ public record Money(BigDecimal value) {
 	}
 
 
-	protected Money clone() {
+	public Money clone() {
 		return new Money(this.value());
 	}
 

@@ -1,9 +1,9 @@
 package com.lutz.algashop.ordering.domain.exception.order;
 
-import com.lutz.algashop.ordering.domain.entity.OrderStatus;
+import com.lutz.algashop.ordering.domain.entity.order.OrderStatus;
 import com.lutz.algashop.ordering.domain.exception.DomainException;
 import com.lutz.algashop.ordering.domain.exception.ErrorMessages;
-import com.lutz.algashop.ordering.domain.vo.OrderId;
+import com.lutz.algashop.ordering.domain.entity.order.vo.OrderId;
 
 public class OrderStatusCannotBeChangedException extends DomainException {
 	private final OrderId orderId;

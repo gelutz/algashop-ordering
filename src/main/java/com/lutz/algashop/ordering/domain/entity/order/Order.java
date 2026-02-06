@@ -1,11 +1,11 @@
-package com.lutz.algashop.ordering.domain.entity;
+package com.lutz.algashop.ordering.domain.entity.order;
 
 import com.lutz.algashop.ordering.domain.entity.customer.vo.CustomerId;
+import com.lutz.algashop.ordering.domain.entity.order.vo.*;
 import com.lutz.algashop.ordering.domain.exception.InvalidShippingDeliveryDateException;
 import com.lutz.algashop.ordering.domain.exception.order.OrderCannotBePlacedException;
 import com.lutz.algashop.ordering.domain.exception.order.OrderDoesNotContainOrderItemException;
 import com.lutz.algashop.ordering.domain.exception.order.OrderStatusCannotBeChangedException;
-import com.lutz.algashop.ordering.domain.vo.*;
 import lombok.Builder;
 import lombok.NonNull;
 

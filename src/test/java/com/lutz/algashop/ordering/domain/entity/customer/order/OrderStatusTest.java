@@ -1,5 +1,6 @@
-package com.lutz.algashop.ordering.domain.entity;
+package com.lutz.algashop.ordering.domain.entity.customer.order;
 
+import com.lutz.algashop.ordering.domain.entity.order.OrderStatus;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 

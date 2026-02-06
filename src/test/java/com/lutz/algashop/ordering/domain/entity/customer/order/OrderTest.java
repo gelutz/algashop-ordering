@@ -1,12 +1,16 @@
-package com.lutz.algashop.ordering.domain.entity;
+package com.lutz.algashop.ordering.domain.entity.customer.order;
 
 import com.lutz.algashop.ordering.domain.entity.builder.OrderTestBuilder;
 import com.lutz.algashop.ordering.domain.entity.customer.vo.*;
+import com.lutz.algashop.ordering.domain.entity.order.Order;
+import com.lutz.algashop.ordering.domain.entity.order.OrderItem;
+import com.lutz.algashop.ordering.domain.entity.order.OrderStatus;
+import com.lutz.algashop.ordering.domain.entity.order.PaymentMethod;
+import com.lutz.algashop.ordering.domain.entity.order.vo.*;
 import com.lutz.algashop.ordering.domain.exception.ErrorMessages;
 import com.lutz.algashop.ordering.domain.exception.InvalidShippingDeliveryDateException;
 import com.lutz.algashop.ordering.domain.exception.order.OrderDoesNotContainOrderItemException;
 import com.lutz.algashop.ordering.domain.exception.order.OrderStatusCannotBeChangedException;
-import com.lutz.algashop.ordering.domain.vo.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

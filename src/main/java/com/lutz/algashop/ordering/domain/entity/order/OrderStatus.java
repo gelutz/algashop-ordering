@@ -1,4 +1,4 @@
-package com.lutz.algashop.ordering.domain.entity;
+package com.lutz.algashop.ordering.domain.entity.order;
 
 import java.util.Arrays;
 import java.util.List;

@@ -1,6 +1,6 @@
-package com.lutz.algashop.ordering.domain.vo;
+package com.lutz.algashop.ordering.domain.entity.customer.order.vo;
 
-import com.lutz.algashop.ordering.domain.utils.IdGenerator;
+import com.lutz.algashop.ordering.domain.entity.order.vo.ProductId;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
