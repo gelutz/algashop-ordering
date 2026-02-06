@@ -24,6 +24,15 @@ The core domain entity with the following capabilities:
 - **Loyalty Points**: Accumulate and manage reward points
 - **Notifications**: Control promotional communication preferences
 
+### Order Entity
+Manages the complete order lifecycle from creation to fulfillment:
+- **Draft Creation**: Orders start as drafts for customers to build their cart
+- **Item Management**: Add products with automatic total calculation (items cost + shipping)
+- **Placement**: Validates all required information (shipping info, billing info, payment method, delivery date, and items) before placement
+- **Status Workflow**: Orders progress through states: DRAFT → PLACED → PAID → READY, with the ability to cancel from any state
+- **Shipping Management**: Update shipping details with validation that delivery dates must be in the future
+- **State Validation**: Prevents invalid status transitions (e.g., cannot place an already placed order)
+
 ### Value Objects
 - **CustomerId**: Unique customer identifier
 - **FullName**: Customer name with validation
