@@ -1,5 +1,6 @@
 package com.lutz.algashop.ordering.domain.entity.customer.order;
 
+import com.lutz.algashop.ordering.domain.entity.builder.ProductTestBuilder;
 import com.lutz.algashop.ordering.domain.entity.order.OrderItem;
 import com.lutz.algashop.ordering.domain.entity.order.vo.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -56,9 +57,11 @@ class OrderItemTest {
     void newOrderBuilderShouldCreateOrderItemWithGeneratedIdAndZeroTotalAmount() {
         OrderItem orderItem = OrderItem.newOrderBuilder()
                 .orderId(orderId)
-                .productId(productId)
-                .productName(productName)
-                .price(price)
+                .product(ProductTestBuilder.aProduct()
+                            .productId(productId)
+                            .productName(productName)
+                            .price(price).build()
+                        )
                 .quantity(quantity)
                 .build();
 
@@ -77,41 +80,13 @@ class OrderItemTest {
     void newOrderBuilderShouldThrowExceptionWhenRequiredFieldIsNull() {
         assertThrows(NullPointerException.class, () -> OrderItem.newOrderBuilder()
                 .orderId(null)
-                .productId(productId)
-                .productName(productName)
-                .price(price)
+                .product(ProductTestBuilder.aProduct().build())
                 .quantity(quantity)
                 .build());
 
         assertThrows(NullPointerException.class, () -> OrderItem.newOrderBuilder()
                 .orderId(orderId)
-                .productId(null)
-                .productName(productName)
-                .price(price)
-                .quantity(quantity)
-                .build());
-
-        assertThrows(NullPointerException.class, () -> OrderItem.newOrderBuilder()
-                .orderId(orderId)
-                .productId(productId)
-                .productName(null)
-                .price(price)
-                .quantity(quantity)
-                .build());
-
-        assertThrows(NullPointerException.class, () -> OrderItem.newOrderBuilder()
-                .orderId(orderId)
-                .productId(productId)
-                .productName(productName)
-                .price(null)
-                .quantity(quantity)
-                .build());
-
-        assertThrows(NullPointerException.class, () -> OrderItem.newOrderBuilder()
-                .orderId(orderId)
-                .productId(productId)
-                .productName(productName)
-                .price(price)
+                .product(ProductTestBuilder.aProduct().build())
                 .quantity(null)
                 .build());
     }

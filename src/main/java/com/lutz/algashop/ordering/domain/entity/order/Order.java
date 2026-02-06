@@ -77,14 +77,14 @@ public class Order {
 		);
 	}
 
-	public void addItem(ProductId productId, ProductName productName, Money price, Quantity quantity) {
+	public void addItem(Product product, Quantity quantity) {
 		if (this.items == null) this.setItems(new HashSet<>());
+
+		product.checkOutOfStock();
 
 		this.items.add(OrderItem.newOrderBuilder()
 		                        .orderId(id())
-		                        .productId(productId)
-		                        .productName(productName)
-		                        .price(price)
+			                    .product(product)
 		                        .quantity(quantity)
 		                        .build());
 

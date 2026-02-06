@@ -1,13 +1,12 @@
 package com.lutz.algashop.ordering.domain.entity.builder;
 
+import com.lutz.algashop.ordering.domain.entity.customer.vo.*;
 import com.lutz.algashop.ordering.domain.entity.order.Order;
 import com.lutz.algashop.ordering.domain.entity.order.OrderItem;
 import com.lutz.algashop.ordering.domain.entity.order.OrderStatus;
 import com.lutz.algashop.ordering.domain.entity.order.PaymentMethod;
-import com.lutz.algashop.ordering.domain.entity.customer.vo.*;
 import com.lutz.algashop.ordering.domain.entity.order.vo.*;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.HashSet;
@@ -36,11 +35,10 @@ public class OrderTestBuilder {
 
     public static OrderTestBuilder aFilledDraftOrder() {
         OrderId id = new OrderId();
+
         OrderItem oi = OrderItem.newOrderBuilder()
                                 .orderId(id)
-                                .productId(new ProductId())
-                                .productName(new ProductName("Test Product"))
-                                .price(new Money(new BigDecimal("10.00")))
+                                .product(ProductTestBuilder.aProduct().build())
                                 .quantity(new Quantity(1))
                                 .build();
 

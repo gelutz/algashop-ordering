@@ -3,6 +3,7 @@ package com.lutz.algashop.ordering.domain.exception;
 import com.lutz.algashop.ordering.domain.entity.order.OrderStatus;
 import com.lutz.algashop.ordering.domain.entity.order.vo.OrderId;
 import com.lutz.algashop.ordering.domain.entity.order.vo.OrderItemId;
+import com.lutz.algashop.ordering.domain.entity.order.vo.ProductId;
 
 import java.time.LocalDate;
 
@@ -47,12 +48,22 @@ public class ErrorMessages {
 			                                                 ));
 		}
 
+		public static String orderDoesNotContainOrderItem(OrderId orderId, OrderItemId orderItemId) {
+			return orderMessageWrapper(orderId, String.format("The order does not contain this item: [%s]", orderItemId));
+		}
+
 		private static String orderMessageWrapper(OrderId orderId, String message) {
 			return String.format("Order [%s]: %s", orderId, message);
 		}
+	}
 
-		public static String orderDoesNotContainOrderItem(OrderId orderId, OrderItemId orderItemId) {
-			return orderMessageWrapper(orderId, String.format("The order does not contain this item: [%s]", orderItemId));
+	public static class Products {
+		public static String productOutOfStock(ProductId productId) {
+			return productMessageWrapper(productId, "The product is out of stock.");
+		}
+
+		private static String productMessageWrapper(ProductId productId, String message) {
+			return String.format("Product [%s]: %s", productId, message);
 		}
 	}
 

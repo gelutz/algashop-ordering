@@ -1,6 +1,7 @@
 package com.lutz.algashop.ordering.domain.entity.customer.order;
 
 import com.lutz.algashop.ordering.domain.entity.builder.OrderTestBuilder;
+import com.lutz.algashop.ordering.domain.entity.builder.ProductTestBuilder;
 import com.lutz.algashop.ordering.domain.entity.customer.vo.*;
 import com.lutz.algashop.ordering.domain.entity.order.Order;
 import com.lutz.algashop.ordering.domain.entity.order.OrderItem;
@@ -9,6 +10,7 @@ import com.lutz.algashop.ordering.domain.entity.order.PaymentMethod;
 import com.lutz.algashop.ordering.domain.entity.order.vo.*;
 import com.lutz.algashop.ordering.domain.exception.ErrorMessages;
 import com.lutz.algashop.ordering.domain.exception.InvalidShippingDeliveryDateException;
+import com.lutz.algashop.ordering.domain.exception.ProductOutOfStockException;
 import com.lutz.algashop.ordering.domain.exception.order.OrderDoesNotContainOrderItemException;
 import com.lutz.algashop.ordering.domain.exception.order.OrderStatusCannotBeChangedException;
 import org.junit.jupiter.api.BeforeEach;
@@ -220,7 +222,10 @@ class OrderTest {
         }
 
         private void addItem(BigDecimal price, int quantity) {
-            sut.addItem(productId, productName, new Money(price), new Quantity(quantity));
+            sut.addItem(
+                    new Product(productId, productName, new Money(price), true),
+                    new Quantity(quantity)
+           );
         }
 
         @Test
@@ -244,6 +249,16 @@ class OrderTest {
 
             OrderItem addedItem = sut.items().iterator().next();
             assertEquals(sut.id(), addedItem.orderId());
+        }
+
+        @Test
+        void shouldThrowProductOutOfStockExceptionWhenProductIsOutOfStock() {
+            assertThrows(ProductOutOfStockException.class,
+                    () -> sut.addItem(
+                        new Product(productId, productName, new Money("10"), false),
+                        new Quantity(1))
+                        );
+
         }
     }
 
@@ -296,20 +311,17 @@ class OrderTest {
 
         @Test
         void itemsShouldReturnUnmodifiableSet() {
-            Order order = Order.draft(new CustomerId());
-            order.addItem(new ProductId(), new ProductName("Test Product"), new Money(new BigDecimal("25.00")), new Quantity(2));
+            Order order = OrderTestBuilder.aFilledDraftOrder().build();
 
             Set<OrderItem> items = order.items();
             OrderItem newItem = OrderItem.newOrderBuilder()
                     .orderId(order.id())
-                    .productId(new ProductId())
-                    .productName(new ProductName("Test Product"))
-                    .price(new Money(new BigDecimal("10.00")))
+                    .product(ProductTestBuilder.aProduct().build())
                     .quantity(new Quantity(1))
                     .build();
 
             assertThrows(UnsupportedOperationException.class, () -> items.add(newItem));
-            assertThrows(UnsupportedOperationException.class, () -> items.clear());
+            assertThrows(UnsupportedOperationException.class, items::clear);
         }
     }
 
