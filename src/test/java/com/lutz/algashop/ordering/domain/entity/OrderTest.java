@@ -3,6 +3,7 @@ package com.lutz.algashop.ordering.domain.entity;
 import com.lutz.algashop.ordering.domain.entity.builder.OrderTestBuilder;
 import com.lutz.algashop.ordering.domain.entity.customer.vo.*;
 import com.lutz.algashop.ordering.domain.exception.ErrorMessages;
+import com.lutz.algashop.ordering.domain.exception.InvalidShippingDeliveryDateException;
 import com.lutz.algashop.ordering.domain.exception.OrderStatusCannotBeChangedException;
 import com.lutz.algashop.ordering.domain.vo.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -330,21 +331,60 @@ class OrderTest {
             assertEquals(exception.getMessage(), ErrorMessages.Orders.orderStatusCannotBeChanged(sut.id(), OrderStatus.PLACED, OrderStatus.PLACED));
         }
     }
-//
-//    @Nested
-//    @DisplayName("Order#changeShippingInfo tests")
-//    class ChangeShippingInfoTests {
-//        private Order sut;
-//        private final ShippingInfo shippingInfo = createValidShippingInfo();
-//        private final Money shippingCost = new Money(new BigDecimal("10.00"));
-//        private final LocalDate expectedDeliveryDate = LocalDate.now().minusDays(1);
-//
-//        @BeforeEach
-//        void setup() {
-//            sut = Order.draft(createValidCustomerId());
-//        }
-//
-//            assertEquals(exception.getMessage(), ErrorMessages.orderStatusCannotBeChanged(order.id(), OrderStatus.PLACED, OrderStatus.PLACED));
-//        }
-//    }
+    @Nested
+    @DisplayName("Order#changeShippingInfo tests")
+    class ChangeShippingInfoTests {
+        private Order sut;
+        private ShippingInfo shippingInfo;
+        private Money shippingCost;
+
+        @BeforeEach
+        void setUp() {
+            sut = OrderTestBuilder.anExistingOrder()
+                    .withStatus(OrderStatus.DRAFT)
+                    .withShippingInfo(null)
+                    .withShippingCost(null)
+                    .withExpectedDeliveryDate(null)
+                    .build();
+            shippingInfo = createDefaultShippingInfo();
+            shippingCost = new Money(new BigDecimal("15.00"));
+        }
+
+        private ShippingInfo createDefaultShippingInfo() {
+            return ShippingInfo.builder()
+                    .fullName(new FullName("John", "Doe"))
+                    .document(new Document("12345678901"))
+                    .phone(new Phone("11987654321"))
+                    .address(new Address("Street", "123", "Neighborhood", "City", "State", "12345-678", new ZipCode("12345678")))
+                    .build();
+        }
+
+        @Test
+        @DisplayName("Should update shipping info with valid future delivery date")
+        void shouldUpdateShippingInfoWithValidFutureDeliveryDate() {
+            LocalDate futureDate = LocalDate.now().plusDays(7);
+
+            sut.changeShippingInfo(shippingInfo, shippingCost, futureDate);
+
+            assertEquals(shippingInfo, sut.shippingInfo());
+            assertEquals(shippingCost, sut.shippingCost());
+            assertEquals(futureDate, sut.expectedDeliveryDate());
+        }
+
+        @Test
+        @DisplayName("Should throw InvalidShippingDeliveryDateException when date is in the past")
+        void shouldThrowInvalidShippingDeliveryDateExceptionWhenDateIsInThePast() {
+            LocalDate pastDate = LocalDate.now().minusDays(1);
+
+            InvalidShippingDeliveryDateException exception =
+                    assertThrows(InvalidShippingDeliveryDateException.class, () -> {
+                        sut.changeShippingInfo(shippingInfo, shippingCost, pastDate);
+                    });
+
+            assertEquals(
+                    ErrorMessages.Orders.orderExpectedDeliveryDateIsInvalid(sut.id(), pastDate),
+                    exception.getMessage()
+            );
+        }
+    }
 }
