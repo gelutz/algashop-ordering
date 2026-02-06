@@ -1,5 +1,6 @@
 package com.lutz.algashop.ordering.domain.entity.customer;
 
+import com.lutz.algashop.ordering.domain.entity.builder.CustomerTestBuilder;
 import com.lutz.algashop.ordering.domain.entity.customer.vo.*;
 import com.lutz.algashop.ordering.domain.exception.CustomerArchivedException;
 import org.junit.jupiter.api.*;
@@ -7,34 +8,15 @@ import org.junit.jupiter.api.*;
 import java.time.LocalDate;
 
 public class CustomerTest {
-	Email validEmailStub = new Email("valid@email.com");
-	ZipCode validZipCode = new ZipCode("123123");
-	Address validAddress = Address.builder()
-	                              .street("This street")
-	                              .number("102")
-	                              .complement("near the thing")
-	                              .neighborhood("that one")
-	                              .city("Brooklyn")
-	                              .state("New York")
-	                              .zipCode(validZipCode)
-	                              .build();
-
 	private Customer sut;
-	private final Customer.NewCustomerBuilder newCustomerBuilder = Customer.newCustomerBuilder()
-	                                                                       .fullName(new FullName("John", "Doe"))
-	                                                                       .birthDate(new Birthdate(LocalDate.now().minusYears(10)))
-	                                                                       .email(validEmailStub)
-	                                                                       .phone(new Phone("123123123"))
-	                                                                       .document(new Document("123123123"))
-	                                                                       .address(validAddress)
-	                                                                       .promotionNotificationAllowed(false);
+	private final Email validEmailStub = new Email("valid@email.com");
 
 	@Nested
 	@DisplayName("Customer#archive tests")
 	class ArchiveTests {
 		@BeforeEach
 		void setup() {
-			sut = newCustomerBuilder.build();
+			sut = CustomerTestBuilder.aNewCustomer().build();
 		}
 
 		@Test
@@ -75,7 +57,7 @@ public class CustomerTest {
 	class AddLoyaltyPointsTests {
 		@BeforeEach
 		void setup() {
-			sut = newCustomerBuilder.build();
+			sut = CustomerTestBuilder.aNewCustomer().build();
 		}
 
 		@Test
