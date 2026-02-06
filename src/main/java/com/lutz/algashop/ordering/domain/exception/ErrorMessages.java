@@ -2,6 +2,7 @@ package com.lutz.algashop.ordering.domain.exception;
 
 import com.lutz.algashop.ordering.domain.entity.OrderStatus;
 import com.lutz.algashop.ordering.domain.vo.OrderId;
+import com.lutz.algashop.ordering.domain.vo.OrderItemId;
 
 import java.time.LocalDate;
 
@@ -33,7 +34,7 @@ public class ErrorMessages {
 	}
 
 	public static class Orders {
-		public static String orderCannotBePlacedException(OrderId orderId, String reason) {
+		public static String orderCannotBePlaced(OrderId orderId, String reason) {
 			return orderMessageWrapper(orderId, String.format("The order could not be placed. %s", reason));
 		}
 
@@ -48,6 +49,10 @@ public class ErrorMessages {
 
 		private static String orderMessageWrapper(OrderId orderId, String message) {
 			return String.format("Order [%s]: %s", orderId, message);
+		}
+
+		public static String orderDoesNotContainOrderItem(OrderId orderId, OrderItemId orderItemId) {
+			return orderMessageWrapper(orderId, String.format("The order does not contain this item: [%s]", orderItemId));
 		}
 	}
 

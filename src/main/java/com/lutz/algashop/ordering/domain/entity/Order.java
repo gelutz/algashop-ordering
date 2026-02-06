@@ -2,8 +2,9 @@ package com.lutz.algashop.ordering.domain.entity;
 
 import com.lutz.algashop.ordering.domain.entity.customer.vo.CustomerId;
 import com.lutz.algashop.ordering.domain.exception.InvalidShippingDeliveryDateException;
-import com.lutz.algashop.ordering.domain.exception.OrderCannotBePlacedException;
-import com.lutz.algashop.ordering.domain.exception.OrderStatusCannotBeChangedException;
+import com.lutz.algashop.ordering.domain.exception.order.OrderCannotBePlacedException;
+import com.lutz.algashop.ordering.domain.exception.order.OrderDoesNotContainOrderItemException;
+import com.lutz.algashop.ordering.domain.exception.order.OrderStatusCannotBeChangedException;
 import com.lutz.algashop.ordering.domain.vo.*;
 import lombok.Builder;
 import lombok.NonNull;
@@ -146,6 +147,15 @@ public class Order {
 		this.recalculateTotals();
 	}
 
+	public void changeItemQuantity(OrderItemId orderItemId, Quantity quantity) {
+
+		OrderItem orderItem = findOrderItem(orderItemId);
+
+		orderItem.changeQuantity(quantity);
+
+		this.recalculateTotals();
+	}
+
 	public BillingInfo billingInfo() {
 		return billingInfo;
 	}
@@ -206,6 +216,43 @@ public class Order {
 		return Collections.unmodifiableSet(this.items);
 	}
 
+
+
+	private OrderItem findOrderItem(OrderItemId orderItemId) {
+		return items()
+				.stream()
+				.filter(i -> i.id() == orderItemId)
+				.findFirst()
+				.orElseThrow(() -> new OrderDoesNotContainOrderItemException(this.id(), orderItemId));
+	}
+
+	private void recalculateTotals() {
+		BigDecimal totalItemsCost = this.items()
+		                                .stream()
+		                                .map(i -> i.totalAmount().value())
+		                                .reduce(BigDecimal.ZERO, (BigDecimal::add));
+
+		Integer itemsQuantitySum = this.items()
+		                               .stream()
+		                               .map(i -> i.quantity().value())
+		                               .reduce(0, Integer::sum);
+
+		BigDecimal shippingCost = this.shippingCost() == null ? BigDecimal.ZERO : this.shippingCost().value();
+		BigDecimal totalAmount = totalItemsCost.add(shippingCost);
+
+		this.setTotalAmount(new Money(totalAmount));
+		this.setItemsAmount(new Quantity(itemsQuantitySum));
+	}
+
+	private void changeStatus(@NonNull OrderStatus orderStatus) {
+		if (this.status().cannotChangeTo(orderStatus)) {
+			throw new OrderStatusCannotBeChangedException(this.id(), this.status(), orderStatus);
+		}
+
+		this.setStatus(orderStatus);
+	}
+
+	/** SETTERS */
 	private void setId(@NonNull OrderId id) {
 		this.id = id;
 	}
@@ -277,30 +324,5 @@ public class Order {
 	@Override
 	public int hashCode() {
 		return Objects.hashCode(id);
-	}
-
-	private void recalculateTotals() {
-		BigDecimal totalItemsCost = this.items()
-		                                .stream()
-		                                .map(i -> i.totalAmount().value())
-		                                .reduce(BigDecimal.ZERO, (BigDecimal::add));
-
-		Integer itemsQuantitySum = this.items()
-		                               .stream()
-		                               .map(i -> i.quantity().value())
-		                               .reduce(0, Integer::sum);
-
-		BigDecimal shippingCost = this.shippingCost() == null ? BigDecimal.ZERO : this.shippingCost().value();
-		BigDecimal totalAmount = totalItemsCost.add(shippingCost);
-
-		this.setTotalAmount(new Money(totalAmount));
-		this.setItemsAmount(new Quantity(itemsQuantitySum));
-	}
-	private void changeStatus(@NonNull OrderStatus orderStatus) {
-		if (this.status().cannotChangeTo(orderStatus)) {
-			throw new OrderStatusCannotBeChangedException(this.id(), this.status(), orderStatus);
-		}
-
-		this.setStatus(orderStatus);
 	}
 }

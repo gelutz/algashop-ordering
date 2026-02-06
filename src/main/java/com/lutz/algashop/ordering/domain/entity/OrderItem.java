@@ -100,4 +100,14 @@ public class OrderItem {
 	private void recalculateTotals() {
 		this.setTotalAmount(this.price().multiply(this.quantity()));
 	}
+
+
+	/**
+	 * This method os package-private
+	 * @param quantity
+	 */
+	void changeQuantity(@NonNull Quantity quantity) {
+		this.setQuantity(quantity);
+		this.recalculateTotals();
+	}
 }
