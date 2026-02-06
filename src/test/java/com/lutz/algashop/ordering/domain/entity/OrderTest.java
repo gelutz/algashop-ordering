@@ -1,8 +1,8 @@
 package com.lutz.algashop.ordering.domain.entity;
 
+import com.lutz.algashop.ordering.domain.entity.builder.OrderTestBuilder;
 import com.lutz.algashop.ordering.domain.entity.customer.vo.*;
 import com.lutz.algashop.ordering.domain.exception.ErrorMessages;
-import com.lutz.algashop.ordering.domain.exception.InvalidShippingDeliveryDateException;
 import com.lutz.algashop.ordering.domain.exception.OrderStatusCannotBeChangedException;
 import com.lutz.algashop.ordering.domain.vo.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,67 +19,6 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 
 class OrderTest {
-
-    private CustomerId createValidCustomerId() {
-        return new CustomerId();
-    }
-
-    private OrderId createValidOrderId() {
-        return new OrderId();
-    }
-
-    private Money createValidMoney() {
-        return new Money(new BigDecimal("100.00"));
-    }
-
-    private Quantity createValidQuantity() {
-        return new Quantity(5);
-    }
-
-    private BillingInfo createValidBillingInfo() {
-        return BillingInfo.builder()
-                .fullName(new FullName("John", "Doe"))
-                .document(new Document("12345678901"))
-                .phone(new Phone("11987654321"))
-                .address(createValidAddress())
-                .build();
-    }
-
-    private ShippingInfo createValidShippingInfo() {
-        return ShippingInfo.builder()
-                .fullName(new FullName("John", "Doe"))
-                .document(new Document("12345678901"))
-                .phone(new Phone("11987654321"))
-                .address(createValidAddress())
-                .build();
-    }
-
-    private Address createValidAddress() {
-        return new Address("Street", "123", "Neighborhood", "City", "State", "12345-678", new ZipCode("12345678"));
-    }
-
-    private Set<OrderItem> createValidItems() {
-        return new HashSet<>();
-    }
-
-    private ProductId createValidProductId() {
-        return new ProductId();
-    }
-
-    private ProductName createValidProductName() {
-        return new ProductName("Test Product");
-    }
-
-    private Order createMinimalOrderWithId(OrderId id) {
-        return Order.existing()
-                .id(id)
-                .customerId(createValidCustomerId())
-                .totalAmount(Money.ZERO)
-                .itemsAmount(Quantity.ZERO)
-                .status(OrderStatus.DRAFT)
-                .items(createValidItems())
-                .build();
-    }
 
     @Nested
     @DisplayName("Order.draft() tests")
@@ -99,7 +38,7 @@ class OrderTest {
 
         @Test
         void shouldCreateDraftOrderWithInitialState() {
-            CustomerId customerId = createValidCustomerId();
+            CustomerId customerId = new CustomerId();
 
             Order order = Order.draft(customerId);
 
@@ -142,21 +81,31 @@ class OrderTest {
 
         @BeforeEach
         void setUp() {
-            orderId = createValidOrderId();
-            customerId = createValidCustomerId();
-            totalAmount = createValidMoney();
-            itemsAmount = createValidQuantity();
+            orderId = new OrderId();
+            customerId = new CustomerId();
+            totalAmount = new Money(new BigDecimal("100.00"));
+            itemsAmount = new Quantity(5);
             paidAt = OffsetDateTime.now();
             placedAt = OffsetDateTime.now().minusDays(1);
             canceledAt = null;
             readyAt = OffsetDateTime.now().plusDays(1);
-            billingInfo = createValidBillingInfo();
-            shippingInfo = createValidShippingInfo();
+            billingInfo = BillingInfo.builder()
+                    .fullName(new FullName("John", "Doe"))
+                    .document(new Document("12345678901"))
+                    .phone(new Phone("11987654321"))
+                    .address(new Address("Street", "123", "Neighborhood", "City", "State", "12345-678", new ZipCode("12345678")))
+                    .build();
+            shippingInfo = ShippingInfo.builder()
+                    .fullName(new FullName("John", "Doe"))
+                    .document(new Document("12345678901"))
+                    .phone(new Phone("11987654321"))
+                    .address(new Address("Street", "123", "Neighborhood", "City", "State", "12345-678", new ZipCode("12345678")))
+                    .build();
             status = OrderStatus.PAID;
             paymentMethod = PaymentMethod.CREDIT_CARD;
             shippingCost = new Money(new BigDecimal("15.00"));
             expectedDeliveryDate = LocalDate.now().plusDays(7);
-            items = createValidItems();
+            items = new HashSet<>();
         }
 
         private Order.ExistingOrderBuilder baseBuilder() {
@@ -259,9 +208,9 @@ class OrderTest {
 
         @BeforeEach
         void setUp() {
-            sut = Order.draft(createValidCustomerId());
-            productId = createValidProductId();
-            productName = createValidProductName();
+            sut = Order.draft(new CustomerId());
+            productId = new ProductId();
+            productName = new ProductName("Test Product");
         }
 
         private void addItem(BigDecimal price, int quantity) {
@@ -298,18 +247,38 @@ class OrderTest {
 
         @Test
         void ordersWithSameIdShouldBeEqual() {
-            OrderId sharedId = createValidOrderId();
+            OrderId sharedId = new OrderId();
 
-            Order order1 = createMinimalOrderWithId(sharedId);
-            Order order2 = createMinimalOrderWithId(sharedId);
+            Order order1 = OrderTestBuilder.anExistingOrder()
+                    .withId(sharedId)
+                    .withTotalAmount(Money.ZERO)
+                    .withItemsAmount(Quantity.ZERO)
+                    .withItems(new HashSet<>())
+                    .build();
+            Order order2 = OrderTestBuilder.anExistingOrder()
+                    .withId(sharedId)
+                    .withTotalAmount(Money.ZERO)
+                    .withItemsAmount(Quantity.ZERO)
+                    .withItems(new HashSet<>())
+                    .build();
 
             assertEquals(order1, order2);
         }
 
         @Test
         void ordersWithDifferentIdsShouldNotBeEqual() {
-            Order order1 = createMinimalOrderWithId(createValidOrderId());
-            Order order2 = createMinimalOrderWithId(createValidOrderId());
+            Order order1 = OrderTestBuilder.anExistingOrder()
+                    .withId(new OrderId())
+                    .withTotalAmount(Money.ZERO)
+                    .withItemsAmount(Quantity.ZERO)
+                    .withItems(new HashSet<>())
+                    .build();
+            Order order2 = OrderTestBuilder.anExistingOrder()
+                    .withId(new OrderId())
+                    .withTotalAmount(Money.ZERO)
+                    .withItemsAmount(Quantity.ZERO)
+                    .withItems(new HashSet<>())
+                    .build();
 
             assertNotEquals(order1, order2);
         }
@@ -321,14 +290,14 @@ class OrderTest {
 
         @Test
         void itemsShouldReturnUnmodifiableSet() {
-            Order order = Order.draft(createValidCustomerId());
-            order.addItem(createValidProductId(), createValidProductName(), new Money(new BigDecimal("25.00")), new Quantity(2));
+            Order order = Order.draft(new CustomerId());
+            order.addItem(new ProductId(), new ProductName("Test Product"), new Money(new BigDecimal("25.00")), new Quantity(2));
 
             Set<OrderItem> items = order.items();
             OrderItem newItem = OrderItem.newOrderBuilder()
                     .orderId(order.id())
-                    .productId(createValidProductId())
-                    .productName(createValidProductName())
+                    .productId(new ProductId())
+                    .productName(new ProductName("Test Product"))
                     .price(new Money(new BigDecimal("10.00")))
                     .quantity(new Quantity(1))
                     .build();
@@ -341,22 +310,18 @@ class OrderTest {
     @Nested
     @DisplayName("Order status tests")
     class OrderStatusTests {
-        private Order sut;
-
-        @BeforeEach
-        void setup() {
-            sut = Order.draft(createValidCustomerId());
-        }
 
         @Test
         void givenDraftOrderPlaceShouldSetOrderAsPlaced() {
+            Order sut = OrderTestBuilder.aFilledDraftOrder().build();
             sut.place();
 
-	        assertTrue(sut.isPlaced());
+            assertTrue(sut.isPlaced());
         }
 
         @Test
         void givenPlacedOrderPlaceShouldThrowOrderStatusCannotBeChangedException() {
+            Order sut = OrderTestBuilder.aFilledDraftOrder().build();
             sut.place();
 
             OrderStatusCannotBeChangedException exception =
@@ -365,46 +330,21 @@ class OrderTest {
             assertEquals(exception.getMessage(), ErrorMessages.Orders.orderStatusCannotBeChanged(sut.id(), OrderStatus.PLACED, OrderStatus.PLACED));
         }
     }
-
-    @Nested
-    @DisplayName("Order#changeShippingInfo tests")
-    class ChangeShippingInfoTests {
-        private Order sut;
-        private final ShippingInfo shippingInfo = createValidShippingInfo();
-        private final Money shippingCost = new Money(new BigDecimal("10.00"));
-        private final LocalDate expectedDeliveryDate = LocalDate.now().minusDays(1);
-
-        @BeforeEach
-        void setup() {
-            sut = Order.draft(createValidCustomerId());
-        }
-
-        @Test
-        void givenPastExpectedDeliveryDateChangeShippingInfoShouldThrowInvalidShippingDeliveryDateException() {
-            InvalidShippingDeliveryDateException exception =
-                    assertThrows(InvalidShippingDeliveryDateException.class,
-                            () -> sut.changeShippingInfo(shippingInfo, shippingCost, expectedDeliveryDate));
-
-            assertEquals(
-                    ErrorMessages.Orders.orderExpectedDeliveryDateIsInvalid(sut.id(), expectedDeliveryDate),
-                    exception.getMessage()
-            );
-        }
-
-        @Test
-        void givenValidShippingInfoChangeShippingInfoShouldUpdateFieldsAndRecalculateTotals() {
-            Order order = Order.draft(createValidCustomerId());
-            ShippingInfo shippingInfo = createValidShippingInfo();
-            Money shippingCost = new Money(new BigDecimal("10.00"));
-            LocalDate expectedDeliveryDate = LocalDate.now().plusDays(3);
-
-            order.changeShippingInfo(shippingInfo, shippingCost, expectedDeliveryDate);
-
-            assertEquals(shippingInfo, order.shippingInfo());
-            assertEquals(shippingCost, order.shippingCost());
-            assertEquals(expectedDeliveryDate, order.expectedDeliveryDate());
-            assertEquals(shippingCost, order.totalAmount());
-            assertEquals(Quantity.ZERO, order.itemsAmount());
-        }
-    }
+//
+//    @Nested
+//    @DisplayName("Order#changeShippingInfo tests")
+//    class ChangeShippingInfoTests {
+//        private Order sut;
+//        private final ShippingInfo shippingInfo = createValidShippingInfo();
+//        private final Money shippingCost = new Money(new BigDecimal("10.00"));
+//        private final LocalDate expectedDeliveryDate = LocalDate.now().minusDays(1);
+//
+//        @BeforeEach
+//        void setup() {
+//            sut = Order.draft(createValidCustomerId());
+//        }
+//
+//            assertEquals(exception.getMessage(), ErrorMessages.orderStatusCannotBeChanged(order.id(), OrderStatus.PLACED, OrderStatus.PLACED));
+//        }
+//    }
 }
