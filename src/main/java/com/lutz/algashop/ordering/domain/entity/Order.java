@@ -1,7 +1,6 @@
 package com.lutz.algashop.ordering.domain.entity;
 
 import com.lutz.algashop.ordering.domain.entity.customer.vo.CustomerId;
-import com.lutz.algashop.ordering.domain.exception.ErrorMessages;
 import com.lutz.algashop.ordering.domain.exception.InvalidShippingDeliveryDateException;
 import com.lutz.algashop.ordering.domain.exception.OrderCannotBePlacedException;
 import com.lutz.algashop.ordering.domain.exception.OrderStatusCannotBeChangedException;
@@ -92,14 +91,20 @@ public class Order {
 	}
 
 	public void place() {
-		Objects.requireNonNull(shippingInfo(), ErrorMessages.Orders.orderCannotBePlacedException(this.id()));
-		Objects.requireNonNull(shippingCost(), ErrorMessages.Orders.orderCannotBePlacedException(this.id()));
-		Objects.requireNonNull(billingInfo(), ErrorMessages.Orders.orderCannotBePlacedException(this.id()));
-		Objects.requireNonNull(paymentMethod(), ErrorMessages.Orders.orderCannotBePlacedException(this.id()));
-		Objects.requireNonNull(expectedDeliveryDate(), ErrorMessages.Orders.orderCannotBePlacedException(this.id()));
-		Objects.requireNonNull(items(), ErrorMessages.Orders.orderCannotBePlacedException(this.id()));
-
-		if (items.isEmpty()) throw new OrderCannotBePlacedException(this.id());
+		if (shippingInfo() == null)
+			throw OrderCannotBePlacedException.shippingInfoIsNull(this.id());
+		if (shippingCost() == null)
+			throw OrderCannotBePlacedException.shippingCostIsNull(this.id());
+		if (billingInfo() == null)
+			throw OrderCannotBePlacedException.billingInfoIsNull(this.id());
+		if (paymentMethod() == null)
+			throw OrderCannotBePlacedException.paymentMethodIsNull(this.id());
+		if (expectedDeliveryDate() == null)
+			throw OrderCannotBePlacedException.expectedDeliveryDateIsNull(this.id());
+		if (items() == null)
+			throw OrderCannotBePlacedException.itemsIsNull(this.id());
+		if (items.isEmpty())
+			throw OrderCannotBePlacedException.emptyItems(this.id());
 
 		this.setPlacedAt(OffsetDateTime.now());
 		this.changeStatus(OrderStatus.PLACED);

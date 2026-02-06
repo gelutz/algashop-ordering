@@ -33,8 +33,8 @@ public class ErrorMessages {
 	}
 
 	public static class Orders {
-		public static String orderCannotBePlacedException(OrderId orderId) {
-			return orderMessageWrapper(orderId, "The order could not be placed.");
+		public static String orderCannotBePlacedException(OrderId orderId, String reason) {
+			return orderMessageWrapper(orderId, String.format("The order could not be placed. %s", reason));
 		}
 
 		public static String orderExpectedDeliveryDateIsInvalid(OrderId orderId, LocalDate expectedDeliveryDate) {
