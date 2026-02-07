@@ -18,11 +18,6 @@ public class OrderCannotBePlacedException extends DomainException {
 				ErrorMessages.Orders.orderCannotBePlaced(orderId, "Field shippingInfo cannot be null."));
 	}
 
-	public static OrderCannotBePlacedException shippingCostIsNull(OrderId orderId) {
-		return new OrderCannotBePlacedException(orderId,
-				ErrorMessages.Orders.orderCannotBePlaced(orderId, "Field shippingCost cannot be null."));
-	}
-
 	public static OrderCannotBePlacedException billingInfoIsNull(OrderId orderId) {
 		return new OrderCannotBePlacedException(orderId,
 				ErrorMessages.Orders.orderCannotBePlaced(orderId, "Field billingInfo cannot be null."));
@@ -31,11 +26,6 @@ public class OrderCannotBePlacedException extends DomainException {
 	public static OrderCannotBePlacedException paymentMethodIsNull(OrderId orderId) {
 		return new OrderCannotBePlacedException(orderId,
 				ErrorMessages.Orders.orderCannotBePlaced(orderId, "Field paymentMethod cannot be null."));
-	}
-
-	public static OrderCannotBePlacedException expectedDeliveryDateIsNull(OrderId orderId) {
-		return new OrderCannotBePlacedException(orderId,
-				ErrorMessages.Orders.orderCannotBePlaced(orderId, "Field expectedDeliveryDate cannot be null."));
 	}
 
 	public static OrderCannotBePlacedException itemsIsNull(OrderId orderId) {

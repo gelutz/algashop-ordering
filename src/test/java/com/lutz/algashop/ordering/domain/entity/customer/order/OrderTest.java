@@ -38,10 +38,8 @@ class OrderTest {
             assertNull(order.canceledAt());
             assertNull(order.readyAt());
             assertNull(order.billingInfo());
-            assertNull(order.shippingInfo());
+            assertNull(order.shipping());
             assertNull(order.paymentMethod());
-            assertNull(order.shippingCost());
-            assertNull(order.expectedDeliveryDate());
         }
 
         @Test
@@ -80,7 +78,7 @@ class OrderTest {
         private OffsetDateTime canceledAt;
         private OffsetDateTime readyAt;
         private BillingInfo billingInfo;
-        private ShippingInfo shippingInfo;
+        private Shipping shipping;
         private OrderStatus status;
         private PaymentMethod paymentMethod;
         private Money shippingCost;
@@ -103,12 +101,7 @@ class OrderTest {
                     .phone(new Phone("11987654321"))
                     .address(new Address("Street", "123", "Neighborhood", "City", "State", "12345-678", new ZipCode("12345678")))
                     .build();
-            shippingInfo = ShippingInfo.builder()
-                    .fullName(new FullName("John", "Doe"))
-                    .document(new Document("12345678901"))
-                    .phone(new Phone("11987654321"))
-                    .address(new Address("Street", "123", "Neighborhood", "City", "State", "12345-678", new ZipCode("12345678")))
-                    .build();
+            shipping = OrderTestBuilder.aShippingObject().build();
             status = OrderStatus.PAID;
             paymentMethod = PaymentMethod.CREDIT_CARD;
             shippingCost = new Money(new BigDecimal("15.00"));
@@ -127,7 +120,7 @@ class OrderTest {
                     .canceledAt(canceledAt)
                     .readyAt(readyAt)
                     .billingInfo(billingInfo)
-                    .shippingInfo(shippingInfo)
+                    .shipping(shipping)
                     .status(status)
                     .paymentMethod(paymentMethod)
                     .shippingCost(shippingCost)
@@ -149,11 +142,9 @@ class OrderTest {
             assertEquals(canceledAt, order.canceledAt());
             assertEquals(readyAt, order.readyAt());
             assertEquals(billingInfo, order.billingInfo());
-            assertEquals(shippingInfo, order.shippingInfo());
+            assertEquals(shipping, order.shipping());
             assertEquals(status, order.status());
             assertEquals(paymentMethod, order.paymentMethod());
-            assertEquals(shippingCost, order.shippingCost());
-            assertEquals(expectedDeliveryDate, order.expectedDeliveryDate());
             assertEquals(items, order.items());
         }
 
@@ -187,7 +178,7 @@ class OrderTest {
                     .canceledAt(null)
                     .readyAt(null)
                     .billingInfo(null)
-                    .shippingInfo(null)
+                    .shipping(null)
                     .paymentMethod(null)
                     .shippingCost(null)
                     .expectedDeliveryDate(null)
@@ -199,10 +190,8 @@ class OrderTest {
             assertNull(order.canceledAt());
             assertNull(order.readyAt());
             assertNull(order.billingInfo());
-            assertNull(order.shippingInfo());
+            assertNull(order.shipping());
             assertNull(order.paymentMethod());
-            assertNull(order.shippingCost());
-            assertNull(order.expectedDeliveryDate());
         }
     }
 
@@ -350,42 +339,31 @@ class OrderTest {
     }
     @Nested
     @DisplayName("Order#changeShippingInfo tests")
-    class ChangeShippingInfoTests {
+    class ChangeShippingTests {
         private Order sut;
-        private ShippingInfo shippingInfo;
-        private Money shippingCost;
+        private Shipping shipping;
 
         @BeforeEach
         void setUp() {
+            shipping = OrderTestBuilder.aShippingObject().build();
             sut = OrderTestBuilder.anExistingOrder()
                     .withStatus(OrderStatus.DRAFT)
-                    .withShippingInfo(null)
-                    .withShippingCost(null)
-                    .withExpectedDeliveryDate(null)
-                    .build();
-            shippingInfo = createDefaultShippingInfo();
-            shippingCost = new Money(new BigDecimal("15.00"));
-        }
-
-        private ShippingInfo createDefaultShippingInfo() {
-            return ShippingInfo.builder()
-                    .fullName(new FullName("John", "Doe"))
-                    .document(new Document("12345678901"))
-                    .phone(new Phone("11987654321"))
-                    .address(new Address("Street", "123", "Neighborhood", "City", "State", "12345-678", new ZipCode("12345678")))
+                    .withShippingInfo(shipping)
                     .build();
         }
 
         @Test
-        @DisplayName("Should update shipping info with valid future delivery date")
+        @DisplayName("Should update shipping info with valid fields")
         void shouldUpdateShippingInfoWithValidFutureDeliveryDate() {
-            LocalDate futureDate = LocalDate.now().plusDays(7);
+            sut.changeShipping(shipping);
 
-            sut.changeShippingInfo(shippingInfo, shippingCost, futureDate);
 
-            assertEquals(shippingInfo, sut.shippingInfo());
-            assertEquals(shippingCost, sut.shippingCost());
-            assertEquals(futureDate, sut.expectedDeliveryDate());
+            assertNotNull(sut.shipping().address());
+            assertNotNull(sut.shipping().cost());
+            assertNotNull(sut.shipping().expectedDeliveryDate());
+            assertNotNull(sut.shipping().recipient());
+            assertEquals(shipping, sut.shipping());
+            assertEquals(shipping.cost(), sut.shipping().cost());
         }
 
         @Test
@@ -393,9 +371,13 @@ class OrderTest {
         void shouldThrowInvalidShippingDeliveryDateExceptionWhenDateIsInThePast() {
             LocalDate pastDate = LocalDate.now().minusDays(1);
 
+            shipping = OrderTestBuilder.aShippingObject()
+                                       .expectedDeliveryDate(pastDate)
+                                       .build();
+
             InvalidShippingDeliveryDateException exception =
                     assertThrows(InvalidShippingDeliveryDateException.class, () -> {
-                        sut.changeShippingInfo(shippingInfo, shippingCost, pastDate);
+                        sut.changeShipping(shipping);
                     });
 
             assertEquals(

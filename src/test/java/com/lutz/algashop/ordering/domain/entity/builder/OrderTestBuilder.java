@@ -23,7 +23,7 @@ public class OrderTestBuilder {
     private OffsetDateTime canceledAt;
     private OffsetDateTime readyAt;
     private BillingInfo billingInfo;
-    private ShippingInfo shippingInfo;
+    private Shipping shipping;
     private OrderStatus status = OrderStatus.DRAFT;
     private PaymentMethod paymentMethod;
     private Money shippingCost;
@@ -48,10 +48,8 @@ public class OrderTestBuilder {
                 .withId(id)
                 .withStatus(OrderStatus.DRAFT)
                 .withBillingInfo(createDefaultBillingInfo())
-                .withShippingInfo(createDefaultShippingInfo())
+                .withShippingInfo(aShippingObject().build())
                 .withPaymentMethod(PaymentMethod.GATEWAY_BALANCE)
-                .withExpectedDeliveryDate(LocalDate.now().plusDays(10))
-                .withShippingCost(new Money("100"))
                 .withItems(items);
     }
 
@@ -60,8 +58,16 @@ public class OrderTestBuilder {
         builder.id = new OrderId();
         builder.status = OrderStatus.PLACED;
         builder.billingInfo = createDefaultBillingInfo();
-        builder.shippingInfo = createDefaultShippingInfo();
+        builder.shipping = aShippingObject().build();
         return builder;
+    }
+
+    public static Shipping.ShippingBuilder aShippingObject() {
+        return Shipping.builder()
+                       .recipient(createDefaultRecipient())
+                       .address(createDefaultAddress())
+                       .cost(new Money("10"))
+                       .expectedDeliveryDate(LocalDate.now().plusDays(10));
     }
 
     private static BillingInfo createDefaultBillingInfo() {
@@ -73,13 +79,12 @@ public class OrderTestBuilder {
                 .build();
     }
 
-    private static ShippingInfo createDefaultShippingInfo() {
-        return ShippingInfo.builder()
-                .fullName(new FullName("John", "Doe"))
-                .document(new Document("12345678901"))
-                .phone(new Phone("11987654321"))
-                .address(createDefaultAddress())
-                .build();
+    private static Recipient createDefaultRecipient() {
+        return Recipient.builder()
+                        .fullName(new FullName("John", "Doe"))
+                        .document(new Document("123123"))
+                        .phone(new Phone("11123"))
+                        .build();
     }
 
     private static Address createDefaultAddress() {
@@ -131,8 +136,8 @@ public class OrderTestBuilder {
         return this;
     }
 
-    public OrderTestBuilder withShippingInfo(ShippingInfo shippingInfo) {
-        this.shippingInfo = shippingInfo;
+    public OrderTestBuilder withShippingInfo(Shipping shipping) {
+        this.shipping = shipping;
         return this;
     }
 
@@ -146,23 +151,13 @@ public class OrderTestBuilder {
         return this;
     }
 
-    public OrderTestBuilder withShippingCost(Money shippingCost) {
-        this.shippingCost = shippingCost;
-        return this;
-    }
-
-    public OrderTestBuilder withExpectedDeliveryDate(LocalDate expectedDeliveryDate) {
-        this.expectedDeliveryDate = expectedDeliveryDate;
-        return this;
-    }
-
     public OrderTestBuilder withItems(Set<OrderItem> items) {
         this.items = items;
         return this;
     }
 
     public Order build() {
-        if (status == OrderStatus.DRAFT && paidAt == null && placedAt == null && canceledAt == null && readyAt == null && billingInfo == null && shippingInfo == null && paymentMethod == null && shippingCost == null && expectedDeliveryDate == null && items.isEmpty()) {
+        if (status == OrderStatus.DRAFT && paidAt == null && placedAt == null && canceledAt == null && readyAt == null && billingInfo == null && shipping == null && paymentMethod == null && shippingCost == null && expectedDeliveryDate == null && items.isEmpty()) {
             // Match the Order.draft factory logic if it looks like a draft
              return Order.draft(customerId);
         }
@@ -177,7 +172,7 @@ public class OrderTestBuilder {
                 .canceledAt(canceledAt)
                 .readyAt(readyAt)
                 .billingInfo(billingInfo)
-                .shippingInfo(shippingInfo)
+                .shipping(shipping)
                 .status(status)
                 .paymentMethod(paymentMethod)
                 .shippingCost(shippingCost)
