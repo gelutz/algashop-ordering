@@ -27,7 +27,7 @@ public class Order {
 	private OffsetDateTime canceledAt;
 	private OffsetDateTime readyAt;
 
-	private BillingInfo billingInfo;
+	private Billing billing;
 	private Shipping shipping;
 
 	private OrderStatus status;
@@ -36,7 +36,7 @@ public class Order {
 	private Set<OrderItem> items;
 
 	@Builder(builderClassName = "ExistingOrderBuilder", builderMethodName = "existing")
-	private Order(OrderId id, CustomerId customerId, Money totalAmount, Quantity itemsAmount, OffsetDateTime paidAt, OffsetDateTime placedAt, OffsetDateTime canceledAt, OffsetDateTime readyAt, BillingInfo billingInfo, Shipping shipping, OrderStatus status, PaymentMethod paymentMethod, Money shippingCost, LocalDate expectedDeliveryDate, Set<OrderItem> items) {
+	private Order(OrderId id, CustomerId customerId, Money totalAmount, Quantity itemsAmount, OffsetDateTime paidAt, OffsetDateTime placedAt, OffsetDateTime canceledAt, OffsetDateTime readyAt, Billing billing, Shipping shipping, OrderStatus status, PaymentMethod paymentMethod, Money shippingCost, LocalDate expectedDeliveryDate, Set<OrderItem> items) {
 		this.setId(id);
 		this.setCustomerId(customerId);
 		this.setTotalAmount(totalAmount);
@@ -45,7 +45,7 @@ public class Order {
 		this.setPlacedAt(placedAt);
 		this.setCanceledAt(canceledAt);
 		this.setReadyAt(readyAt);
-		this.setBillingInfo(billingInfo);
+		this.setBilling(billing);
 		this.setShipping(shipping);
 		this.setStatus(status);
 		this.setPaymentMethod(paymentMethod);
@@ -122,8 +122,8 @@ public class Order {
 		this.setPaymentMethod(paymentMethod);
 	}
 
-	public void changeBillingInfo(@NonNull BillingInfo billingInfo) {
-		this.setBillingInfo(billingInfo);
+	public void changeBillingInfo(@NonNull Billing billing) {
+		this.setBilling(billing);
 	}
 
 	public void changeShipping(@NonNull Shipping newShipping) {
@@ -144,8 +144,8 @@ public class Order {
 		this.recalculateTotals();
 	}
 
-	public BillingInfo billingInfo() {
-		return billingInfo;
+	public Billing billingInfo() {
+		return billing;
 	}
 
 	public OrderId id() {
@@ -265,8 +265,8 @@ public class Order {
 		this.readyAt = readyAt;
 	}
 
-	private void setBillingInfo(BillingInfo billingInfo) {
-		this.billingInfo = billingInfo;
+	private void setBilling(Billing billing) {
+		this.billing = billing;
 	}
 
 	private void setShipping(Shipping shipping) {

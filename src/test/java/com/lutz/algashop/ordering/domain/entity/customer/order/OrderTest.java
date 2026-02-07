@@ -77,7 +77,7 @@ class OrderTest {
         private OffsetDateTime placedAt;
         private OffsetDateTime canceledAt;
         private OffsetDateTime readyAt;
-        private BillingInfo billingInfo;
+        private Billing billing;
         private Shipping shipping;
         private OrderStatus status;
         private PaymentMethod paymentMethod;
@@ -95,12 +95,13 @@ class OrderTest {
             placedAt = OffsetDateTime.now().minusDays(1);
             canceledAt = null;
             readyAt = OffsetDateTime.now().plusDays(1);
-            billingInfo = BillingInfo.builder()
-                    .fullName(new FullName("John", "Doe"))
-                    .document(new Document("12345678901"))
-                    .phone(new Phone("11987654321"))
-                    .address(new Address("Street", "123", "Neighborhood", "City", "State", "12345-678", new ZipCode("12345678")))
-                    .build();
+            billing = Billing.builder()
+                             .fullName(new FullName("John", "Doe"))
+                             .document(new Document("12345678901"))
+                             .phone(new Phone("11987654321"))
+                             .address(new Address("Street", "123", "Neighborhood", "City", "State", "12345-678", new ZipCode("12345678")))
+                             .email(new Email("teste@teste.com"))
+                             .build();
             shipping = OrderTestBuilder.aShippingObject().build();
             status = OrderStatus.PAID;
             paymentMethod = PaymentMethod.CREDIT_CARD;
@@ -119,7 +120,7 @@ class OrderTest {
                     .placedAt(placedAt)
                     .canceledAt(canceledAt)
                     .readyAt(readyAt)
-                    .billingInfo(billingInfo)
+                    .billing(billing)
                     .shipping(shipping)
                     .status(status)
                     .paymentMethod(paymentMethod)
@@ -141,7 +142,7 @@ class OrderTest {
             assertEquals(placedAt, order.placedAt());
             assertEquals(canceledAt, order.canceledAt());
             assertEquals(readyAt, order.readyAt());
-            assertEquals(billingInfo, order.billingInfo());
+            assertEquals(billing, order.billingInfo());
             assertEquals(shipping, order.shipping());
             assertEquals(status, order.status());
             assertEquals(paymentMethod, order.paymentMethod());
@@ -177,7 +178,7 @@ class OrderTest {
                     .placedAt(null)
                     .canceledAt(null)
                     .readyAt(null)
-                    .billingInfo(null)
+                    .billing(null)
                     .shipping(null)
                     .paymentMethod(null)
                     .shippingCost(null)

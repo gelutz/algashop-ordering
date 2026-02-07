@@ -22,7 +22,7 @@ public class OrderTestBuilder {
     private OffsetDateTime placedAt;
     private OffsetDateTime canceledAt;
     private OffsetDateTime readyAt;
-    private BillingInfo billingInfo;
+    private Billing billing;
     private Shipping shipping;
     private OrderStatus status = OrderStatus.DRAFT;
     private PaymentMethod paymentMethod;
@@ -47,7 +47,7 @@ public class OrderTestBuilder {
         return new OrderTestBuilder()
                 .withId(id)
                 .withStatus(OrderStatus.DRAFT)
-                .withBillingInfo(createDefaultBillingInfo())
+                .withBillingInfo(aBilling().build())
                 .withShippingInfo(aShippingObject().build())
                 .withPaymentMethod(PaymentMethod.GATEWAY_BALANCE)
                 .withItems(items);
@@ -57,7 +57,7 @@ public class OrderTestBuilder {
         OrderTestBuilder builder = new OrderTestBuilder();
         builder.id = new OrderId();
         builder.status = OrderStatus.PLACED;
-        builder.billingInfo = createDefaultBillingInfo();
+        builder.billing = aBilling().build();
         builder.shipping = aShippingObject().build();
         return builder;
     }
@@ -70,13 +70,13 @@ public class OrderTestBuilder {
                        .expectedDeliveryDate(LocalDate.now().plusDays(10));
     }
 
-    private static BillingInfo createDefaultBillingInfo() {
-        return BillingInfo.builder()
-                .fullName(new FullName("John", "Doe"))
-                .document(new Document("12345678901"))
-                .phone(new Phone("11987654321"))
-                .address(createDefaultAddress())
-                .build();
+    private static Billing.BillingBuilder aBilling() {
+        return Billing.builder()
+                      .fullName(new FullName("John", "Doe"))
+                      .document(new Document("12345678901"))
+                      .phone(new Phone("11987654321"))
+                      .email(new Email("teste@teste.com"))
+                      .address(createDefaultAddress());
     }
 
     private static Recipient createDefaultRecipient() {
@@ -131,8 +131,8 @@ public class OrderTestBuilder {
         return this;
     }
 
-    public OrderTestBuilder withBillingInfo(BillingInfo billingInfo) {
-        this.billingInfo = billingInfo;
+    public OrderTestBuilder withBillingInfo(Billing billing) {
+        this.billing = billing;
         return this;
     }
 
@@ -157,7 +157,7 @@ public class OrderTestBuilder {
     }
 
     public Order build() {
-        if (status == OrderStatus.DRAFT && paidAt == null && placedAt == null && canceledAt == null && readyAt == null && billingInfo == null && shipping == null && paymentMethod == null && shippingCost == null && expectedDeliveryDate == null && items.isEmpty()) {
+        if (status == OrderStatus.DRAFT && paidAt == null && placedAt == null && canceledAt == null && readyAt == null && billing == null && shipping == null && paymentMethod == null && shippingCost == null && expectedDeliveryDate == null && items.isEmpty()) {
             // Match the Order.draft factory logic if it looks like a draft
              return Order.draft(customerId);
         }
@@ -171,7 +171,7 @@ public class OrderTestBuilder {
                 .placedAt(placedAt)
                 .canceledAt(canceledAt)
                 .readyAt(readyAt)
-                .billingInfo(billingInfo)
+                .billing(billing)
                 .shipping(shipping)
                 .status(status)
                 .paymentMethod(paymentMethod)
