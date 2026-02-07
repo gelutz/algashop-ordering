@@ -36,7 +36,7 @@ public class Order {
 	private Set<OrderItem> items;
 
 	@Builder(builderClassName = "ExistingOrderBuilder", builderMethodName = "existing")
-	private Order(OrderId id, CustomerId customerId, Money totalAmount, Quantity itemsAmount, OffsetDateTime paidAt, OffsetDateTime placedAt, OffsetDateTime canceledAt, OffsetDateTime readyAt, Billing billing, Shipping shipping, OrderStatus status, PaymentMethod paymentMethod, Money shippingCost, LocalDate expectedDeliveryDate, Set<OrderItem> items) {
+	private Order(OrderId id, CustomerId customerId, Money totalAmount, Quantity itemsAmount, OffsetDateTime paidAt, OffsetDateTime placedAt, OffsetDateTime canceledAt, OffsetDateTime readyAt, Billing billing, Shipping shipping, OrderStatus status, PaymentMethod paymentMethod, Set<OrderItem> items) {
 		this.setId(id);
 		this.setCustomerId(customerId);
 		this.setTotalAmount(totalAmount);
@@ -66,8 +66,6 @@ public class Order {
 				null,
 				OrderStatus.DRAFT,
 				null,
-				null,
-				null,
 				new HashSet<>()
 		);
 	}
@@ -89,7 +87,7 @@ public class Order {
 	public void place() {
 		if (shipping() == null)
 			throw OrderCannotBePlacedException.shippingInfoIsNull(this.id());
-		if (billingInfo() == null)
+		if (billing() == null)
 			throw OrderCannotBePlacedException.billingInfoIsNull(this.id());
 		if (paymentMethod() == null)
 			throw OrderCannotBePlacedException.paymentMethodIsNull(this.id());
@@ -122,7 +120,7 @@ public class Order {
 		this.setPaymentMethod(paymentMethod);
 	}
 
-	public void changeBillingInfo(@NonNull Billing billing) {
+	public void changeBilling(@NonNull Billing billing) {
 		this.setBilling(billing);
 	}
 
@@ -144,7 +142,7 @@ public class Order {
 		this.recalculateTotals();
 	}
 
-	public Billing billingInfo() {
+	public Billing billing() {
 		return billing;
 	}
 

@@ -55,13 +55,14 @@ class OrderItemTest {
 
     @Test
     void newOrderBuilderShouldCreateOrderItemWithGeneratedIdAndZeroTotalAmount() {
+        Product product = ProductTestBuilder.aProduct()
+                                            .productId(productId)
+                                            .productName(productName)
+                                            .price(price).build();
+
         OrderItem orderItem = OrderItem.newOrderBuilder()
                 .orderId(orderId)
-                .product(ProductTestBuilder.aProduct()
-                            .productId(productId)
-                            .productName(productName)
-                            .price(price).build()
-                        )
+                .product(product)
                 .quantity(quantity)
                 .build();
 

@@ -8,9 +8,9 @@ import com.lutz.algashop.ordering.domain.entity.order.PaymentMethod;
 import com.lutz.algashop.ordering.domain.entity.order.vo.*;
 
 import java.time.LocalDate;
-import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class OrderTestBuilder {
 
@@ -18,59 +18,42 @@ public class OrderTestBuilder {
     private CustomerId customerId = new CustomerId();
     private Money totalAmount = new Money("100");
     private Quantity itemsAmount = new Quantity(5);
-    private OffsetDateTime paidAt;
-    private OffsetDateTime placedAt;
-    private OffsetDateTime canceledAt;
-    private OffsetDateTime readyAt;
     private Billing billing;
     private Shipping shipping;
     private OrderStatus status = OrderStatus.DRAFT;
     private PaymentMethod paymentMethod;
-    private Money shippingCost;
-    private LocalDate expectedDeliveryDate;
     private Set<OrderItem> items = new HashSet<>();
 
     private OrderTestBuilder() {
     }
 
     public static OrderTestBuilder aFilledDraftOrder() {
-        OrderId id = new OrderId();
-
-        OrderItem oi = OrderItem.newOrderBuilder()
-                                .orderId(id)
-                                .product(ProductTestBuilder.aProduct().build())
-                                .quantity(new Quantity(1))
-                                .build();
-
-        HashSet<OrderItem> items = new HashSet<>();
-        items.add(oi);
         return new OrderTestBuilder()
-                .withId(id)
+                .withId(new OrderId())
                 .withStatus(OrderStatus.DRAFT)
-                .withBillingInfo(aBilling().build())
-                .withShippingInfo(aShippingObject().build())
+                .withBilling(aBilling().build())
+                .withShipping(aShipping().build())
                 .withPaymentMethod(PaymentMethod.GATEWAY_BALANCE)
-                .withItems(items);
+                .withProducts(Set.of(OrderTestBuilder.aProduct().build()));
     }
 
     public static OrderTestBuilder anExistingOrder() {
-        OrderTestBuilder builder = new OrderTestBuilder();
-        builder.id = new OrderId();
-        builder.status = OrderStatus.PLACED;
-        builder.billing = aBilling().build();
-        builder.shipping = aShippingObject().build();
-        return builder;
+        return new OrderTestBuilder()
+                .withId(new OrderId())
+                .withStatus(OrderStatus.PLACED)
+                .withBilling(aBilling().build())
+                .withShipping(aShipping().build());
     }
 
-    public static Shipping.ShippingBuilder aShippingObject() {
+    public static Shipping.ShippingBuilder aShipping() {
         return Shipping.builder()
-                       .recipient(createDefaultRecipient())
+                       .recipient(aRecipient())
                        .address(createDefaultAddress())
                        .cost(new Money("10"))
                        .expectedDeliveryDate(LocalDate.now().plusDays(10));
     }
 
-    private static Billing.BillingBuilder aBilling() {
+    public static Billing.BillingBuilder aBilling() {
         return Billing.builder()
                       .fullName(new FullName("John", "Doe"))
                       .document(new Document("12345678901"))
@@ -79,7 +62,15 @@ public class OrderTestBuilder {
                       .address(createDefaultAddress());
     }
 
-    private static Recipient createDefaultRecipient() {
+    public static Product.ProductBuilder aProduct() {
+        return Product.builder()
+                      .productId(new ProductId())
+                      .productName(new ProductName("Test product"))
+                      .price(new Money("50"))
+                      .inStock(true);
+    }
+
+    public static Recipient aRecipient() {
         return Recipient.builder()
                         .fullName(new FullName("John", "Doe"))
                         .document(new Document("123123"))
@@ -111,32 +102,12 @@ public class OrderTestBuilder {
         return this;
     }
 
-    public OrderTestBuilder withPaidAt(OffsetDateTime paidAt) {
-        this.paidAt = paidAt;
-        return this;
-    }
-
-    public OrderTestBuilder withPlacedAt(OffsetDateTime placedAt) {
-        this.placedAt = placedAt;
-        return this;
-    }
-
-    public OrderTestBuilder withCanceledAt(OffsetDateTime canceledAt) {
-        this.canceledAt = canceledAt;
-        return this;
-    }
-
-    public OrderTestBuilder withReadyAt(OffsetDateTime readyAt) {
-        this.readyAt = readyAt;
-        return this;
-    }
-
-    public OrderTestBuilder withBillingInfo(Billing billing) {
+    public OrderTestBuilder withBilling(Billing billing) {
         this.billing = billing;
         return this;
     }
 
-    public OrderTestBuilder withShippingInfo(Shipping shipping) {
+    public OrderTestBuilder withShipping(Shipping shipping) {
         this.shipping = shipping;
         return this;
     }
@@ -151,13 +122,23 @@ public class OrderTestBuilder {
         return this;
     }
 
+    public OrderTestBuilder withProducts(Set<Product> products) {
+        this.items = products.stream().map(p ->
+                OrderItem.newOrderBuilder()
+                    .orderId(this.id)
+                        .product(aProduct().build())
+                        .quantity(new Quantity(1))
+                     .build()).collect(Collectors.toSet());
+        return this;
+    }
+
     public OrderTestBuilder withItems(Set<OrderItem> items) {
         this.items = items;
         return this;
     }
 
     public Order build() {
-        if (status == OrderStatus.DRAFT && paidAt == null && placedAt == null && canceledAt == null && readyAt == null && billing == null && shipping == null && paymentMethod == null && shippingCost == null && expectedDeliveryDate == null && items.isEmpty()) {
+        if (status == OrderStatus.DRAFT && billing == null && shipping == null && paymentMethod == null && items.isEmpty()) {
             // Match the Order.draft factory logic if it looks like a draft
              return Order.draft(customerId);
         }
@@ -167,16 +148,10 @@ public class OrderTestBuilder {
                 .customerId(customerId)
                 .totalAmount(totalAmount)
                 .itemsAmount(itemsAmount)
-                .paidAt(paidAt)
-                .placedAt(placedAt)
-                .canceledAt(canceledAt)
-                .readyAt(readyAt)
                 .billing(billing)
                 .shipping(shipping)
                 .status(status)
                 .paymentMethod(paymentMethod)
-                .shippingCost(shippingCost)
-                .expectedDeliveryDate(expectedDeliveryDate)
                 .items(items)
                 .build();
     }

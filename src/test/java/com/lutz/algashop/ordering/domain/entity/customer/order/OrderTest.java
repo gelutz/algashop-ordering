@@ -37,7 +37,7 @@ class OrderTest {
             assertNull(order.placedAt());
             assertNull(order.canceledAt());
             assertNull(order.readyAt());
-            assertNull(order.billingInfo());
+            assertNull(order.billing());
             assertNull(order.shipping());
             assertNull(order.paymentMethod());
         }
@@ -81,8 +81,6 @@ class OrderTest {
         private Shipping shipping;
         private OrderStatus status;
         private PaymentMethod paymentMethod;
-        private Money shippingCost;
-        private LocalDate expectedDeliveryDate;
         private Set<OrderItem> items;
 
         @BeforeEach
@@ -95,18 +93,10 @@ class OrderTest {
             placedAt = OffsetDateTime.now().minusDays(1);
             canceledAt = null;
             readyAt = OffsetDateTime.now().plusDays(1);
-            billing = Billing.builder()
-                             .fullName(new FullName("John", "Doe"))
-                             .document(new Document("12345678901"))
-                             .phone(new Phone("11987654321"))
-                             .address(new Address("Street", "123", "Neighborhood", "City", "State", "12345-678", new ZipCode("12345678")))
-                             .email(new Email("teste@teste.com"))
-                             .build();
-            shipping = OrderTestBuilder.aShippingObject().build();
+            billing = OrderTestBuilder.aBilling().build();
+            shipping = OrderTestBuilder.aShipping().build();
             status = OrderStatus.PAID;
             paymentMethod = PaymentMethod.CREDIT_CARD;
-            shippingCost = new Money(new BigDecimal("15.00"));
-            expectedDeliveryDate = LocalDate.now().plusDays(7);
             items = new HashSet<>();
         }
 
@@ -124,8 +114,6 @@ class OrderTest {
                     .shipping(shipping)
                     .status(status)
                     .paymentMethod(paymentMethod)
-                    .shippingCost(shippingCost)
-                    .expectedDeliveryDate(expectedDeliveryDate)
                     .items(items);
         }
 
@@ -142,7 +130,7 @@ class OrderTest {
             assertEquals(placedAt, order.placedAt());
             assertEquals(canceledAt, order.canceledAt());
             assertEquals(readyAt, order.readyAt());
-            assertEquals(billing, order.billingInfo());
+            assertEquals(billing, order.billing());
             assertEquals(shipping, order.shipping());
             assertEquals(status, order.status());
             assertEquals(paymentMethod, order.paymentMethod());
@@ -181,8 +169,6 @@ class OrderTest {
                     .billing(null)
                     .shipping(null)
                     .paymentMethod(null)
-                    .shippingCost(null)
-                    .expectedDeliveryDate(null)
                     .build();
 
             assertNotNull(order);
@@ -190,7 +176,7 @@ class OrderTest {
             assertNull(order.placedAt());
             assertNull(order.canceledAt());
             assertNull(order.readyAt());
-            assertNull(order.billingInfo());
+            assertNull(order.billing());
             assertNull(order.shipping());
             assertNull(order.paymentMethod());
         }
@@ -346,10 +332,10 @@ class OrderTest {
 
         @BeforeEach
         void setUp() {
-            shipping = OrderTestBuilder.aShippingObject().build();
+            shipping = OrderTestBuilder.aShipping().build();
             sut = OrderTestBuilder.anExistingOrder()
                     .withStatus(OrderStatus.DRAFT)
-                    .withShippingInfo(shipping)
+                    .withShipping(shipping)
                     .build();
         }
 
@@ -372,7 +358,7 @@ class OrderTest {
         void shouldThrowInvalidShippingDeliveryDateExceptionWhenDateIsInThePast() {
             LocalDate pastDate = LocalDate.now().minusDays(1);
 
-            shipping = OrderTestBuilder.aShippingObject()
+            shipping = OrderTestBuilder.aShipping()
                                        .expectedDeliveryDate(pastDate)
                                        .build();
 
