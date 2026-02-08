@@ -111,6 +111,12 @@ public class Order {
 		this.changeStatus(OrderStatus.PLACED);
 	}
 
+	public void cancel() {
+		this.setCanceledAt(OffsetDateTime.now());
+		this.changeStatus(OrderStatus.CANCELED);
+
+	}
+
 	public void markAsPaid() {
 		this.changeStatus(OrderStatus.PAID);
 		this.setPaidAt(OffsetDateTime.now());

@@ -78,12 +78,84 @@ class OrderStatusTest {
 		void givenOrderWithWrongStatusMarkAsReadyShouldThrowOrderStatusCannotBeChangedException() {
 			Order sut = OrderTestBuilder
 					.anExistingOrder()
+					.withStatus(OrderStatus.DRAFT)
+					.build();
+
+			assertThrows(OrderStatusCannotBeChangedException.class, sut::markAsReady);
+			assertFalse(sut.isReady());
+			assertNull(sut.readyAt());
+
+			sut = OrderTestBuilder
+					.anExistingOrder()
+					.withStatus(OrderStatus.CANCELED)
+					.build();
+
+			assertThrows(OrderStatusCannotBeChangedException.class, sut::markAsReady);
+			assertFalse(sut.isReady());
+			assertNull(sut.readyAt());
+
+			sut = OrderTestBuilder
+					.anExistingOrder()
 					.withStatus(OrderStatus.PLACED)
 					.build();
 
 			assertThrows(OrderStatusCannotBeChangedException.class, sut::markAsReady);
 			assertFalse(sut.isReady());
 			assertNull(sut.readyAt());
+		}
+	}
+
+	@Nested
+	@DisplayName("Order#cancel tests")
+	class OrderCancelTests {
+
+		@Test
+		void givenCanceledOrderCancelShouldThrowOrderStatusCannotBeChangedException() {
+			Order sut = OrderTestBuilder
+					.anExistingOrder()
+					.withStatus(OrderStatus.CANCELED)
+					.build();
+
+			assertThrows(OrderStatusCannotBeChangedException.class, sut::cancel);
+		}
+
+		@Test
+		void givenOrderWithAnyStatusCancelShouldWork() {
+			Order sut = OrderTestBuilder
+					.anExistingOrder()
+					.withStatus(OrderStatus.DRAFT)
+					.build();
+
+			assertDoesNotThrow(sut::cancel);
+			assertTrue(sut.isCanceled());
+			assertNotNull(sut.canceledAt());
+
+			sut = OrderTestBuilder
+					.anExistingOrder()
+					.withStatus(OrderStatus.READY)
+					.build();
+
+			assertDoesNotThrow(sut::cancel);
+			assertTrue(sut.isCanceled());
+			assertNotNull(sut.canceledAt());
+
+			sut = OrderTestBuilder
+					.anExistingOrder()
+					.withStatus(OrderStatus.PLACED)
+					.build();
+
+			assertDoesNotThrow(sut::cancel);
+			assertTrue(sut.isCanceled());
+			assertNotNull(sut.canceledAt());
+
+			sut = OrderTestBuilder
+					.anExistingOrder()
+					.withStatus(OrderStatus.PAID)
+					.build();
+
+			assertDoesNotThrow(sut::cancel);
+			assertTrue(sut.isCanceled());
+			assertNotNull(sut.canceledAt());
 		}
 	}
 }
