@@ -1,6 +1,6 @@
 package com.lutz.algashop.ordering.domain.entity.order.vo;
 
-import com.lutz.algashop.ordering.domain.exception.ProductOutOfStockException;
+import com.lutz.algashop.ordering.domain.exception.order.ProductOutOfStockException;
 import lombok.Builder;
 import lombok.NonNull;
 
@@ -12,7 +12,7 @@ public record Product(
 		@NonNull Boolean inStock
 ) {
 
-	public void checkOutOfStock() {
+	public void verifyIfIsInStock() {
 		if (!inStock()) {
 			throw new ProductOutOfStockException(this.productId());
 		}

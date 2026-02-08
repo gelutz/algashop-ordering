@@ -1,4 +1,4 @@
-package com.lutz.algashop.ordering.domain.entity.customer.order;
+package com.lutz.algashop.ordering.domain.entity.order;
 
 import com.lutz.algashop.ordering.domain.entity.builder.ProductTestBuilder;
 import com.lutz.algashop.ordering.domain.entity.order.OrderItem;

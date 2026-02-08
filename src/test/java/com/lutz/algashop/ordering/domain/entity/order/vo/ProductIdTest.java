@@ -1,4 +1,4 @@
-package com.lutz.algashop.ordering.domain.entity.customer.order.vo;
+package com.lutz.algashop.ordering.domain.entity.order.vo;
 
 import com.lutz.algashop.ordering.domain.entity.order.vo.ProductId;
 import org.junit.jupiter.api.Assertions;

@@ -3,6 +3,7 @@ package com.lutz.algashop.ordering.domain.entity.order;
 import com.lutz.algashop.ordering.domain.entity.customer.vo.CustomerId;
 import com.lutz.algashop.ordering.domain.entity.order.vo.*;
 import com.lutz.algashop.ordering.domain.exception.InvalidShippingDeliveryDateException;
+import com.lutz.algashop.ordering.domain.exception.order.OrderCannotBeEditedException;
 import com.lutz.algashop.ordering.domain.exception.order.OrderCannotBePlacedException;
 import com.lutz.algashop.ordering.domain.exception.order.OrderDoesNotContainOrderItemException;
 import com.lutz.algashop.ordering.domain.exception.order.OrderStatusCannotBeChangedException;
@@ -73,7 +74,8 @@ public class Order {
 	public void addItem(Product product, Quantity quantity) {
 		if (this.items == null) this.setItems(new HashSet<>());
 
-		product.checkOutOfStock();
+		product.verifyIfIsInStock();
+		this.verifyIfChangeable();
 
 		this.items.add(OrderItem.newOrderBuilder()
 		                        .orderId(id())
@@ -100,6 +102,11 @@ public class Order {
 		this.changeStatus(OrderStatus.PLACED);
 	}
 
+	public void pay() {
+		this.setPaidAt(OffsetDateTime.now());
+		this.changeStatus(OrderStatus.PAID);
+	}
+
 	public boolean isDraft() {
 		return OrderStatus.DRAFT.equals(this.status());
 	}
@@ -117,10 +124,12 @@ public class Order {
 	}
 
 	public void changePaymentMethod(@NonNull PaymentMethod paymentMethod) {
+		this.verifyIfChangeable();
 		this.setPaymentMethod(paymentMethod);
 	}
 
 	public void changeBilling(@NonNull Billing billing) {
+		this.verifyIfChangeable();
 		this.setBilling(billing);
 	}
 
@@ -129,11 +138,14 @@ public class Order {
 			throw new InvalidShippingDeliveryDateException(this.id(), newShipping.expectedDeliveryDate());
 		}
 
+		this.verifyIfChangeable();
+
 		this.setShipping(newShipping);
 		this.recalculateTotals();
 	}
 
 	public void changeItemQuantity(OrderItemId orderItemId, Quantity quantity) {
+		this.verifyIfChangeable();
 
 		OrderItem orderItem = findOrderItem(orderItemId);
 
@@ -227,7 +239,12 @@ public class Order {
 			throw new OrderStatusCannotBeChangedException(this.id(), this.status(), orderStatus);
 		}
 
+		this.verifyIfChangeable();
 		this.setStatus(orderStatus);
+	}
+
+	private void verifyIfChangeable() {
+		if (!this.isDraft()) throw new OrderCannotBeEditedException(this.id(), this.status());
 	}
 
 	/** SETTERS */

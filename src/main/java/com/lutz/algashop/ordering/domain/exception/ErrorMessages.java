@@ -39,6 +39,10 @@ public class ErrorMessages {
 			return orderMessageWrapper(orderId, String.format("The order could not be placed. %s", reason));
 		}
 
+		public static String orderCannotBeEdited(OrderId orderId, OrderStatus status) {
+			return orderMessageWrapper(orderId, String.format("This order with status %s cannot be edited.", status.name()));
+		}
+
 		public static String orderExpectedDeliveryDateIsInvalid(OrderId orderId, LocalDate expectedDeliveryDate) {
 			return orderMessageWrapper(orderId, String.format("The delivery date cannot be set to a past date (%s).", expectedDeliveryDate));
 		}
