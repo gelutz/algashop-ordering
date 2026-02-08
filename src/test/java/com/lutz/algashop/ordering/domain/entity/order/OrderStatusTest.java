@@ -1,8 +1,14 @@
 package com.lutz.algashop.ordering.domain.entity.order;
 
-import com.lutz.algashop.ordering.domain.entity.order.OrderStatus;
+import com.lutz.algashop.ordering.domain.entity.builder.OrderTestBuilder;
+import com.lutz.algashop.ordering.domain.exception.ErrorMessages;
+import com.lutz.algashop.ordering.domain.exception.order.OrderStatusCannotBeChangedException;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class OrderStatusTest {
 
@@ -26,5 +32,29 @@ class OrderStatusTest {
 		Assertions.assertTrue(OrderStatus.DRAFT.cannotChangeTo(OrderStatus.PAID));
 		Assertions.assertTrue(OrderStatus.PAID.cannotChangeTo(OrderStatus.PAID));
 		Assertions.assertTrue(OrderStatus.READY.cannotChangeTo(OrderStatus.PAID));
+	}
+
+	@Nested
+	@DisplayName("Order status tests")
+	class OrderStatusTests {
+
+		@Test
+		void givenDraftOrderPlaceShouldSetOrderAsPlaced() {
+			Order sut = OrderTestBuilder.aFilledDraftOrder().build();
+			sut.place();
+
+			assertTrue(sut.isPlaced());
+		}
+
+		@Test
+		void givenPlacedOrderPlaceShouldThrowOrderStatusCannotBeChangedException() {
+			Order sut = OrderTestBuilder.aFilledDraftOrder().build();
+			sut.place();
+
+			OrderStatusCannotBeChangedException exception =
+					assertThrows(OrderStatusCannotBeChangedException.class, sut::place);
+
+			assertEquals(exception.getMessage(), ErrorMessages.Orders.orderStatusCannotBeChanged(sut.id(), OrderStatus.PLACED, OrderStatus.PLACED));
+		}
 	}
 }

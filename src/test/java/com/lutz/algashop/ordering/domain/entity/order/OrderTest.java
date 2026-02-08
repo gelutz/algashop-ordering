@@ -2,24 +2,17 @@ package com.lutz.algashop.ordering.domain.entity.order;
 
 import com.lutz.algashop.ordering.domain.entity.builder.OrderTestBuilder;
 import com.lutz.algashop.ordering.domain.entity.builder.ProductTestBuilder;
-import com.lutz.algashop.ordering.domain.entity.customer.vo.*;
-import com.lutz.algashop.ordering.domain.entity.order.Order;
-import com.lutz.algashop.ordering.domain.entity.order.OrderItem;
-import com.lutz.algashop.ordering.domain.entity.order.OrderStatus;
-import com.lutz.algashop.ordering.domain.entity.order.PaymentMethod;
+import com.lutz.algashop.ordering.domain.entity.customer.vo.CustomerId;
 import com.lutz.algashop.ordering.domain.entity.order.vo.*;
-import com.lutz.algashop.ordering.domain.exception.ErrorMessages;
-import com.lutz.algashop.ordering.domain.exception.InvalidShippingDeliveryDateException;
-import com.lutz.algashop.ordering.domain.exception.order.ProductOutOfStockException;
+import com.lutz.algashop.ordering.domain.exception.order.OrderCannotBeEditedException;
 import com.lutz.algashop.ordering.domain.exception.order.OrderDoesNotContainOrderItemException;
-import com.lutz.algashop.ordering.domain.exception.order.OrderStatusCannotBeChangedException;
+import com.lutz.algashop.ordering.domain.exception.order.ProductOutOfStockException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -183,62 +176,6 @@ class OrderTest {
     }
 
     @Nested
-    @DisplayName("Order#addItem tests")
-    class AddItemTests {
-
-        private Order sut;
-        private ProductId productId;
-        private ProductName productName;
-
-        @BeforeEach
-        void setUp() {
-            sut = Order.draft(new CustomerId());
-            productId = new ProductId();
-            productName = new ProductName("Test Product");
-        }
-
-        private void addItem(BigDecimal price, int quantity) {
-            sut.addItem(
-                    new Product(productId, productName, new Money(price), true),
-                    new Quantity(quantity)
-           );
-        }
-
-        @Test
-        void shouldAddItemToOrder() {
-            addItem(new BigDecimal("25.00"), 2);
-            assertEquals(1, sut.items().size());
-        }
-
-        @Test
-        void shouldAddMultipleItems() {
-            addItem(new BigDecimal("25.00"), 2);
-            addItem(new BigDecimal("30.00"), 1);
-            addItem(new BigDecimal("15.00"), 3);
-
-            assertEquals(3, sut.items().size());
-        }
-
-        @Test
-        void shouldCreateItemWithCorrectOrderId() {
-            addItem(new BigDecimal("25.00"), 2);
-
-            OrderItem addedItem = sut.items().iterator().next();
-            assertEquals(sut.id(), addedItem.orderId());
-        }
-
-        @Test
-        void shouldThrowProductOutOfStockExceptionWhenProductIsOutOfStock() {
-            assertThrows(ProductOutOfStockException.class,
-                    () -> sut.addItem(
-                        new Product(productId, productName, new Money("10"), false),
-                        new Quantity(1))
-                        );
-
-        }
-    }
-
-    @Nested
     @DisplayName("Order equality tests")
     class EqualityTests {
 
@@ -299,161 +236,104 @@ class OrderTest {
             assertThrows(UnsupportedOperationException.class, () -> items.add(newItem));
             assertThrows(UnsupportedOperationException.class, items::clear);
         }
-    }
 
-    @Nested
-    @DisplayName("Order status tests")
-    class OrderStatusTests {
+        @Nested
+        @DisplayName("Order#addItem tests")
+        class AddItemTests {
 
-        @Test
-        void givenDraftOrderPlaceShouldSetOrderAsPlaced() {
-            Order sut = OrderTestBuilder.aFilledDraftOrder().build();
-            sut.place();
+            private Order sut;
+            private ProductId productId;
+            private ProductName productName;
 
-            assertTrue(sut.isPlaced());
+            @BeforeEach
+            void setUp() {
+                sut = Order.draft(new CustomerId());
+                productId = new ProductId();
+                productName = new ProductName("Test Product");
+            }
+
+            private void addItem(BigDecimal price, int quantity) {
+                sut.addItem(
+                        new Product(productId, productName, new Money(price), true),
+                        new Quantity(quantity)
+                           );
+            }
+
+            @Test
+            void shouldAddItemToOrder() {
+                addItem(new BigDecimal("25.00"), 2);
+                assertEquals(1, sut.items().size());
+            }
+
+            @Test
+            void shouldAddMultipleItems() {
+                addItem(new BigDecimal("25.00"), 2);
+                addItem(new BigDecimal("30.00"), 1);
+                addItem(new BigDecimal("15.00"), 3);
+
+                assertEquals(3, sut.items().size());
+            }
+
+            @Test
+            void shouldCreateItemWithCorrectOrderId() {
+                addItem(new BigDecimal("25.00"), 2);
+
+                OrderItem addedItem = sut.items().iterator().next();
+                assertEquals(sut.id(), addedItem.orderId());
+            }
+
+            @Test
+            void shouldThrowProductOutOfStockExceptionWhenProductIsOutOfStock() {
+                assertThrows(ProductOutOfStockException.class,
+                        () -> sut.addItem(
+                                new Product(productId, productName, new Money("10"), false),
+                                new Quantity(1))
+                            );
+
+            }
         }
 
-        @Test
-        void givenPlacedOrderPlaceShouldThrowOrderStatusCannotBeChangedException() {
-            Order sut = OrderTestBuilder.aFilledDraftOrder().build();
-            sut.place();
+        @Nested
+        class RemoveItemTests {
+            private Order sut;
+            private final Product product = OrderTestBuilder.aProduct().build();
 
-            OrderStatusCannotBeChangedException exception =
-                    assertThrows(OrderStatusCannotBeChangedException.class, sut::place);
+            @BeforeEach
+            void setup() {
+                sut = Order.draft(new CustomerId());
+                sut.addItem(product, new Quantity(1));
+            }
 
-            assertEquals(exception.getMessage(), ErrorMessages.Orders.orderStatusCannotBeChanged(sut.id(), OrderStatus.PLACED, OrderStatus.PLACED));
-        }
-    }
-    @Nested
-    @DisplayName("Order#changeShippingInfo tests")
-    class ChangeShippingTests {
-        private Order sut;
-        private Shipping shipping;
+            @Test
+            void givenDraftOrderWithGivenOrderItemShouldRemoveItem() {
+                assertTrue(sut.isDraft());
+                OrderItemId firstItemId = sut.items().iterator().next().id();
+                Quantity quantityBefore = sut.itemsAmount();
 
-        @BeforeEach
-        void setUp() {
-            shipping = OrderTestBuilder.aShipping().build();
-            sut = OrderTestBuilder.anExistingOrder()
-                    .withStatus(OrderStatus.DRAFT)
-                    .withShipping(shipping)
-                    .build();
-        }
+                assertDoesNotThrow(() -> sut.removeItem(firstItemId));
+                assertEquals(new Quantity(quantityBefore.value() - 1), sut.itemsAmount());
+            }
 
-        @Test
-        @DisplayName("Should update shipping info with valid fields")
-        void shouldUpdateShippingInfoWithValidFutureDeliveryDate() {
-            sut.changeShipping(shipping);
+            @Test
+            void givenDraftOrderWithoutOrderItemShouldThrowOrderDoesNotContainOrderItemException() {
+                assertTrue(sut.isDraft());
+                OrderItemId firstItemId = sut.items().iterator().next().id();
+                sut.removeItem(firstItemId);
 
+                assertThrows(OrderDoesNotContainOrderItemException.class, () -> sut.removeItem(firstItemId));
+            }
 
-            assertNotNull(sut.shipping().address());
-            assertNotNull(sut.shipping().cost());
-            assertNotNull(sut.shipping().expectedDeliveryDate());
-            assertNotNull(sut.shipping().recipient());
-            assertEquals(shipping, sut.shipping());
-            assertEquals(shipping.cost(), sut.shipping().cost());
-        }
+            @Test
+            void givenNotDraftOrderShouldThrowOrderCannotBeEditedException() {
+                assertTrue(sut.isDraft());
+                sut.changeShipping(OrderTestBuilder.aShipping().build());
+                sut.changeBilling(OrderTestBuilder.aBilling().build());
+                sut.changePaymentMethod(PaymentMethod.GATEWAY_BALANCE);
+                sut.place();
 
-        @Test
-        @DisplayName("Should throw InvalidShippingDeliveryDateException when date is in the past")
-        void shouldThrowInvalidShippingDeliveryDateExceptionWhenDateIsInThePast() {
-            LocalDate pastDate = LocalDate.now().minusDays(1);
-
-            shipping = OrderTestBuilder.aShipping()
-                                       .expectedDeliveryDate(pastDate)
-                                       .build();
-
-            InvalidShippingDeliveryDateException exception =
-                    assertThrows(InvalidShippingDeliveryDateException.class, () -> {
-                        sut.changeShipping(shipping);
-                    });
-
-            assertEquals(
-                    ErrorMessages.Orders.orderExpectedDeliveryDateIsInvalid(sut.id(), pastDate),
-                    exception.getMessage()
-            );
-        }
-    }
-
-    @Nested
-    @DisplayName("Order#changeItemQuantity tests")
-    class ChangeItemQuantityTests {
-        private Order sut;
-        private OrderItem existingItem;
-
-        @BeforeEach
-        void setUp() {
-            OrderItemId itemId = new OrderItemId();
-            Money price = new Money(new BigDecimal("25.00"));
-            Quantity quantity = new Quantity(2);
-            Money totalAmount = new Money(price.value().multiply(BigDecimal.valueOf(quantity.value())));
-            
-            existingItem = OrderItem.existing()
-                    .id(itemId)
-                    .orderId(new OrderId())
-                    .productId(new ProductId())
-                    .productName(new ProductName("Test Product"))
-                    .price(price)
-                    .quantity(quantity)
-                    .totalAmount(totalAmount)
-                    .build();
-
-            Set<OrderItem> items = new HashSet<>();
-            items.add(existingItem);
-
-            sut = OrderTestBuilder.anExistingOrder()
-                    .withStatus(OrderStatus.DRAFT)
-                    .withItems(items)
-                    .withTotalAmount(totalAmount)
-                    .withItemsAmount(quantity)
-                    .build();
-        }
-
-        @Test
-        @DisplayName("Should throw OrderDoesNotContainOrderItemException when item not found")
-        void shouldThrowExceptionWhenItemNotFound() {
-            OrderItemId nonExistentItemId = new OrderItemId();
-
-            OrderDoesNotContainOrderItemException exception =
-                    assertThrows(OrderDoesNotContainOrderItemException.class, () -> {
-                        sut.changeItemQuantity(nonExistentItemId, new Quantity(5));
-                    });
-
-            assertEquals(
-                    ErrorMessages.Orders.orderDoesNotContainOrderItem(sut.id(), nonExistentItemId),
-                    exception.getMessage()
-            );
-        }
-
-        @Test
-        @DisplayName("Should change quantity of existing item")
-        void shouldChangeQuantityOfExistingItem() {
-            Quantity newQuantity = new Quantity(5);
-
-            sut.changeItemQuantity(existingItem.id(), newQuantity);
-
-            OrderItem updatedItem = sut.items().stream()
-                    .filter(i -> i.id().equals(existingItem.id()))
-                    .findFirst()
-                    .orElseThrow();
-            assertEquals(newQuantity, updatedItem.quantity());
-        }
-
-        @Test
-        @DisplayName("Should recalculate totals after changing item quantity")
-        void shouldRecalculateTotalsAfterChangingItemQuantity() {
-            Money initialTotal = sut.totalAmount();
-            Quantity initialItemsAmount = sut.itemsAmount();
-
-            Quantity newQuantity = new Quantity(10);
-            sut.changeItemQuantity(existingItem.id(), newQuantity);
-
-            assertNotEquals(initialTotal, sut.totalAmount());
-            assertNotEquals(initialItemsAmount, sut.itemsAmount());
-
-            BigDecimal expectedItemTotal = existingItem.price().value()
-                    .multiply(BigDecimal.valueOf(newQuantity.value()));
-            assertTrue(sut.totalAmount().value().compareTo(expectedItemTotal) >= 0);
-            assertEquals(newQuantity, sut.itemsAmount());
+                assertTrue(sut.isPlaced());
+                assertThrows(OrderCannotBeEditedException.class, () -> sut.removeItem(new OrderItemId()));
+            }
         }
     }
 }

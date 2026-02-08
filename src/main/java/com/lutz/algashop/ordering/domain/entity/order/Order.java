@@ -86,6 +86,15 @@ public class Order {
 		this.recalculateTotals();
 	}
 
+	public void removeItem(@NonNull OrderItemId orderItemId) {
+		this.verifyIfChangeable();
+
+		OrderItem oi = findOrderItem(orderItemId);
+		this.items.remove(oi);
+
+		this.recalculateTotals();
+	}
+
 	public void place() {
 		if (shipping() == null)
 			throw OrderCannotBePlacedException.shippingInfoIsNull(this.id());
