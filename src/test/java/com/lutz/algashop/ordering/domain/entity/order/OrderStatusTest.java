@@ -35,8 +35,8 @@ class OrderStatusTest {
 	}
 
 	@Nested
-	@DisplayName("Order status tests")
-	class OrderStatusTests {
+	@DisplayName("Order#place tests")
+	class OrderPlaceTests {
 
 		@Test
 		void givenDraftOrderPlaceShouldSetOrderAsPlaced() {
@@ -55,6 +55,35 @@ class OrderStatusTest {
 					assertThrows(OrderStatusCannotBeChangedException.class, sut::place);
 
 			assertEquals(exception.getMessage(), ErrorMessages.Orders.orderStatusCannotBeChanged(sut.id(), OrderStatus.PLACED, OrderStatus.PLACED));
+		}
+	}
+
+	@Nested
+	@DisplayName("Order#markAsReady tests")
+	class OrderMarkAsReadyTests {
+
+		@Test
+		void givenPaidOrderMarkAsReadyShouldChangeStatusAndReadyAtProperties() {
+			Order sut = OrderTestBuilder
+					.anExistingOrder()
+					.withStatus(OrderStatus.PAID)
+					.build();
+
+			assertDoesNotThrow(sut::markAsReady);
+			assertTrue(sut.isReady());
+			assertNotNull(sut.readyAt());
+		}
+
+		@Test
+		void givenOrderWithWrongStatusMarkAsReadyShouldThrowOrderStatusCannotBeChangedException() {
+			Order sut = OrderTestBuilder
+					.anExistingOrder()
+					.withStatus(OrderStatus.PLACED)
+					.build();
+
+			assertThrows(OrderStatusCannotBeChangedException.class, sut::markAsReady);
+			assertFalse(sut.isReady());
+			assertNull(sut.readyAt());
 		}
 	}
 }

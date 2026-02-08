@@ -2,7 +2,10 @@ package com.lutz.algashop.ordering.domain.entity.order;
 
 import com.lutz.algashop.ordering.domain.entity.builder.OrderTestBuilder;
 import com.lutz.algashop.ordering.domain.entity.customer.vo.CustomerId;
-import com.lutz.algashop.ordering.domain.entity.order.vo.*;
+import com.lutz.algashop.ordering.domain.entity.order.vo.Money;
+import com.lutz.algashop.ordering.domain.entity.order.vo.OrderItemId;
+import com.lutz.algashop.ordering.domain.entity.order.vo.Quantity;
+import com.lutz.algashop.ordering.domain.entity.order.vo.Shipping;
 import com.lutz.algashop.ordering.domain.exception.ErrorMessages;
 import com.lutz.algashop.ordering.domain.exception.InvalidShippingDeliveryDateException;
 import com.lutz.algashop.ordering.domain.exception.order.OrderCannotBeEditedException;
@@ -11,16 +14,11 @@ import org.junit.jupiter.api.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class OrderChangeTest {
+public class OrderChangeMethodsTest {
 	@Nested
 	@DisplayName("Order#verifyIfChangeable tests")
 	class VerifyIfChangeableTests {
@@ -113,34 +111,20 @@ public class OrderChangeTest {
 	@DisplayName("Order#changeItemQuantity tests")
 	class ChangeItemQuantityTests {
 		private Order sut;
-		private OrderItem existingItem;
 
 		@BeforeEach
 		void setUp() {
-			OrderItemId itemId = new OrderItemId();
 			Money price = new Money(new BigDecimal("25.00"));
 			Quantity quantity = new Quantity(2);
 			Money totalAmount = new Money(price.value().multiply(BigDecimal.valueOf(quantity.value())));
 
-			existingItem = OrderItem.existing()
-			                        .id(itemId)
-			                        .orderId(new OrderId())
-			                        .productId(new ProductId())
-			                        .productName(new ProductName("Test Product"))
-			                        .price(price)
-			                        .quantity(quantity)
-			                        .totalAmount(totalAmount)
-			                        .build();
-
-			Set<OrderItem> items = new HashSet<>();
-			items.add(existingItem);
-
 			sut = OrderTestBuilder.anExistingOrder()
 			                      .withStatus(OrderStatus.DRAFT)
-			                      .withItems(items)
+			                      .withProducts(Set.of(OrderTestBuilder.aProduct().build()))
 			                      .withTotalAmount(totalAmount)
 			                      .withItemsAmount(quantity)
 			                      .build();
+
 		}
 
 		@Test
@@ -163,6 +147,7 @@ public class OrderChangeTest {
 		@DisplayName("Should change quantity of existing item")
 		void shouldChangeQuantityOfExistingItem() {
 			Quantity newQuantity = new Quantity(5);
+			OrderItem existingItem = sut.items().iterator().next();
 
 			sut.changeItemQuantity(existingItem.id(), newQuantity);
 
@@ -178,6 +163,7 @@ public class OrderChangeTest {
 		void shouldRecalculateTotalsAfterChangingItemQuantity() {
 			Money initialTotal = sut.totalAmount();
 			Quantity initialItemsAmount = sut.itemsAmount();
+			OrderItem existingItem = sut.items().iterator().next();
 
 			Quantity newQuantity = new Quantity(10);
 			sut.changeItemQuantity(existingItem.id(), newQuantity);
