@@ -5,13 +5,19 @@ import com.lutz.algashop.ordering.domain.entity.order.vo.Money;
 import com.lutz.algashop.ordering.domain.entity.order.vo.Product;
 import com.lutz.algashop.ordering.domain.entity.order.vo.ProductId;
 import com.lutz.algashop.ordering.domain.entity.order.vo.Quantity;
+import com.lutz.algashop.ordering.domain.exception.shoppingCart.ShoppingCartDoesNotContainProduct;
+import com.lutz.algashop.ordering.domain.exception.shoppingCart.ShoppingCartDoesNotContainShoppingCartItem;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.Accessors;
 
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Getter
 @Accessors(fluent = true)
@@ -19,83 +25,134 @@ public class ShoppingCart {
 
 	private ShoppingCartId id;
 	private CustomerId customerId;
+	private Set<ShoppingCartItem> items;
 	private Money totalAmount;
 	private Quantity totalItems;
 	private OffsetDateTime createdAt;
 
 	@Builder(builderClassName = "ExistingShoppingCartBuilder", builderMethodName = "existing")
-	private ShoppingCart(@NonNull ShoppingCartId id, @NonNull CustomerId customerId, @NonNull Money totalAmount, @NonNull Quantity totalItems, @NonNull OffsetDateTime createdAt) {
+	private ShoppingCart(@NonNull ShoppingCartId id, @NonNull CustomerId customerId, @NonNull Money totalAmount, @NonNull Quantity totalItems, @NonNull OffsetDateTime createdAt, Set<ShoppingCartItem> items) {
 		setId(id);
 		setCustomerId(customerId);
 		setTotalAmount(totalAmount);
 		setTotalItems(totalItems);
 		setCreatedAt(createdAt);
+		setItems(items);
 	}
 
-	public static ShoppingCart fresh(CustomerId customerId) {
+	public static ShoppingCart startShopping(@NonNull CustomerId customerId) {
 		return new ShoppingCart(
 				new ShoppingCartId(),
 				customerId,
 				Money.ZERO,
 				Quantity.ZERO,
-				OffsetDateTime.now()
+				OffsetDateTime.now(),
+				new HashSet<>()
 		);
 	}
 
-	public static ShoppingCart startShopping(CustomerId customerId) {
-		throw new RuntimeException("Method not yet implemented.");
+	public Set<ShoppingCartItem> items() {
+		return Collections.unmodifiableSet(this.items);
 	}
+
 	public void empty() {
-		throw new RuntimeException("Method not yet implemented.");
+		items.removeAll(this.items());
 	}
-	public ShoppingCartItem findItem(ShoppingCartItemId itemId) {
-		throw new RuntimeException("Method not yet implemented.");
+
+	public ShoppingCartItem findItem(@NonNull ShoppingCartItemId itemId) {
+		return items()
+				.stream()
+				.filter(item -> item.id() == itemId)
+				.findFirst()
+				.orElseThrow(() -> new ShoppingCartDoesNotContainShoppingCartItem(this.id(), itemId));
 	}
-	public ShoppingCartItem findItem(ProductId productId) {
-		throw new RuntimeException("Method not yet implemented.");
+
+	public ShoppingCartItem findItem(@NonNull ProductId productId) {
+		return items()
+				.stream()
+				.filter(item -> item.productId() == productId)
+				.findFirst()
+				.orElseThrow(() -> new ShoppingCartDoesNotContainProduct(this.id(), productId));
 	}
-	public void addItem(Product product, Quantity quantity) {
-		throw new RuntimeException("Method not yet implemented.");
+
+	public void addItem(@NonNull Product product, @NonNull Quantity quantity) {
+		product.verifyIfIsInStock();
+		ShoppingCartItem item = items()
+				.stream()
+				.filter(i -> i.productId() == product.id())
+				.findFirst()
+				.orElse(ShoppingCartItem.fresh(this.id(), product, quantity));
+
+		this.items().add(item);
+
+		recalculateTotals();
 	}
-	public void refreshItem(Product product) {
-		throw new RuntimeException("Method not yet implemented.");
+
+	public void refreshItem(@NonNull Product product) {
+		findItem(product.id()).refresh(product);
+
+		recalculateTotals();
 	}
-	public void removeItem(ShoppingCartItemId id) {
-		throw new RuntimeException("Method not yet implemented.");
+
+	public void removeItem(@NonNull ShoppingCartItemId id) {
+		items().remove(findItem(id));
+
+		recalculateTotals();
 	}
-	public void changeItemQuantity(ShoppingCartItemId itemId, Quantity quantity) {
-		throw new RuntimeException("Method not yet implemented.");
+
+	public void changeItemQuantity(@NonNull ShoppingCartItemId itemId, @NonNull Quantity quantity) {
+		findItem(itemId).changeQuantity(quantity);
+
+		recalculateTotals();
 	}
+
 	public boolean containsUnavailableItems() {
-		throw new RuntimeException("Method not yet implemented.");
+		return items().stream().anyMatch(i -> !i.available());
 	}
+
 	public boolean isEmpty() {
 		return this.totalItems.value() == 0;
 	}
 
-	private ShoppingCart setId(ShoppingCartId id) {
+	private void recalculateTotals() {
+		BigDecimal totalAmount = this.items()
+		                                .stream()
+		                                .map(i -> i.totalAmount().value())
+		                                .reduce(BigDecimal.ZERO, (BigDecimal::add));
+
+		Integer itemsQuantitySum = this.items()
+		                               .stream()
+		                               .map(i -> i.quantity().value())
+		                               .reduce(0, Integer::sum);
+
+		this.setTotalAmount(new Money(totalAmount));
+		this.setTotalItems(new Quantity(itemsQuantitySum));
+	}
+
+	/** SETTERS **/
+
+	private void setId(@NonNull ShoppingCartId id) {
 		this.id = id;
-		return this;
 	}
 
-	private ShoppingCart setTotalAmount(Money totalAmount) {
+	private void setTotalAmount(@NonNull Money totalAmount) {
 		this.totalAmount = totalAmount;
-		return this;
 	}
 
-	private ShoppingCart setCustomerId(CustomerId customerId) {
+	private void setCustomerId(@NonNull CustomerId customerId) {
 		this.customerId = customerId;
-		return this;
 	}
 
-	private ShoppingCart setTotalItems(Quantity totalItems) {
+	private void setItems(@NonNull Set<ShoppingCartItem> items) {
+		this.items = items;
+	}
+
+	private void setTotalItems(@NonNull Quantity totalItems) {
 		this.totalItems = totalItems;
-		return this;
 	}
 
-	private ShoppingCart setCreatedAt(OffsetDateTime createdAt) {
+	private void setCreatedAt(@NonNull OffsetDateTime createdAt) {
 		this.createdAt = createdAt;
-		return this;
 	}
 
 	@Override

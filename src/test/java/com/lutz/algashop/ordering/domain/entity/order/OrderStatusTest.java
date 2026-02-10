@@ -1,7 +1,7 @@
 package com.lutz.algashop.ordering.domain.entity.order;
 
 import com.lutz.algashop.ordering.domain.entity.builder.OrderTestBuilder;
-import com.lutz.algashop.ordering.domain.exception.ErrorMessages;
+import com.lutz.algashop.ordering.domain.exception.messages.ErrorMessages;
 import com.lutz.algashop.ordering.domain.exception.order.OrderStatusCannotBeChangedException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;

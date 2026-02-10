@@ -1,13 +1,17 @@
-package com.lutz.algashop.ordering.domain.exception;
+package com.lutz.algashop.ordering.domain.exception.messages;
 
 import com.lutz.algashop.ordering.domain.entity.order.OrderStatus;
 import com.lutz.algashop.ordering.domain.entity.order.vo.OrderId;
 import com.lutz.algashop.ordering.domain.entity.order.vo.OrderItemId;
 import com.lutz.algashop.ordering.domain.entity.order.vo.ProductId;
+import com.lutz.algashop.ordering.domain.entity.shoppingCart.ShoppingCartId;
+import com.lutz.algashop.ordering.domain.entity.shoppingCart.ShoppingCartItemId;
 
 import java.time.LocalDate;
 
 public class ErrorMessages {
+	public static final String CUSTOMER_ARCHIVED = "This customer is already archived.";
+
 	public static class Fields {
 		public static String fieldIsNullMessage(String field) {
 			return field + " is null.";
@@ -17,16 +21,16 @@ public class ErrorMessages {
 		public static final String EMAIL_IS_BLANK = "Email is blank.";
 		public static final String EMAIL_IS_INVALID = "Email is invalid.";
 
-		public static final String FULL_NAME_IS_NULL = "FullName cannot be null.";
+		public static final String FULL_NAME_IS_NULL = fieldIsNullMessage("FullName");
 		public static final String FULL_NAME_IS_BLANK = "FullName cannot be blank.";
 
-		public static final String BIRTHDATE_IS_NULL = "Birthdate must not be null.";
+		public static final String BIRTHDATE_IS_NULL = fieldIsNullMessage("Birthdate");
 		public static final String BIRTHDATE_IS_IN_FUTURE = "Birthdate must be a past date.";
 
-		public static final String DOCUMENT_IS_NULL = "Document cannot be null.";
+		public static final String DOCUMENT_IS_NULL = fieldIsNullMessage("Document");
 		public static final String DOCUMENT_IS_BLANK = "Document cannot be blank.";
 
-		public static final String PHONE_IS_NULL = "Phone cannot be null.";
+		public static final String PHONE_IS_NULL = fieldIsNullMessage("Phone");
 		public static final String PHONE_IS_BLANK = "Phone cannot be blank.";
 
 		public static final String VALUE_IS_NULL = "Cannot instantiate with null value.";
@@ -71,6 +75,32 @@ public class ErrorMessages {
 		}
 	}
 
-	public static final String CUSTOMER_ARCHIVED = "This customer is already archived.";
+	public class ShoppingCart {
+		public static String cartDoesNotContainCartItem(ShoppingCartId id, ShoppingCartItemId itemid) {
+			return shoppingCartMessageWrapper(id, String.format("The shopping cart does not contain this item: [%s]", itemid));
+		}
 
+		public static String cartDoesNotContainProduct(ShoppingCartId id, ProductId productId) {
+			return shoppingCartMessageWrapper(id, String.format("The shopping cart does not contain this product: [%s]", productId));
+		}
+
+		private static String shoppingCartMessageWrapper(ShoppingCartId id, String message) {
+			return String.format("ShoppingCart [%s]: %s", id, message);
+		}
+	}
+
+	public class ShoppingCartItem {
+		public static String shoppingCartProductsDontMatch(ShoppingCartItemId id, ProductId that, ProductId other) {
+			return shoppingCartItemMessageWrapper(
+					id,
+					String.format("Cannot refresh. Given Product id %s does not match Shopping cart item id %s", that, other)
+			                                     );
+
+		}
+
+
+		private static String shoppingCartItemMessageWrapper(ShoppingCartItemId id, String message) {
+			return String.format("ShoppingCartItem [%s]: %s", id, message);
+		}
+	}
 }

@@ -1,7 +1,6 @@
 package com.lutz.algashop.ordering.domain.entity.order;
 
 import com.lutz.algashop.ordering.domain.entity.builder.ProductTestBuilder;
-import com.lutz.algashop.ordering.domain.entity.order.OrderItem;
 import com.lutz.algashop.ordering.domain.entity.order.vo.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -56,7 +55,7 @@ class OrderItemTest {
     @Test
     void newOrderBuilderShouldCreateOrderItemWithGeneratedIdAndZeroTotalAmount() {
         Product product = ProductTestBuilder.aProduct()
-                                            .productId(productId)
+                                            .id(productId)
                                             .productName(productName)
                                             .price(price).build();
 

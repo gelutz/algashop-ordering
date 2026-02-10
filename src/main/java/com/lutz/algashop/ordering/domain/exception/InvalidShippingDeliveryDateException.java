@@ -1,6 +1,7 @@
 package com.lutz.algashop.ordering.domain.exception;
 
 import com.lutz.algashop.ordering.domain.entity.order.vo.OrderId;
+import com.lutz.algashop.ordering.domain.exception.messages.ErrorMessages;
 
 import java.time.LocalDate;
 

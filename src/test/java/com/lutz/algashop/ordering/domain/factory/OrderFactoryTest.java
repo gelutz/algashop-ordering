@@ -32,7 +32,7 @@ class OrderFactoryTest {
 		Assertions.assertEquals(shipping, order.shipping());
 		Assertions.assertEquals(billing, order.billing());
 		Assertions.assertEquals(paymentMethod, order.paymentMethod());
-		Assertions.assertEquals(product.productId(), order.items().iterator().next().productId());
+		Assertions.assertEquals(product.id(), order.items().iterator().next().productId());
 		Assertions.assertEquals(product.price(), order.items().iterator().next().price());
 		Assertions.assertEquals(new Quantity(1), order.items().iterator().next().quantity());
 

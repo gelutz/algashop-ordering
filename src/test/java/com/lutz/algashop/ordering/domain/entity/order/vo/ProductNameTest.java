@@ -1,7 +1,6 @@
 package com.lutz.algashop.ordering.domain.entity.order.vo;
 
-import com.lutz.algashop.ordering.domain.entity.order.vo.ProductName;
-import com.lutz.algashop.ordering.domain.exception.ErrorMessages;
+import com.lutz.algashop.ordering.domain.exception.messages.ErrorMessages;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

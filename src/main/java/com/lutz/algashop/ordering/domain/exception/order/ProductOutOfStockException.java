@@ -2,7 +2,7 @@ package com.lutz.algashop.ordering.domain.exception.order;
 
 import com.lutz.algashop.ordering.domain.entity.order.vo.ProductId;
 import com.lutz.algashop.ordering.domain.exception.DomainException;
-import com.lutz.algashop.ordering.domain.exception.ErrorMessages;
+import com.lutz.algashop.ordering.domain.exception.messages.ErrorMessages;
 import lombok.NonNull;
 
 public class ProductOutOfStockException extends DomainException {

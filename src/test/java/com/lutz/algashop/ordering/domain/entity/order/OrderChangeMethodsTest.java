@@ -6,7 +6,7 @@ import com.lutz.algashop.ordering.domain.entity.order.vo.Money;
 import com.lutz.algashop.ordering.domain.entity.order.vo.OrderItemId;
 import com.lutz.algashop.ordering.domain.entity.order.vo.Quantity;
 import com.lutz.algashop.ordering.domain.entity.order.vo.Shipping;
-import com.lutz.algashop.ordering.domain.exception.ErrorMessages;
+import com.lutz.algashop.ordering.domain.exception.messages.ErrorMessages;
 import com.lutz.algashop.ordering.domain.exception.InvalidShippingDeliveryDateException;
 import com.lutz.algashop.ordering.domain.exception.order.OrderCannotBeEditedException;
 import com.lutz.algashop.ordering.domain.exception.order.OrderDoesNotContainOrderItemException;

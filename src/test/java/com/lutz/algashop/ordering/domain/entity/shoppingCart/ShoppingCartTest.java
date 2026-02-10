@@ -12,12 +12,12 @@ import java.time.OffsetDateTime;
 
 @SuppressWarnings("DataFlowIssue")
 class ShoppingCartTest {
-	@DisplayName("ShoppingCart#fresh and ShoppingCart#existing builders")
+	@DisplayName("ShoppingCart#startShopping and ShoppingCart#existing builders")
 	@Nested
 	class ShoppingCartBuilderTests {
 		@Test
-		void freshShouldStartWithDefaultValues() {
-			ShoppingCart sut = ShoppingCart.fresh(new CustomerId());
+		void startShoppingShouldStartWithDefaultValues() {
+			ShoppingCart sut = ShoppingCart.startShopping(new CustomerId());
 
 			Money expectedTotalAmount = Money.ZERO;
 			Quantity expectedTotalItems = Quantity.ZERO;

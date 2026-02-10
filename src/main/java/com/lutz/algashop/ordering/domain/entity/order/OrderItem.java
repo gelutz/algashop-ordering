@@ -29,7 +29,7 @@ public class OrderItem {
 		OrderItem o = new OrderItem(
 				new OrderItemId(),
 				orderId,
-				product.productId(),
+				product.id(),
 				product.productName(),
 				product.price(),
 				quantity,

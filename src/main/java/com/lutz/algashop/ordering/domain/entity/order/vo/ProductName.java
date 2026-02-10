@@ -1,6 +1,6 @@
 package com.lutz.algashop.ordering.domain.entity.order.vo;
 
-import com.lutz.algashop.ordering.domain.exception.ErrorMessages;
+import com.lutz.algashop.ordering.domain.exception.messages.ErrorMessages;
 import com.lutz.algashop.ordering.domain.validation.FieldValidator;
 
 import java.util.Objects;

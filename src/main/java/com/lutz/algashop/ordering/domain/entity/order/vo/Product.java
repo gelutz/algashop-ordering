@@ -6,7 +6,7 @@ import lombok.NonNull;
 
 @Builder
 public record Product(
-		@NonNull ProductId productId,
+		@NonNull ProductId id,
 		@NonNull ProductName productName,
 		@NonNull Money price,
 		@NonNull Boolean inStock
@@ -14,7 +14,7 @@ public record Product(
 
 	public void verifyIfIsInStock() {
 		if (!inStock()) {
-			throw new ProductOutOfStockException(this.productId());
+			throw new ProductOutOfStockException(this.id());
 		}
 	}
 }

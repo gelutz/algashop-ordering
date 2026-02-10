@@ -3,11 +3,7 @@
 echo "Running Gradle tests..."
 
 # Use wrapper if it exists (recommended)
-if [ -f "./gradlew" ]; then
-  ./gradlew test
-else
-  gradle test
-fi
+gradle test
 
 RESULT=$?
 

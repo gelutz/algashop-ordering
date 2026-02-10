@@ -64,7 +64,7 @@ public class OrderTestBuilder {
 
     public static Product.ProductBuilder aProduct() {
         return Product.builder()
-                      .productId(new ProductId())
+                      .id(new ProductId())
                       .productName(new ProductName("Test product"))
                       .price(new Money("50"))
                       .inStock(true);

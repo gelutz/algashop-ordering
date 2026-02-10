@@ -1,6 +1,6 @@
 package com.lutz.algashop.ordering.domain.entity.customer.vo;
 
-import com.lutz.algashop.ordering.domain.exception.ErrorMessages;
+import com.lutz.algashop.ordering.domain.exception.messages.ErrorMessages;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;

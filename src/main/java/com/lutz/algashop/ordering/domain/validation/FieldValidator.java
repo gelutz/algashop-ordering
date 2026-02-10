@@ -1,6 +1,6 @@
 package com.lutz.algashop.ordering.domain.validation;
 
-import com.lutz.algashop.ordering.domain.exception.ErrorMessages;
+import com.lutz.algashop.ordering.domain.exception.messages.ErrorMessages;
 import org.apache.commons.validator.routines.EmailValidator;
 
 import java.util.Objects;

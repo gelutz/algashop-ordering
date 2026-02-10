@@ -12,7 +12,7 @@ public class ProductTestBuilder {
 
 	public static Product.ProductBuilder aProduct() {
 		return Product.builder()
-				.productId(new ProductId())
+				.id(new ProductId())
 				      .productName(new ProductName("Test Product"))
 				      .price(new Money("25.00"))
 				      .inStock(true);
