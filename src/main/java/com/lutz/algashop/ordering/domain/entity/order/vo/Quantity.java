@@ -14,6 +14,9 @@ public record Quantity(Integer value) implements Comparable<Quantity> {
 		}
 	}
 
+	public Quantity add(Quantity newQuantity) {
+		return new Quantity(this.value() + newQuantity.value());
+	}
 
 	public Quantity clone() {
 		return new Quantity(this.value());

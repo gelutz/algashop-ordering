@@ -5,8 +5,8 @@ import com.lutz.algashop.ordering.domain.entity.shoppingCart.ShoppingCartItemId;
 import com.lutz.algashop.ordering.domain.exception.DomainException;
 import com.lutz.algashop.ordering.domain.exception.messages.ErrorMessages;
 
-public class ShoppingCartDoesNotContainShoppingCartItem extends DomainException {
-	public ShoppingCartDoesNotContainShoppingCartItem(ShoppingCartId id, ShoppingCartItemId itemId) {
+public class ShoppingCartDoesNotContainItemException extends DomainException {
+	public ShoppingCartDoesNotContainItemException(ShoppingCartId id, ShoppingCartItemId itemId) {
 		super(ErrorMessages.ShoppingCart.cartDoesNotContainCartItem(id, itemId));
 	}
 }

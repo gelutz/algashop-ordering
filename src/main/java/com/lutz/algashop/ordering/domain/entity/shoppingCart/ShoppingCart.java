@@ -6,7 +6,7 @@ import com.lutz.algashop.ordering.domain.entity.order.vo.Product;
 import com.lutz.algashop.ordering.domain.entity.order.vo.ProductId;
 import com.lutz.algashop.ordering.domain.entity.order.vo.Quantity;
 import com.lutz.algashop.ordering.domain.exception.shoppingCart.ShoppingCartDoesNotContainProduct;
-import com.lutz.algashop.ordering.domain.exception.shoppingCart.ShoppingCartDoesNotContainShoppingCartItem;
+import com.lutz.algashop.ordering.domain.exception.shoppingCart.ShoppingCartDoesNotContainItemException;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
@@ -56,34 +56,40 @@ public class ShoppingCart {
 	}
 
 	public void empty() {
-		items.removeAll(this.items());
+		this.items.clear();
+		this.totalAmount = Money.ZERO;
+		this.totalItems = Quantity.ZERO;
 	}
 
 	public ShoppingCartItem findItem(@NonNull ShoppingCartItemId itemId) {
 		return items()
 				.stream()
-				.filter(item -> item.id() == itemId)
+				.filter(item -> item.id().equals(itemId))
 				.findFirst()
-				.orElseThrow(() -> new ShoppingCartDoesNotContainShoppingCartItem(this.id(), itemId));
+				.orElseThrow(() -> new ShoppingCartDoesNotContainItemException(this.id(), itemId));
 	}
 
 	public ShoppingCartItem findItem(@NonNull ProductId productId) {
 		return items()
 				.stream()
-				.filter(item -> item.productId() == productId)
+				.filter(item -> item.productId().equals(productId))
 				.findFirst()
 				.orElseThrow(() -> new ShoppingCartDoesNotContainProduct(this.id(), productId));
 	}
 
 	public void addItem(@NonNull Product product, @NonNull Quantity quantity) {
 		product.verifyIfIsInStock();
-		ShoppingCartItem item = items()
+		ShoppingCartItem existingItem = items()
 				.stream()
-				.filter(i -> i.productId() == product.id())
+				.filter(i -> i.productId().equals(product.id()))
 				.findFirst()
-				.orElse(ShoppingCartItem.fresh(this.id(), product, quantity));
+				.orElse(null);
 
-		this.items().add(item);
+		if (existingItem != null) {
+			existingItem.changeQuantity(existingItem.quantity().add(quantity));
+		} else {
+			this.items.add(ShoppingCartItem.fresh(this.id(), product, quantity));
+		}
 
 		recalculateTotals();
 	}
@@ -95,7 +101,7 @@ public class ShoppingCart {
 	}
 
 	public void removeItem(@NonNull ShoppingCartItemId id) {
-		items().remove(findItem(id));
+		this.items.remove(findItem(id));
 
 		recalculateTotals();
 	}

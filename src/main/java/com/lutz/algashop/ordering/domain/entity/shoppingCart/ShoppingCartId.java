@@ -1,4 +1,11 @@
 package com.lutz.algashop.ordering.domain.entity.shoppingCart;
 
-public record ShoppingCartId() {
+import com.lutz.algashop.ordering.domain.utils.IdGenerator;
+
+import java.util.UUID;
+
+public record ShoppingCartId(UUID value) {
+	public ShoppingCartId() {
+		this(IdGenerator.generateTimeBasedUUID());
+	}
 }

@@ -5,6 +5,8 @@ import com.lutz.algashop.ordering.domain.exception.shoppingCart.ShoppingCartItem
 import lombok.Builder;
 import lombok.NonNull;
 
+import java.util.Objects;
+
 public class ShoppingCartItem {
 	public ShoppingCartItemId id;
 	public ShoppingCartId shoppingCartId;
@@ -41,7 +43,7 @@ public class ShoppingCartItem {
 	}
 
 	void refresh(Product product) {
-		if (this.productId() != product.id()) {
+		if (!this.productId().equals(product.id())) {
 			throw new ShoppingCartItemIncompatibleProductException(this.id(), this.productId(), product.id());
 		}
 
@@ -53,7 +55,7 @@ public class ShoppingCartItem {
 	}
 
 	void changeQuantity(Quantity quantity) {
-		if (quantity.value() > 0) {
+		if (quantity.value() <= 0) {
 			throw new IllegalArgumentException();
 		}
 
@@ -125,5 +127,18 @@ public class ShoppingCartItem {
 	}
 	private void setAvailable(@NonNull Boolean available) {
 		this.available = available;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o == null || getClass() != o.getClass())
+			return false;
+		ShoppingCartItem that = (ShoppingCartItem) o;
+		return Objects.equals(id, that.id);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(id);
 	}
 }
