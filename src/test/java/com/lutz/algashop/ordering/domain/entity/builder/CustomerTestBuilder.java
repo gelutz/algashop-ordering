@@ -78,7 +78,7 @@ public class CustomerTestBuilder {
 
     public Customer build() {
         // The domain only exposes NewCustomerBuilder which sets ID, registeredAt, etc.
-        return Customer.newCustomerBuilder()
+        return Customer.fresh()
                 .fullName(fullName)
                 .birthDate(birthdate)
                 .email(email)

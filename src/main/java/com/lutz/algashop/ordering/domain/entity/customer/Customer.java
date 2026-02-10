@@ -31,7 +31,7 @@ public class Customer {
 	private LoyaltyPoints loyaltyPoints;
 
 	// new customer
-	@Builder(builderClassName = "NewCustomerBuilder", builderMethodName = "newCustomerBuilder")
+	@Builder(builderClassName = "NewCustomerBuilder", builderMethodName = "fresh")
 	private Customer(FullName fullName, Birthdate birthDate, Email email, Phone phone, Document document, Address address, Boolean promotionNotificationAllowed) {
 		setId(new CustomerId());
 		setFullName(fullName);
