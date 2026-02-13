@@ -15,14 +15,6 @@ java {
 	}
 }
 
-test {
-	testLogging {
-		events "skipped", "failed", "standardOut", "standardError"
-		showStandardStreams = true
-		exceptionFormat = "full"
-	}
-}
-
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
@@ -48,4 +40,44 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+test {
+	testLogging {
+		events "skipped", "failed", "standardOut", "standardError"
+		showStandardStreams = true
+		exceptionFormat = "full"
+	}
+}
+
+// removing integration tests from unit tests pipeline
+test {
+	filter {
+		excludeTestsMatching("*IT")
+	}
+}
+
+tasks.named('check') {
+	dependsOn(test, integrationTest)
+}
+
+tasks.register('integrationTest', Test) {
+	description = 'Run integration tests.'
+	group = 'verification'
+
+	testClassesDirs = sourceSets.test.output.classesDirs
+	classpath = sourceSets.test.runtimeClasspath
+
+	shouldRunAfter test
+
+	useJUnitPlatform()
+
+	testLogging {
+		events "passed"
+	}
+
+	filter {
+		includeTestsMatching("*IT")
+		excludeTestsMatching("*Test")
+	}
 }
