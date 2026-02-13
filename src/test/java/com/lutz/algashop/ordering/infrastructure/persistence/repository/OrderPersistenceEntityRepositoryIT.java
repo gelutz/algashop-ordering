@@ -1,4 +1,4 @@
-package com.lutz.algashop.ordering.infrastructure.persistence.reepository;
+package com.lutz.algashop.ordering.infrastructure.persistence.repository;
 
 import com.lutz.algashop.ordering.domain.utils.IdGenerator;
 import com.lutz.algashop.ordering.infrastructure.persistence.entity.OrderPersistenceEntity;
@@ -18,7 +18,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class OrderPersistenceEntityRepositoryIT {
 
 	private final OrderPersistenceEntityRepository sut;
-
 
 	@Autowired
 	public OrderPersistenceEntityRepositoryIT(OrderPersistenceEntityRepository sut) {
