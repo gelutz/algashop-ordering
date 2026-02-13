@@ -1,15 +1,13 @@
 package com.lutz.algashop.ordering.infrastructure.persistence.repository;
 
 import com.lutz.algashop.ordering.domain.utils.IdGenerator;
+import com.lutz.algashop.ordering.infrastructure.persistence.builder.OrderPersistenceEntityTestBuilder;
 import com.lutz.algashop.ordering.infrastructure.persistence.entity.OrderPersistenceEntity;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-
-import java.math.BigDecimal;
-import java.time.OffsetDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -27,15 +25,10 @@ class OrderPersistenceEntityRepositoryIT {
 	@Test
 	void shouldPersist() {
 		Long id = IdGenerator.generateTSID().toLong();
-		OrderPersistenceEntity orderPersistenceEntity = OrderPersistenceEntity.builder()
-		                                                     .id(id)
-		                                                     .customerId(IdGenerator.generateTimeBasedUUID())
-		                                                     .totalItems(2)
-		                                                     .totalAmount(new BigDecimal((100)))
-		                                                     .status("DRAFT")
-		                                                     .paymentMethod("CREDIT_CARD")
-		                                                     .placedAt(OffsetDateTime.now())
-		                                                     .build();
+		OrderPersistenceEntity orderPersistenceEntity = OrderPersistenceEntityTestBuilder
+				.existing()
+				.id(id)
+				.build();
 
 		sut.saveAndFlush(orderPersistenceEntity);
 		Assertions.assertTrue(sut.existsById(id));

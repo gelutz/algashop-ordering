@@ -3,6 +3,8 @@ package com.lutz.algashop.ordering.domain.repository;
 import com.lutz.algashop.ordering.domain.entity.builder.OrderTestBuilder;
 import com.lutz.algashop.ordering.domain.entity.order.Order;
 import com.lutz.algashop.ordering.domain.entity.order.vo.OrderId;
+import com.lutz.algashop.ordering.infrastructure.persistence.assembler.OrderPersistenceEntityAssembler;
+import com.lutz.algashop.ordering.infrastructure.persistence.disassembler.OrderPersistenceEntityDisassembler;
 import com.lutz.algashop.ordering.infrastructure.persistence.provider.OrdersPersistenceProvider;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -13,7 +15,7 @@ import org.springframework.context.annotation.Import;
 import java.util.Optional;
 
 @DataJpaTest
-@Import(OrdersPersistenceProvider.class)
+@Import({OrdersPersistenceProvider.class, OrderPersistenceEntityAssembler.class, OrderPersistenceEntityDisassembler.class})
 class OrdersIT {
 	private final Orders sut;
 
