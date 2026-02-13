@@ -1,5 +1,6 @@
 package com.lutz.algashop.ordering.domain.entity.shoppingCart;
 
+import com.lutz.algashop.ordering.domain.entity.AggregateRoot;
 import com.lutz.algashop.ordering.domain.entity.customer.vo.CustomerId;
 import com.lutz.algashop.ordering.domain.entity.order.vo.Money;
 import com.lutz.algashop.ordering.domain.entity.order.vo.Product;
@@ -21,8 +22,7 @@ import java.util.Set;
 
 @Getter
 @Accessors(fluent = true)
-public class ShoppingCart {
-
+public class ShoppingCart implements AggregateRoot<ShoppingCartId> {
 	private ShoppingCartId id;
 	private CustomerId customerId;
 	private Set<ShoppingCartItem> items;

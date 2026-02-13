@@ -1,5 +1,6 @@
 package com.lutz.algashop.ordering.domain.entity.order;
 
+import com.lutz.algashop.ordering.domain.entity.AggregateRoot;
 import com.lutz.algashop.ordering.domain.entity.customer.vo.CustomerId;
 import com.lutz.algashop.ordering.domain.entity.order.vo.*;
 import com.lutz.algashop.ordering.domain.exception.InvalidShippingDeliveryDateException;
@@ -18,7 +19,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-public class Order {
+public class Order implements AggregateRoot<OrderId> {
 	private OrderId id;
 	private CustomerId customerId;
 	private Money totalAmount;

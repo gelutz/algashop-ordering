@@ -1,5 +1,6 @@
 package com.lutz.algashop.ordering.domain.entity.customer;
 
+import com.lutz.algashop.ordering.domain.entity.AggregateRoot;
 import com.lutz.algashop.ordering.domain.entity.customer.vo.*;
 import com.lutz.algashop.ordering.domain.exception.CustomerArchivedException;
 
@@ -16,7 +17,7 @@ import java.util.UUID;
 @Getter
 @Accessors(fluent = true)
 @EqualsAndHashCode(of = "id")
-public class Customer {
+public class Customer implements AggregateRoot<CustomerId> {
 	private CustomerId id;
 	private FullName fullName;
 	private Birthdate birthdate;
