@@ -8,10 +8,12 @@ import com.lutz.algashop.ordering.infrastructure.persistence.assembler.OrderPers
 import com.lutz.algashop.ordering.infrastructure.persistence.disassembler.OrderPersistenceEntityDisassembler;
 import com.lutz.algashop.ordering.infrastructure.persistence.provider.OrdersPersistenceProvider;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.dao.OptimisticLockingFailureException;
 
 import java.util.Optional;
 
@@ -54,5 +56,31 @@ class OrdersIT {
 
 		Order result = sut.ofId(order.id()).orElseThrow();
 		Assertions.assertTrue(result.isPaid());
+	}
+
+	@Test
+	@DisplayName("When an object is retrieved twice and one of them is changed and added, trying to save the second should throw OptimisticLockingFailureException")
+	void givenDifferentObjectsOfSameEntityWithSameVersionShouldThrowOptimisticLockingFailureExceptionWhenUpdatingBoth() {
+		OrderId id = new OrderId();
+		Order order = OrderTestBuilder.aFilledDraftOrder()
+		                              .withStatus(OrderStatus.PLACED)
+		                              .withId(id)
+		                              .build();
+		sut.add(order);
+
+		Order order1 = sut.ofId(id).orElseThrow();
+		Order order2 = sut.ofId(id).orElseThrow();
+
+		order1.markAsPaid();
+		sut.add(order1);
+
+		order2.cancel();
+		Assertions.assertThrows(OptimisticLockingFailureException.class, () -> sut.add(order2));
+
+		Order result = sut.ofId(id).orElseThrow();
+
+		Assertions.assertNull(result.canceledAt());
+		Assertions.assertNotNull(result.paidAt());
+		Assertions.assertNotNull(result.version());
 	}
 }

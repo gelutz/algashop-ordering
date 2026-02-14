@@ -7,9 +7,13 @@ import com.lutz.algashop.ordering.infrastructure.persistence.assembler.OrderPers
 import com.lutz.algashop.ordering.infrastructure.persistence.disassembler.OrderPersistenceEntityDisassembler;
 import com.lutz.algashop.ordering.infrastructure.persistence.entity.OrderPersistenceEntity;
 import com.lutz.algashop.ordering.infrastructure.persistence.repository.OrderPersistenceEntityRepository;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ReflectionUtils;
 
+import java.lang.reflect.Field;
 import java.util.Optional;
 
 @Component
@@ -18,6 +22,8 @@ public class OrdersPersistenceProvider implements Orders {
 	private final OrderPersistenceEntityRepository orderPersistenceEntityRepository;
 	private final OrderPersistenceEntityAssembler assembler;
 	private final OrderPersistenceEntityDisassembler disassembler;
+
+	private final EntityManager entityManager;
 
 	@Override
 	public Optional<Order> ofId(OrderId orderId) {
@@ -43,13 +49,24 @@ public class OrdersPersistenceProvider implements Orders {
 	}
 
 	private void insert(Order aggregateRoot) {
-		OrderPersistenceEntity persistenceEntity = assembler.fromDomain(aggregateRoot);
-		orderPersistenceEntityRepository.saveAndFlush(persistenceEntity);
+		OrderPersistenceEntity entity = assembler.fromDomain(aggregateRoot);
+		entity = orderPersistenceEntityRepository.saveAndFlush(entity);
+		updateVersion(aggregateRoot, entity);
 	}
 
 	private void update(Order aggregateRoot, OrderPersistenceEntity entity) {
 		OrderPersistenceEntity merged = assembler.merge(entity, aggregateRoot);
-		orderPersistenceEntityRepository.saveAndFlush(merged);
+		entityManager.detach(merged); // this detaches the object from hibernate, allowing you to change the version
+		entity = orderPersistenceEntityRepository.saveAndFlush(merged);
+		updateVersion(aggregateRoot, entity);
+	}
+
+	@SneakyThrows
+	private void updateVersion(Order aggregateRoot, OrderPersistenceEntity entity) {
+		Field versionField = aggregateRoot.getClass().getDeclaredField("version");
+		versionField.setAccessible(true);
+		ReflectionUtils.setField(versionField, aggregateRoot, entity.getVersion());
+		versionField.setAccessible(false);
 	}
 
 	@Override
