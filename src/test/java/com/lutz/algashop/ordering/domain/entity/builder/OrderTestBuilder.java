@@ -41,6 +41,7 @@ public class OrderTestBuilder {
         return new OrderTestBuilder()
                 .withId(new OrderId())
                 .withStatus(OrderStatus.PLACED)
+                .withPaymentMethod(PaymentMethod.GATEWAY_BALANCE)
                 .withBilling(aBilling().build())
                 .withShipping(aShipping().build());
     }

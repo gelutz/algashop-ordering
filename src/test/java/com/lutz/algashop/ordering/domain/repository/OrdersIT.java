@@ -2,6 +2,7 @@ package com.lutz.algashop.ordering.domain.repository;
 
 import com.lutz.algashop.ordering.domain.entity.builder.OrderTestBuilder;
 import com.lutz.algashop.ordering.domain.entity.order.Order;
+import com.lutz.algashop.ordering.domain.entity.order.OrderStatus;
 import com.lutz.algashop.ordering.domain.entity.order.vo.OrderId;
 import com.lutz.algashop.ordering.infrastructure.persistence.assembler.OrderPersistenceEntityAssembler;
 import com.lutz.algashop.ordering.infrastructure.persistence.disassembler.OrderPersistenceEntityDisassembler;
@@ -38,5 +39,20 @@ class OrdersIT {
 		Assertions.assertEquals(originalOrder.id(), savedOrder.id());
 		Assertions.assertEquals(originalOrder.customerId(), savedOrder.customerId());
 		Assertions.assertEquals(originalOrder.status(), savedOrder.status());
+	}
+
+	@Test
+	void shouldUpdateExistingOrder() {
+		Order order = OrderTestBuilder.anExistingOrder().withStatus(OrderStatus.PLACED).build();
+		sut.add(order);
+
+		// change the object for an equal (new) one
+		order = sut.ofId(order.id()).orElseThrow();
+		order.markAsPaid();
+
+		sut.add(order);
+
+		Order result = sut.ofId(order.id()).orElseThrow();
+		Assertions.assertTrue(result.isPaid());
 	}
 }
