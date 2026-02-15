@@ -10,10 +10,13 @@ import com.lutz.algashop.ordering.infrastructure.persistence.disassembler.OrderI
 import com.lutz.algashop.ordering.infrastructure.persistence.disassembler.OrderPersistenceEntityDisassembler;
 import com.lutz.algashop.ordering.infrastructure.persistence.entity.OrderPersistenceEntity;
 import com.lutz.algashop.ordering.infrastructure.persistence.repository.OrderPersistenceEntityRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -28,8 +31,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 		SpringDataAuditingConfiguration.class
 })
 class OrdersPersistenceProviderIT {
-	private OrdersPersistenceProvider sut;
-	private OrderPersistenceEntityRepository orderPersistenceEntityRepository;
+	private final OrdersPersistenceProvider sut;
+	private final OrderPersistenceEntityRepository orderPersistenceEntityRepository;
 
 	@Autowired
 	private OrdersPersistenceProviderIT(OrdersPersistenceProvider provider, OrderPersistenceEntityRepository repository) {
@@ -59,5 +62,14 @@ class OrdersPersistenceProviderIT {
 		assertNotNull(result.getCreatedByUserId());
 		assertNotNull(result.getLastModifiedAt());
 		assertNotNull(result.getLastModifiedUserId());
+	}
+
+	@Test
+	@Transactional(propagation = Propagation.NOT_SUPPORTED) // forces to not be transactional
+	void shouldNotFailWhenNoTransaction() {
+		Order order = OrderTestBuilder.aFilledDraftOrder().build();
+		sut.add(order);
+
+		Assertions.assertDoesNotThrow(() -> sut.ofId(order.id()).orElseThrow());
 	}
 }

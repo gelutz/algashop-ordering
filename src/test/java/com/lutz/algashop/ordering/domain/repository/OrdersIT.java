@@ -91,4 +91,21 @@ class OrdersIT {
 		Assertions.assertNotNull(result.paidAt());
 		Assertions.assertNotNull(result.version());
 	}
+
+	@Test
+	void shouldSeeIfExistsAndCountExistingOrders() {
+		Order order1 = OrderTestBuilder.aFilledDraftOrder()
+		                              .withStatus(OrderStatus.PLACED)
+		                              .build();
+
+		sut.add(order1);
+
+		Order order2 = OrderTestBuilder.aFilledDraftOrder()
+		                               .build();
+
+		sut.add(order2);
+
+		Assertions.assertEquals(2, sut.count());
+		Assertions.assertTrue(sut.exists(order1.id()));
+	}
 }
