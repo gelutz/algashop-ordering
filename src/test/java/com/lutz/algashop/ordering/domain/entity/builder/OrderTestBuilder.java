@@ -127,7 +127,7 @@ public class OrderTestBuilder {
         this.items = products.stream().map(p ->
                 OrderItem.newOrderBuilder()
                     .orderId(this.id)
-                        .product(aProduct().build())
+                        .product(p)
                         .quantity(new Quantity(1))
                      .build()).collect(Collectors.toSet());
         return this;

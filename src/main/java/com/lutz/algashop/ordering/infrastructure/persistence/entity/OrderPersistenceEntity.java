@@ -51,11 +51,11 @@ public class OrderPersistenceEntity {
 	private OffsetDateTime lastModifiedAt;
 	@LastModifiedBy
 	private UUID lastModifiedUserId;
-	@Version
-	private Long version;
-
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<OrderItemPersistenceEntity> items = new HashSet<>();
+
+	@Version
+	private Long version;
 
 	@Builder
 	public OrderPersistenceEntity(Long id, UUID customerId, BigDecimal totalAmount, Integer totalItems, String status, String paymentMethod, BillingEmbeddable billing, ShippingEmbeddable shipping, OffsetDateTime placedAt, OffsetDateTime paidAt, OffsetDateTime readyAt, OffsetDateTime canceledAt, UUID createdByUserId, OffsetDateTime lastModifiedAt, UUID lastModifiedUserId, Long version, Set<OrderItemPersistenceEntity> items) {

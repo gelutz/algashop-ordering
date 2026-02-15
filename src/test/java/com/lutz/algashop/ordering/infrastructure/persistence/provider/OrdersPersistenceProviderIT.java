@@ -3,6 +3,7 @@ package com.lutz.algashop.ordering.infrastructure.persistence.provider;
 import com.lutz.algashop.ordering.domain.entity.builder.OrderTestBuilder;
 import com.lutz.algashop.ordering.domain.entity.order.Order;
 import com.lutz.algashop.ordering.domain.entity.order.OrderStatus;
+import com.lutz.algashop.ordering.infrastructure.persistence.assembler.OrderItemPersistenceEntityAssembler;
 import com.lutz.algashop.ordering.infrastructure.persistence.assembler.OrderPersistenceEntityAssembler;
 import com.lutz.algashop.ordering.infrastructure.persistence.config.SpringDataAuditingConfiguration;
 import com.lutz.algashop.ordering.infrastructure.persistence.disassembler.OrderPersistenceEntityDisassembler;
@@ -19,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @DataJpaTest
 @Import({
 		OrderPersistenceEntityAssembler.class,
+		OrderItemPersistenceEntityAssembler.class,
 		OrderPersistenceEntityDisassembler.class,
 		OrdersPersistenceProvider.class,
 		SpringDataAuditingConfiguration.class

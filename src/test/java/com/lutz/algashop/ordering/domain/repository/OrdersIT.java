@@ -4,6 +4,7 @@ import com.lutz.algashop.ordering.domain.entity.builder.OrderTestBuilder;
 import com.lutz.algashop.ordering.domain.entity.order.Order;
 import com.lutz.algashop.ordering.domain.entity.order.OrderStatus;
 import com.lutz.algashop.ordering.domain.entity.order.vo.OrderId;
+import com.lutz.algashop.ordering.infrastructure.persistence.assembler.OrderItemPersistenceEntityAssembler;
 import com.lutz.algashop.ordering.infrastructure.persistence.assembler.OrderPersistenceEntityAssembler;
 import com.lutz.algashop.ordering.infrastructure.persistence.disassembler.OrderPersistenceEntityDisassembler;
 import com.lutz.algashop.ordering.infrastructure.persistence.provider.OrdersPersistenceProvider;
@@ -18,7 +19,12 @@ import org.springframework.dao.OptimisticLockingFailureException;
 import java.util.Optional;
 
 @DataJpaTest
-@Import({OrdersPersistenceProvider.class, OrderPersistenceEntityAssembler.class, OrderPersistenceEntityDisassembler.class})
+@Import({
+		OrdersPersistenceProvider.class,
+		OrderPersistenceEntityAssembler.class,
+		OrderItemPersistenceEntityAssembler.class,
+		OrderPersistenceEntityDisassembler.class
+})
 class OrdersIT {
 	private final Orders sut;
 

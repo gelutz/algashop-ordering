@@ -2,13 +2,30 @@ package com.lutz.algashop.ordering.infrastructure.persistence.assembler;
 
 import com.lutz.algashop.ordering.domain.entity.builder.OrderTestBuilder;
 import com.lutz.algashop.ordering.domain.entity.order.Order;
+import com.lutz.algashop.ordering.domain.entity.order.OrderItem;
+import com.lutz.algashop.ordering.domain.entity.order.vo.Product;
+import com.lutz.algashop.ordering.domain.entity.order.vo.ProductId;
+import com.lutz.algashop.ordering.infrastructure.persistence.builder.OrderPersistenceEntityTestBuilder;
+import com.lutz.algashop.ordering.infrastructure.persistence.entity.OrderItemPersistenceEntity;
 import com.lutz.algashop.ordering.infrastructure.persistence.entity.OrderPersistenceEntity;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class OrderPersistenceEntityAssemblerIT {
-	private final OrderPersistenceEntityAssembler sut = new OrderPersistenceEntityAssembler();
+	private final OrderItemPersistenceEntityAssembler itemAssembler = new OrderItemPersistenceEntityAssembler();
+	private OrderPersistenceEntityAssembler sut;
+
+	@BeforeEach
+	void setup() {
+		 sut = new OrderPersistenceEntityAssembler(itemAssembler);
+	}
 
 	@Test
 	void givenDomainObjectShouldConvertToPersistenceObject() {
@@ -45,5 +62,77 @@ class OrderPersistenceEntityAssemblerIT {
 		assertEquals(result.getPaidAt(), orderStub.paidAt());
 		assertEquals(result.getReadyAt(), orderStub.readyAt());
 		assertEquals(result.getCanceledAt(), orderStub.canceledAt());
+	}
+
+	@Test
+	void givenOrderWithNoItemsShouldRemovePersistedItemsEntities() {
+		Order orderCollectionWithoutItems = OrderTestBuilder.aFilledDraftOrder()
+		                                                    .withProducts(new HashSet<>())
+		                                                    .build();
+		OrderPersistenceEntity orderPersistenceWithItems = OrderPersistenceEntityTestBuilder.existing().build();
+
+		Assertions.assertTrue(orderCollectionWithoutItems.items().isEmpty());
+		Assertions.assertFalse(orderPersistenceWithItems.getItems().isEmpty());
+
+		sut.merge(orderPersistenceWithItems, orderCollectionWithoutItems);
+
+		Assertions.assertTrue(orderPersistenceWithItems.getItems().isEmpty());
+	}
+
+	@Test
+	void givenOrderWithItemsShouldAddPersistedItemsEntities() {
+		Order orderCollectionWithItems = OrderTestBuilder.aFilledDraftOrder()
+		                                                    .build();
+		OrderPersistenceEntity orderPersistenceWithoutItems = OrderPersistenceEntityTestBuilder
+				.existing()
+				.items(new HashSet<>())
+				.build();
+
+		Assertions.assertFalse(orderCollectionWithItems.items().isEmpty());
+		Assertions.assertTrue(orderPersistenceWithoutItems.getItems().isEmpty());
+
+		sut.merge(orderPersistenceWithoutItems, orderCollectionWithItems);
+
+		Assertions.assertFalse(orderPersistenceWithoutItems.getItems().isEmpty());
+	}
+
+	@Test
+	void givenOrderWithItemsWhenMergedShouldRemoveItemsNotInTheNewList() {
+		ProductId productId = new ProductId();
+		Product productInBothLists = OrderTestBuilder.aProduct().id(productId).build();
+		Product productToBeRemoved = OrderTestBuilder.aProduct().build();
+
+		Order order = OrderTestBuilder
+				.aFilledDraftOrder()
+				.withProducts(Set.of(productToBeRemoved, productInBothLists))
+		        .build();
+
+		OrderPersistenceEntity orderPersistenceEntity = OrderPersistenceEntityTestBuilder
+				.existing()
+				.items(order
+						.items()
+						.stream()
+						.map(itemAssembler::fromDomain)
+						.collect(Collectors.toSet()))
+				.build();
+
+		Assertions.assertFalse(order.items().isEmpty());
+		Assertions.assertFalse(orderPersistenceEntity.getItems().isEmpty());
+
+		// removes an item from the order collection, that needs to be persisted (in this cased removed) in the test.
+		OrderItem itemToBeRemoved = order.items()
+		                                 .stream()
+		                                 .filter(item -> item.productId() == productToBeRemoved.id())
+		                                 .findFirst()
+				                         .orElseThrow();
+
+		order.removeItem(itemToBeRemoved.id());
+
+		sut.merge(orderPersistenceEntity, order);
+
+
+		Assertions.assertEquals(1, orderPersistenceEntity.getItems().size());
+		OrderItemPersistenceEntity resultItem = orderPersistenceEntity.getItems().iterator().next();
+		Assertions.assertEquals(productId.value(), resultItem.getProductId());
 	}
 }

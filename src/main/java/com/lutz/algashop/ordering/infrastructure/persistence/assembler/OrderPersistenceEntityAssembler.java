@@ -2,20 +2,30 @@ package com.lutz.algashop.ordering.infrastructure.persistence.assembler;
 
 import com.lutz.algashop.ordering.domain.entity.customer.vo.Address;
 import com.lutz.algashop.ordering.domain.entity.order.Order;
+import com.lutz.algashop.ordering.domain.entity.order.OrderItem;
 import com.lutz.algashop.ordering.domain.entity.order.vo.Billing;
 import com.lutz.algashop.ordering.domain.entity.order.vo.Recipient;
 import com.lutz.algashop.ordering.domain.entity.order.vo.Shipping;
+import com.lutz.algashop.ordering.infrastructure.persistence.entity.OrderItemPersistenceEntity;
 import com.lutz.algashop.ordering.infrastructure.persistence.entity.OrderPersistenceEntity;
 import com.lutz.algashop.ordering.infrastructure.persistence.entity.embeddable.AddressEmbeddable;
 import com.lutz.algashop.ordering.infrastructure.persistence.entity.embeddable.BillingEmbeddable;
 import com.lutz.algashop.ordering.infrastructure.persistence.entity.embeddable.RecipientEmbeddable;
 import com.lutz.algashop.ordering.infrastructure.persistence.entity.embeddable.ShippingEmbeddable;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor
 public class OrderPersistenceEntityAssembler {
+	private final OrderItemPersistenceEntityAssembler itemAssembler;
+
 	public OrderPersistenceEntity fromDomain(Order order) {
 		return merge(new OrderPersistenceEntity(), order);
 	}
@@ -35,7 +45,41 @@ public class OrderPersistenceEntityAssembler {
 		orderPersistenceEntity.setBilling(billingFromDomain(order.billing()));
 		orderPersistenceEntity.setShipping(shippingFromDomain(order.shipping()));
 
+		Set<OrderItemPersistenceEntity> mergedItems = mergeItems(orderPersistenceEntity, order);
+		orderPersistenceEntity.setItems(mergedItems);
 		return orderPersistenceEntity;
+	}
+
+	private Set<OrderItemPersistenceEntity> mergeItems(OrderPersistenceEntity orderPersistenceEntity, Order order) {
+		Set<OrderItem> newItems = order.items();
+
+		if (newItems == null || newItems.isEmpty()) return new HashSet<>();
+
+		Set<OrderItemPersistenceEntity> existingItems = orderPersistenceEntity.getItems();
+		if (existingItems == null || existingItems.isEmpty()) {
+			return newItems.stream()
+			               .map(itemAssembler::fromDomain)
+			               .peek(item -> item.setOrder(orderPersistenceEntity))
+			               .collect(Collectors.toSet());
+		}
+
+		// creates a map with id -> item that will be updated with newItems
+		Map<Long, OrderItemPersistenceEntity> mappedItems = existingItems
+				.stream()
+				.collect(Collectors.toMap(
+						OrderItemPersistenceEntity::getId,
+						item -> item)
+		        );
+
+		return newItems
+				.stream()
+				.map(item -> {
+					OrderItemPersistenceEntity currentItem = mappedItems.getOrDefault(
+							item.id().value().toLong(),
+							new OrderItemPersistenceEntity()
+					                                                               );
+					return itemAssembler.merge(currentItem, item);
+				}).collect(Collectors.toSet());
 	}
 
 	private BillingEmbeddable billingFromDomain(Billing entity) {
