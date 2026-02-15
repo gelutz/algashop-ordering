@@ -4,7 +4,7 @@ import com.lutz.algashop.ordering.domain.entity.builder.OrderTestBuilder;
 import com.lutz.algashop.ordering.domain.entity.order.Order;
 import com.lutz.algashop.ordering.domain.entity.order.OrderStatus;
 import com.lutz.algashop.ordering.infrastructure.persistence.assembler.OrderPersistenceEntityAssembler;
-import com.lutz.algashop.ordering.infrastructure.persistence.config.SpringDataAuditingConfig;
+import com.lutz.algashop.ordering.infrastructure.persistence.config.SpringDataAuditingConfiguration;
 import com.lutz.algashop.ordering.infrastructure.persistence.disassembler.OrderPersistenceEntityDisassembler;
 import com.lutz.algashop.ordering.infrastructure.persistence.entity.OrderPersistenceEntity;
 import com.lutz.algashop.ordering.infrastructure.persistence.repository.OrderPersistenceEntityRepository;
@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 		OrderPersistenceEntityAssembler.class,
 		OrderPersistenceEntityDisassembler.class,
 		OrdersPersistenceProvider.class,
-		SpringDataAuditingConfig.class
+		SpringDataAuditingConfiguration.class
 })
 class OrdersPersistenceProviderIT {
 	private OrdersPersistenceProvider sut;

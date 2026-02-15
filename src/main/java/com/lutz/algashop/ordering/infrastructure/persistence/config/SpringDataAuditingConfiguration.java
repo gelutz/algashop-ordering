@@ -16,7 +16,7 @@ import java.util.UUID;
 		dateTimeProviderRef = "auditingDateTimeProvider",
 		auditorAwareRef = "auditorProvider"
 )
-public class SpringDataAuditingConfig {
+public class SpringDataAuditingConfiguration {
 	@Bean
 	public DateTimeProvider auditingDateTimeProvider() {
 		return () -> Optional.of(OffsetDateTime.now().truncatedTo(ChronoUnit.MILLIS));

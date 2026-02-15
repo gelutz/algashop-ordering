@@ -2,7 +2,7 @@ package com.lutz.algashop.ordering.infrastructure.persistence.repository;
 
 import com.lutz.algashop.ordering.domain.utils.IdGenerator;
 import com.lutz.algashop.ordering.infrastructure.persistence.builder.OrderPersistenceEntityTestBuilder;
-import com.lutz.algashop.ordering.infrastructure.persistence.config.SpringDataAuditingConfig;
+import com.lutz.algashop.ordering.infrastructure.persistence.config.SpringDataAuditingConfiguration;
 import com.lutz.algashop.ordering.infrastructure.persistence.entity.OrderPersistenceEntity;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE) // faz o @DataJpaTest usar o banco que configuramos no application-test.yaml
-@Import(SpringDataAuditingConfig.class)
+@Import(SpringDataAuditingConfiguration.class)
 class OrderPersistenceEntityRepositoryIT {
 
 	private final OrderPersistenceEntityRepository sut;
@@ -36,6 +36,10 @@ class OrderPersistenceEntityRepositoryIT {
 
 		sut.saveAndFlush(orderPersistenceEntity);
 		Assertions.assertTrue(sut.existsById(id));
+
+		OrderPersistenceEntity savedOrder = sut.findById(id).orElseThrow();
+
+		Assertions.assertFalse(savedOrder.getItems().isEmpty());
 	}
 
 	@Test

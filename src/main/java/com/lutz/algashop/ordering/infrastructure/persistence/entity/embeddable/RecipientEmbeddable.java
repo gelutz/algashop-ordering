@@ -1,0 +1,19 @@
+package com.lutz.algashop.ordering.infrastructure.persistence.entity.embeddable;
+
+import jakarta.persistence.Embeddable;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Embeddable
+public class RecipientEmbeddable {
+	private String firstName;
+	private String lastName;
+	private String document;
+	private String phone;
+}
