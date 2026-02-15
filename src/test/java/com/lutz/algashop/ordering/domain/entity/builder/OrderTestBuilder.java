@@ -29,6 +29,7 @@ public class OrderTestBuilder {
 
     public static OrderTestBuilder aFilledDraftOrder() {
         return new OrderTestBuilder()
+                .withCustomerId(CustomerTestBuilder.DEFAULT_CUSTOMER_ID)
                 .withId(new OrderId())
                 .withStatus(OrderStatus.DRAFT)
                 .withBilling(aBilling().build())
@@ -40,6 +41,7 @@ public class OrderTestBuilder {
     public static OrderTestBuilder anExistingOrder() {
         return new OrderTestBuilder()
                 .withId(new OrderId())
+                .withCustomerId(CustomerTestBuilder.DEFAULT_CUSTOMER_ID)
                 .withStatus(OrderStatus.PLACED)
                 .withPaymentMethod(PaymentMethod.GATEWAY_BALANCE)
                 .withBilling(aBilling().build())

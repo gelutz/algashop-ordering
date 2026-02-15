@@ -30,6 +30,25 @@ public class Customer implements AggregateRoot<CustomerId> {
 	private OffsetDateTime registeredAt;
 	private OffsetDateTime archivedAt;
 	private LoyaltyPoints loyaltyPoints;
+	private Long version;
+
+	// existing customer
+	@Builder(builderClassName = "ExistingCustomerBuilder", builderMethodName = "existing")
+	private Customer(CustomerId id, FullName fullName, Birthdate birthDate, Email email, Phone phone, Document document, Address address, Boolean promotionNotificationAllowed, Boolean archived, OffsetDateTime registeredAt, OffsetDateTime archivedAt, LoyaltyPoints loyaltyPoints, Long version) {
+		setId(id);
+		setFullName(fullName);
+		this.birthdate = birthDate;
+		setEmail(email);
+		setPhone(phone);
+		setDocument(document);
+		setAddress(address);
+		setPromotionNotificationAllowed(promotionNotificationAllowed);
+		setArchived(archived);
+		setRegisteredAt(registeredAt);
+		setArchivedAt(archivedAt);
+		setLoyaltyPoints(loyaltyPoints);
+		setVersion(version);
+	}
 
 	// new customer
 	@Builder(builderClassName = "NewCustomerBuilder", builderMethodName = "fresh")
@@ -46,6 +65,7 @@ public class Customer implements AggregateRoot<CustomerId> {
 		setRegisteredAt(OffsetDateTime.now());
 		setArchivedAt(null);
 		setLoyaltyPoints(LoyaltyPoints.ZERO);
+		setVersion(null);
 	}
 
 	public void archive() {
@@ -118,7 +138,9 @@ public class Customer implements AggregateRoot<CustomerId> {
 		this.setAddress(address);
 	}
 
-	;
+	public Long version() {
+		return version;
+	}
 
 	private void setId(CustomerId id) {
 		this.id = id;
@@ -172,6 +194,10 @@ public class Customer implements AggregateRoot<CustomerId> {
 
 	private void setEmail(Email email) {
 		this.email = email;
+	}
+
+	private void setVersion(Long version) {
+		this.version = version;
 	}
 
 	private void canChange() {

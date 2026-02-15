@@ -1,15 +1,20 @@
 package com.lutz.algashop.ordering.domain.repository;
 
+import com.lutz.algashop.ordering.domain.entity.builder.CustomerTestBuilder;
 import com.lutz.algashop.ordering.domain.entity.builder.OrderTestBuilder;
 import com.lutz.algashop.ordering.domain.entity.order.Order;
 import com.lutz.algashop.ordering.domain.entity.order.OrderStatus;
 import com.lutz.algashop.ordering.domain.entity.order.vo.OrderId;
+import com.lutz.algashop.ordering.infrastructure.persistence.assembler.CustomerPersistenceEntityAssembler;
 import com.lutz.algashop.ordering.infrastructure.persistence.assembler.OrderItemPersistenceEntityAssembler;
 import com.lutz.algashop.ordering.infrastructure.persistence.assembler.OrderPersistenceEntityAssembler;
+import com.lutz.algashop.ordering.infrastructure.persistence.disassembler.CustomerPersistenceEntityDisassembler;
 import com.lutz.algashop.ordering.infrastructure.persistence.disassembler.OrderItemPersistenceEntityDisassembler;
 import com.lutz.algashop.ordering.infrastructure.persistence.disassembler.OrderPersistenceEntityDisassembler;
+import com.lutz.algashop.ordering.infrastructure.persistence.provider.CustomersPersistenceProvider;
 import com.lutz.algashop.ordering.infrastructure.persistence.provider.OrdersPersistenceProvider;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,14 +30,26 @@ import java.util.Optional;
 		OrderPersistenceEntityAssembler.class,
 		OrderItemPersistenceEntityAssembler.class,
 		OrderPersistenceEntityDisassembler.class,
-		OrderItemPersistenceEntityDisassembler.class
+		OrderItemPersistenceEntityDisassembler.class,
+		CustomersPersistenceProvider.class,
+		CustomerPersistenceEntityAssembler.class,
+		CustomerPersistenceEntityDisassembler.class
 })
 class OrdersIT {
 	private final Orders sut;
+	private final Customers customers;
 
 	@Autowired
-	public OrdersIT(Orders sut) {
+	public OrdersIT(Orders sut, Customers customers) {
 		this.sut = sut;
+		this.customers = customers;
+	}
+
+	@BeforeEach
+	void setup() {
+		if (!customers.exists(CustomerTestBuilder.DEFAULT_CUSTOMER_ID)) {
+			customers.add(CustomerTestBuilder.aCustomer().build());
+		}
 	}
 
 	@Test
@@ -53,7 +70,9 @@ class OrdersIT {
 
 	@Test
 	void shouldUpdateExistingOrder() {
-		Order order = OrderTestBuilder.anExistingOrder().withStatus(OrderStatus.PLACED).build();
+		Order order = OrderTestBuilder
+				.anExistingOrder()
+				.withStatus(OrderStatus.PLACED).build();
 		sut.add(order);
 
 		// change the object for an equal (new) one

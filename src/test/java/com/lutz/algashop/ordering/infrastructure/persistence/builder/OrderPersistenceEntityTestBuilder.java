@@ -13,7 +13,7 @@ public class OrderPersistenceEntityTestBuilder {
 	public static OrderPersistenceEntity.OrderPersistenceEntityBuilder existing() {
 		return OrderPersistenceEntity.builder()
 		                      .id(IdGenerator.generateTSID().toLong())
-		                      .customerId(IdGenerator.generateTimeBasedUUID())
+		                      .customer(CustomerPersistenceEntityTestBuilder.existing().build())
 		                      .totalItems(2)
 		                      .totalAmount(new BigDecimal((100)))
 		                      .status("DRAFT")

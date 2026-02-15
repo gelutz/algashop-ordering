@@ -6,12 +6,14 @@ import com.lutz.algashop.ordering.domain.entity.order.OrderItem;
 import com.lutz.algashop.ordering.domain.entity.order.vo.Billing;
 import com.lutz.algashop.ordering.domain.entity.order.vo.Recipient;
 import com.lutz.algashop.ordering.domain.entity.order.vo.Shipping;
+import com.lutz.algashop.ordering.infrastructure.persistence.entity.CustomerPersistenceEntity;
 import com.lutz.algashop.ordering.infrastructure.persistence.entity.OrderItemPersistenceEntity;
 import com.lutz.algashop.ordering.infrastructure.persistence.entity.OrderPersistenceEntity;
 import com.lutz.algashop.ordering.infrastructure.persistence.entity.embeddable.AddressEmbeddable;
 import com.lutz.algashop.ordering.infrastructure.persistence.entity.embeddable.BillingEmbeddable;
 import com.lutz.algashop.ordering.infrastructure.persistence.entity.embeddable.RecipientEmbeddable;
 import com.lutz.algashop.ordering.infrastructure.persistence.entity.embeddable.ShippingEmbeddable;
+import com.lutz.algashop.ordering.infrastructure.persistence.repository.CustomerPersistenceEntityRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -25,6 +27,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class OrderPersistenceEntityAssembler {
 	private final OrderItemPersistenceEntityAssembler itemAssembler;
+	private final CustomerPersistenceEntityRepository customerRepository;
 
 	public OrderPersistenceEntity fromDomain(Order order) {
 		return merge(new OrderPersistenceEntity(), order);
@@ -32,7 +35,6 @@ public class OrderPersistenceEntityAssembler {
 
 	public OrderPersistenceEntity merge(OrderPersistenceEntity orderPersistenceEntity, Order order) {
 		orderPersistenceEntity.setId(order.id().value().toLong());
-		orderPersistenceEntity.setCustomerId(order.customerId().value());
 		orderPersistenceEntity.setTotalAmount(order.totalAmount().value());
 		orderPersistenceEntity.setTotalItems(order.itemsAmount().value());
 		orderPersistenceEntity.setStatus(order.status().name());
@@ -44,6 +46,10 @@ public class OrderPersistenceEntityAssembler {
 		orderPersistenceEntity.setVersion(order.version());
 		orderPersistenceEntity.setBilling(billingFromDomain(order.billing()));
 		orderPersistenceEntity.setShipping(shippingFromDomain(order.shipping()));
+
+		CustomerPersistenceEntity customerPersistenceReference = customerRepository
+				.getReferenceById(order.customerId().value());
+		orderPersistenceEntity.setCustomer(customerPersistenceReference);
 
 		Set<OrderItemPersistenceEntity> mergedItems = mergeItems(orderPersistenceEntity, order);
 		orderPersistenceEntity.setItems(mergedItems);

@@ -4,10 +4,12 @@ import com.lutz.algashop.ordering.domain.entity.customer.Customer;
 import com.lutz.algashop.ordering.domain.entity.customer.vo.*;
 
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 
 public class CustomerTestBuilder {
+    public static final CustomerId DEFAULT_CUSTOMER_ID = new CustomerId();
 
-    private CustomerId id = new CustomerId();
+    private CustomerId id = DEFAULT_CUSTOMER_ID;
     private FullName fullName = new FullName("John", "Doe");
     private Birthdate birthdate = new Birthdate(LocalDate.now().minusYears(10));
     private Email email = new Email("valid@email.com");
@@ -27,18 +29,12 @@ public class CustomerTestBuilder {
     private CustomerTestBuilder() {
     }
 
-    public static CustomerTestBuilder aNewCustomer() {
+    public static CustomerTestBuilder aCustomer() {
         return new CustomerTestBuilder();
     }
 
-    public static CustomerTestBuilder anExistingCustomer() {
-        // Since there's no existing builder in the domain, we'll use a new one for now.
-        // If the domain evolves to have an existing builder, we should update this.
-        return new CustomerTestBuilder();
-    }
-
-    public CustomerTestBuilder withFullName(FullName fullName) {
-        this.fullName = fullName;
+    public CustomerTestBuilder withId(CustomerId id) {
+        this.id = id;
         return this;
     }
 
@@ -78,14 +74,18 @@ public class CustomerTestBuilder {
 
     public Customer build() {
         // The domain only exposes NewCustomerBuilder which sets ID, registeredAt, etc.
-        return Customer.fresh()
-                .fullName(fullName)
-                .birthDate(birthdate)
-                .email(email)
-                .phone(phone)
-                .document(document)
-                .address(address)
-                .promotionNotificationAllowed(promotionNotificationAllowed)
-                .build();
+        return Customer.existing()
+                       .id(id)
+                       .fullName(fullName)
+                       .birthDate(birthdate)
+                       .email(email)
+                       .phone(phone)
+                       .document(document)
+                       .address(address)
+                       .promotionNotificationAllowed(promotionNotificationAllowed)
+                       .archived(false)
+                       .registeredAt(OffsetDateTime.now())
+                       .loyaltyPoints(LoyaltyPoints.ZERO)
+                       .build();
     }
 }

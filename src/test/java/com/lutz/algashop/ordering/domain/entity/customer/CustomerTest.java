@@ -5,8 +5,6 @@ import com.lutz.algashop.ordering.domain.entity.customer.vo.*;
 import com.lutz.algashop.ordering.domain.exception.CustomerArchivedException;
 import org.junit.jupiter.api.*;
 
-import java.time.LocalDate;
-
 public class CustomerTest {
 	private Customer sut;
 	private final Email validEmailStub = new Email("valid@email.com");
@@ -16,7 +14,7 @@ public class CustomerTest {
 	class ArchiveTests {
 		@BeforeEach
 		void setup() {
-			sut = CustomerTestBuilder.aNewCustomer().build();
+			sut = CustomerTestBuilder.aCustomer().build();
 		}
 
 		@Test
@@ -57,7 +55,7 @@ public class CustomerTest {
 	class AddLoyaltyPointsTests {
 		@BeforeEach
 		void setup() {
-			sut = CustomerTestBuilder.aNewCustomer().build();
+			sut = CustomerTestBuilder.aCustomer().build();
 		}
 
 		@Test
