@@ -10,13 +10,16 @@ import com.lutz.algashop.ordering.infrastructure.persistence.entity.embeddable.A
 import com.lutz.algashop.ordering.infrastructure.persistence.entity.embeddable.BillingEmbeddable;
 import com.lutz.algashop.ordering.infrastructure.persistence.entity.embeddable.RecipientEmbeddable;
 import com.lutz.algashop.ordering.infrastructure.persistence.entity.embeddable.ShippingEmbeddable;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.HashSet;
 import java.util.Objects;
 
 @Component
+@RequiredArgsConstructor
 public class OrderPersistenceEntityDisassembler {
+	private final OrderItemPersistenceEntityDisassembler itemDisassembler;
+
 	public Order fromPersistence(OrderPersistenceEntity order) {
 		return Order.existing()
 				.id(new OrderId(order.getId()))
@@ -31,7 +34,7 @@ public class OrderPersistenceEntityDisassembler {
 			    .paidAt(order.getPaidAt())
 			    .readyAt(order.getReadyAt())
 			    .canceledAt(order.getCanceledAt())
-			    .items(new HashSet<>())
+			    .items(itemDisassembler.fromPersistence(order.getItems()))
 				.version(order.getVersion())
 				.build();
 	}

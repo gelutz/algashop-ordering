@@ -9,14 +9,22 @@ import com.lutz.algashop.ordering.domain.entity.order.vo.OrderId;
 import com.lutz.algashop.ordering.domain.entity.order.vo.Quantity;
 import com.lutz.algashop.ordering.infrastructure.persistence.builder.OrderPersistenceEntityTestBuilder;
 import com.lutz.algashop.ordering.infrastructure.persistence.entity.OrderPersistenceEntity;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class OrderPersistenceEntityDisassemblerIT {
 
-	private final OrderPersistenceEntityDisassembler sut = new OrderPersistenceEntityDisassembler();
+	private final OrderItemPersistenceEntityDisassembler itemDisassembler = new OrderItemPersistenceEntityDisassembler();
+	private OrderPersistenceEntityDisassembler sut;
 
+	@BeforeEach
+	void setup() {
+		sut = new OrderPersistenceEntityDisassembler(itemDisassembler);
+	}
 	@Test
 	void givenPersistenceObjectShouldConvertToDomainObject() {
 		OrderPersistenceEntity entity = OrderPersistenceEntityTestBuilder.existing().build();
@@ -33,5 +41,17 @@ class OrderPersistenceEntityDisassemblerIT {
 		assertEquals(result.paidAt(), entity.getPaidAt());
 		assertEquals(result.readyAt(), entity.getReadyAt());
 		assertEquals(result.canceledAt(), entity.getCanceledAt());
+
+		Long orderItemId = result.items().iterator().next().id().value().toLong();
+		Long orderPersistenceEntityId = entity
+				.getItems()
+				.stream()
+				.filter(itemEntity ->
+						Objects.equals(itemEntity.getId(), orderItemId))
+				.findFirst()
+				.orElseThrow()
+				.getId();
+
+		assertEquals(orderPersistenceEntityId, orderItemId);
 	}
 }

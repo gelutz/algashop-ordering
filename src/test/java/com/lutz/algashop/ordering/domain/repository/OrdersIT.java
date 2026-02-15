@@ -6,6 +6,7 @@ import com.lutz.algashop.ordering.domain.entity.order.OrderStatus;
 import com.lutz.algashop.ordering.domain.entity.order.vo.OrderId;
 import com.lutz.algashop.ordering.infrastructure.persistence.assembler.OrderItemPersistenceEntityAssembler;
 import com.lutz.algashop.ordering.infrastructure.persistence.assembler.OrderPersistenceEntityAssembler;
+import com.lutz.algashop.ordering.infrastructure.persistence.disassembler.OrderItemPersistenceEntityDisassembler;
 import com.lutz.algashop.ordering.infrastructure.persistence.disassembler.OrderPersistenceEntityDisassembler;
 import com.lutz.algashop.ordering.infrastructure.persistence.provider.OrdersPersistenceProvider;
 import org.junit.jupiter.api.Assertions;
@@ -23,7 +24,8 @@ import java.util.Optional;
 		OrdersPersistenceProvider.class,
 		OrderPersistenceEntityAssembler.class,
 		OrderItemPersistenceEntityAssembler.class,
-		OrderPersistenceEntityDisassembler.class
+		OrderPersistenceEntityDisassembler.class,
+		OrderItemPersistenceEntityDisassembler.class
 })
 class OrdersIT {
 	private final Orders sut;
