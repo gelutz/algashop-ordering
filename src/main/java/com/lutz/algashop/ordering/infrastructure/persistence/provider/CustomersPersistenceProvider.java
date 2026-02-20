@@ -2,6 +2,7 @@ package com.lutz.algashop.ordering.infrastructure.persistence.provider;
 
 import com.lutz.algashop.ordering.domain.entity.customer.Customer;
 import com.lutz.algashop.ordering.domain.entity.customer.vo.CustomerId;
+import com.lutz.algashop.ordering.domain.entity.customer.vo.Email;
 import com.lutz.algashop.ordering.domain.repository.Customers;
 import com.lutz.algashop.ordering.infrastructure.persistence.assembler.CustomerPersistenceEntityAssembler;
 import com.lutz.algashop.ordering.infrastructure.persistence.disassembler.CustomerPersistenceEntityDisassembler;
@@ -27,11 +28,17 @@ public class CustomersPersistenceProvider implements Customers {
 
 	private final EntityManager entityManager;
 
+	public Optional<Customer> ofEmail(Email email) {
+		return customerPersistenceEntityRepository
+				.findByEmail(email.toString())
+				.map(disassembler::fromPersistence);
+	}
+
 	@Override
 	public Optional<Customer> ofId(CustomerId customerId) {
-		var result = customerPersistenceEntityRepository.findById(customerId.value())
-				.orElseThrow();
-		return Optional.of(disassembler.fromPersistence(result));
+		return customerPersistenceEntityRepository
+				.findById(customerId.value())
+				.map(disassembler::fromPersistence);
 	}
 
 	@Override
