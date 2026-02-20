@@ -1,5 +1,6 @@
 package com.lutz.algashop.ordering.infrastructure.persistence.provider;
 
+import com.lutz.algashop.ordering.domain.entity.customer.vo.CustomerId;
 import com.lutz.algashop.ordering.domain.entity.order.Order;
 import com.lutz.algashop.ordering.domain.entity.order.vo.OrderId;
 import com.lutz.algashop.ordering.domain.repository.Orders;
@@ -15,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
+import java.time.Year;
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -50,6 +53,13 @@ public class OrdersPersistenceProvider implements Orders {
 							update(aggregateRoot, entity),
 						() -> insert(aggregateRoot)
 				);
+	}
+
+	@Override
+	public List<Order> placedByCustomerInYear(CustomerId customerId, Year year) {
+		return orderPersistenceEntityRepository
+				.placedByCustomerInYear(customerId.value(), year.getValue())
+				.stream().map(disassembler::fromPersistence).toList();
 	}
 
 	private void insert(Order aggregateRoot) {

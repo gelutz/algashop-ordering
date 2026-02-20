@@ -2,6 +2,7 @@ package com.lutz.algashop.ordering.domain.repository;
 
 import com.lutz.algashop.ordering.domain.entity.builder.CustomerTestBuilder;
 import com.lutz.algashop.ordering.domain.entity.builder.OrderTestBuilder;
+import com.lutz.algashop.ordering.domain.entity.customer.vo.CustomerId;
 import com.lutz.algashop.ordering.domain.entity.order.Order;
 import com.lutz.algashop.ordering.domain.entity.order.OrderStatus;
 import com.lutz.algashop.ordering.domain.entity.order.vo.OrderId;
@@ -22,6 +23,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.dao.OptimisticLockingFailureException;
 
+import java.time.Year;
+import java.util.List;
 import java.util.Optional;
 
 @DataJpaTest
@@ -126,5 +129,32 @@ class OrdersIT {
 
 		Assertions.assertEquals(2, sut.count());
 		Assertions.assertTrue(sut.exists(order1.id()));
+	}
+
+	@Test
+	void shouldListExistingOrdersByYear() {
+		Order orderStub1 = OrderTestBuilder.aFilledDraftOrder()
+		                               .build();
+		orderStub1.place();
+
+		CustomerId differentCustomerId = new CustomerId();
+		customers.add(CustomerTestBuilder
+				.aCustomer()
+	            .withId(differentCustomerId)
+				.build());
+		Order orderStub2 = OrderTestBuilder.aFilledDraftOrder()
+				.withCustomerId(differentCustomerId)
+		                                   .build();
+		sut.add(orderStub1);
+		sut.add(orderStub2);
+
+		CustomerId customerId = CustomerTestBuilder.DEFAULT_CUSTOMER_ID;
+
+		List<Order> result = sut.placedByCustomerInYear(customerId, Year.now());
+		Assertions.assertFalse(result.isEmpty());
+		Assertions.assertEquals(1, result.size());
+
+		List<Order> result2 = sut.placedByCustomerInYear(customerId, Year.now().minusYears(1));
+		Assertions.assertTrue(result2.isEmpty());
 	}
 }
