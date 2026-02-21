@@ -15,10 +15,7 @@ import lombok.experimental.Accessors;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Getter
 @Accessors(fluent = true)
@@ -29,15 +26,17 @@ public class ShoppingCart implements AggregateRoot<ShoppingCartId> {
 	private Money totalAmount;
 	private Quantity totalItems;
 	private OffsetDateTime createdAt;
+	private Long version;
 
 	@Builder(builderClassName = "ExistingShoppingCartBuilder", builderMethodName = "existing")
-	private ShoppingCart(@NonNull ShoppingCartId id, @NonNull CustomerId customerId, @NonNull Money totalAmount, @NonNull Quantity totalItems, @NonNull OffsetDateTime createdAt, Set<ShoppingCartItem> items) {
+	private ShoppingCart(@NonNull ShoppingCartId id, @NonNull CustomerId customerId, @NonNull Money totalAmount, @NonNull Quantity totalItems, @NonNull OffsetDateTime createdAt, Set<ShoppingCartItem> items, Long version) {
 		setId(id);
 		setCustomerId(customerId);
 		setTotalAmount(totalAmount);
 		setTotalItems(totalItems);
 		setCreatedAt(createdAt);
 		setItems(items);
+		setVersion(version);
 	}
 
 	public static ShoppingCart startShopping(@NonNull CustomerId customerId) {
@@ -47,7 +46,8 @@ public class ShoppingCart implements AggregateRoot<ShoppingCartId> {
 				Money.ZERO,
 				Quantity.ZERO,
 				OffsetDateTime.now(),
-				new HashSet<>()
+				new HashSet<>(),
+				null
 		);
 	}
 
@@ -161,6 +161,10 @@ public class ShoppingCart implements AggregateRoot<ShoppingCartId> {
 		this.createdAt = createdAt;
 	}
 
+	private void setVersion(Long version) {
+		this.version = version;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (o == null || getClass() != o.getClass())
@@ -173,4 +177,5 @@ public class ShoppingCart implements AggregateRoot<ShoppingCartId> {
 	public int hashCode() {
 		return Objects.hashCode(id);
 	}
+
 }
