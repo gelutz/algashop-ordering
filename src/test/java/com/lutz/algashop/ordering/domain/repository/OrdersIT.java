@@ -5,6 +5,7 @@ import com.lutz.algashop.ordering.domain.entity.builder.OrderTestBuilder;
 import com.lutz.algashop.ordering.domain.entity.customer.vo.CustomerId;
 import com.lutz.algashop.ordering.domain.entity.order.Order;
 import com.lutz.algashop.ordering.domain.entity.order.OrderStatus;
+import com.lutz.algashop.ordering.domain.entity.order.vo.Money;
 import com.lutz.algashop.ordering.domain.entity.order.vo.OrderId;
 import com.lutz.algashop.ordering.infrastructure.persistence.assembler.CustomerPersistenceEntityAssembler;
 import com.lutz.algashop.ordering.infrastructure.persistence.assembler.OrderItemPersistenceEntityAssembler;
@@ -156,5 +157,49 @@ class OrdersIT {
 
 		List<Order> result2 = sut.placedByCustomerInYear(customerId, Year.now().minusYears(1));
 		Assertions.assertTrue(result2.isEmpty());
+	}
+
+	@Test
+	void shouldReturnTotalValueSoldForCustomer() {
+		Order orderStub1 = OrderTestBuilder.aFilledDraftOrder().build();
+		Order orderStub2 = OrderTestBuilder.aFilledDraftOrder().build();
+		Order orderStub3 = OrderTestBuilder.aFilledDraftOrder().build();
+
+		orderStub1.place();
+		orderStub1.markAsPaid();
+		orderStub2.place();
+		orderStub2.markAsPaid();
+
+		orderStub3.cancel();
+
+		sut.add(orderStub1);
+		sut.add(orderStub2);
+		sut.add(orderStub3);
+
+		Money expectedResult = orderStub1.totalAmount().add(orderStub2.totalAmount());
+		Money actualResult = sut.totalSoldForCustomer(orderStub1.customerId());
+		Assertions.assertEquals(expectedResult, actualResult);
+	}
+
+
+	@Test
+	void shouldReturnNumberOfSalesPerCustomerPerYear() {
+		Order orderStub1 = OrderTestBuilder.aFilledDraftOrder().build();
+		Order orderStub2 = OrderTestBuilder.aFilledDraftOrder().build();
+		Order orderStub3 = OrderTestBuilder.aFilledDraftOrder().build();
+
+		orderStub1.place();
+		orderStub1.markAsPaid();
+		orderStub2.place();
+		orderStub2.markAsPaid();
+
+		sut.add(orderStub1);
+		sut.add(orderStub2);
+		sut.add(orderStub3);
+
+		long expectedResult = 2L;
+		long actualResult = sut.salesQuantityByCustomerInYear(orderStub1.customerId(), Year.now());
+
+		Assertions.assertEquals(expectedResult, actualResult);
 	}
 }

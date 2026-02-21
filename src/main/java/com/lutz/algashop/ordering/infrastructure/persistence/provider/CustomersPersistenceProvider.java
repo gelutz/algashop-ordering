@@ -22,34 +22,39 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class CustomersPersistenceProvider implements Customers {
-	private final CustomerPersistenceEntityRepository customerPersistenceEntityRepository;
+	private final CustomerPersistenceEntityRepository persistenceRepository;
 	private final CustomerPersistenceEntityAssembler assembler;
 	private final CustomerPersistenceEntityDisassembler disassembler;
 
 	private final EntityManager entityManager;
 
 	public Optional<Customer> ofEmail(Email email) {
-		return customerPersistenceEntityRepository
+		return persistenceRepository
 				.findByEmail(email.toString())
 				.map(disassembler::fromPersistence);
 	}
 
 	@Override
+	public boolean isEmailUnique(Email email, CustomerId exception) {
+		return !persistenceRepository.existsByEmailAndIdNot(email.toString(), exception.value());
+	}
+
+	@Override
 	public Optional<Customer> ofId(CustomerId customerId) {
-		return customerPersistenceEntityRepository
+		return persistenceRepository
 				.findById(customerId.value())
 				.map(disassembler::fromPersistence);
 	}
 
 	@Override
 	public boolean exists(CustomerId customerId) {
-		return customerPersistenceEntityRepository.existsById(customerId.value());
+		return persistenceRepository.existsById(customerId.value());
 	}
 
 	@Override
 	@Transactional(readOnly = false)
 	public void add(Customer aggregateRoot) {
-		customerPersistenceEntityRepository
+		persistenceRepository
 				.findById(aggregateRoot.id().value())
 				.ifPresentOrElse(
 					entity ->
@@ -60,14 +65,14 @@ public class CustomersPersistenceProvider implements Customers {
 
 	private void insert(Customer aggregateRoot) {
 		CustomerPersistenceEntity entity = assembler.fromDomain(aggregateRoot);
-		entity = customerPersistenceEntityRepository.saveAndFlush(entity);
+		entity = persistenceRepository.saveAndFlush(entity);
 		updateVersion(aggregateRoot, entity);
 	}
 
 	private void update(Customer aggregateRoot, CustomerPersistenceEntity entity) {
 		CustomerPersistenceEntity merged = assembler.merge(entity, aggregateRoot);
 		entityManager.detach(merged);
-		entity = customerPersistenceEntityRepository.saveAndFlush(merged);
+		entity = persistenceRepository.saveAndFlush(merged);
 		updateVersion(aggregateRoot, entity);
 	}
 
@@ -81,6 +86,6 @@ public class CustomersPersistenceProvider implements Customers {
 
 	@Override
 	public Long count() {
-		return customerPersistenceEntityRepository.count();
+		return persistenceRepository.count();
 	}
 }

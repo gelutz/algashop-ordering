@@ -2,6 +2,7 @@ package com.lutz.algashop.ordering.infrastructure.persistence.provider;
 
 import com.lutz.algashop.ordering.domain.entity.customer.vo.CustomerId;
 import com.lutz.algashop.ordering.domain.entity.order.Order;
+import com.lutz.algashop.ordering.domain.entity.order.vo.Money;
 import com.lutz.algashop.ordering.domain.entity.order.vo.OrderId;
 import com.lutz.algashop.ordering.domain.repository.Orders;
 import com.lutz.algashop.ordering.infrastructure.persistence.assembler.OrderPersistenceEntityAssembler;
@@ -60,6 +61,16 @@ public class OrdersPersistenceProvider implements Orders {
 		return orderPersistenceEntityRepository
 				.placedByCustomerInYear(customerId.value(), year.getValue())
 				.stream().map(disassembler::fromPersistence).toList();
+	}
+
+	@Override
+	public long salesQuantityByCustomerInYear(CustomerId customerId, Year year) {
+		return orderPersistenceEntityRepository.salesQuantityByCustomerInYear(customerId.value(), year.getValue());
+	}
+
+	@Override
+	public Money totalSoldForCustomer(CustomerId customerId) {
+		return new Money(orderPersistenceEntityRepository.totalSolForCustomer(customerId.value()));
 	}
 
 	private void insert(Order aggregateRoot) {

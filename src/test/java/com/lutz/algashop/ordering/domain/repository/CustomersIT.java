@@ -20,25 +20,27 @@ import java.util.Optional;
 import java.util.UUID;
 
 @DataJpaTest
-@Import({CustomersPersistenceProvider.class,
-		CustomerPersistenceEntityAssembler.class,
-		CustomerPersistenceEntityDisassembler.class})
+@Import({
+	CustomersPersistenceProvider.class,
+	CustomerPersistenceEntityAssembler.class,
+	CustomerPersistenceEntityDisassembler.class,
+})
 class CustomersIT {
 
-	private Customers customers;
+	private final Customers sut;
 
 	@Autowired
 	public CustomersIT(Customers customers) {
-		this.customers = customers;
+		this.sut = customers;
 	}
 
 	@Test
 	public void shouldPersistAndFind() {
 		Customer originalCustomer = CustomerTestBuilder.aCustomer().build();
 		CustomerId customerId = originalCustomer.id();
-		customers.add(originalCustomer);
+		sut.add(originalCustomer);
 
-		Optional<Customer> possibleCustomer = customers.ofId(customerId);
+		Optional<Customer> possibleCustomer = sut.ofId(customerId);
 
 		Assertions.assertTrue(possibleCustomer.isPresent());
 
@@ -50,14 +52,14 @@ class CustomersIT {
 	@Test
 	public void shouldUpdateExistingCustomer() {
 		Customer customer = CustomerTestBuilder.aCustomer().build();
-		customers.add(customer);
+		sut.add(customer);
 
-		customer = customers.ofId(customer.id()).orElseThrow();
+		customer = sut.ofId(customer.id()).orElseThrow();
 		customer.archive();
 
-		customers.add(customer);
+		sut.add(customer);
 
-		Customer savedCustomer = customers.ofId(customer.id()).orElseThrow();
+		Customer savedCustomer = sut.ofId(customer.id()).orElseThrow();
 
 		Assertions.assertNotNull(savedCustomer.archivedAt());
 		Assertions.assertTrue(savedCustomer.archived());
@@ -67,19 +69,19 @@ class CustomersIT {
 	@Test
 	public void shouldNotAllowStaleUpdates() {
 		Customer customer = CustomerTestBuilder.aCustomer().build();
-		customers.add(customer);
+		sut.add(customer);
 
-		Customer customerT1 = customers.ofId(customer.id()).orElseThrow();
-		Customer customerT2 = customers.ofId(customer.id()).orElseThrow();
+		Customer customerT1 = sut.ofId(customer.id()).orElseThrow();
+		Customer customerT2 = sut.ofId(customer.id()).orElseThrow();
 
 		customerT1.archive();
-		customers.add(customerT1);
+		sut.add(customerT1);
 
 		customerT2.changeName(new FullName("Alex","Silva"));
 
-		Assertions.assertThrows(ObjectOptimisticLockingFailureException.class, () -> customers.add(customerT2));
+		Assertions.assertThrows(ObjectOptimisticLockingFailureException.class, () -> sut.add(customerT2));
 
-		Customer savedCustomer = customers.ofId(customer.id()).orElseThrow();
+		Customer savedCustomer = sut.ofId(customer.id()).orElseThrow();
 
 		Assertions.assertNotNull(savedCustomer.archivedAt());
 		Assertions.assertTrue(savedCustomer.archived());
@@ -87,48 +89,62 @@ class CustomersIT {
 
 	@Test
 	public void shouldCountExistingOrders() {
-		Assertions.assertEquals(0, customers.count());
+		Assertions.assertEquals(0, sut.count());
 
 		Customer customer1 = CustomerTestBuilder
 				.aCustomer()
 				.withId(new CustomerId())
 				.build();
-		customers.add(customer1);
+		sut.add(customer1);
 
 		Customer customer2 = CustomerTestBuilder
 				.aCustomer()
 				.withId(new CustomerId())
 				.build();
-		customers.add(customer2);
+		sut.add(customer2);
 
-		Assertions.assertEquals(2, customers.count());
+		Assertions.assertEquals(2, sut.count());
 	}
 
 	@Test
 	public void shouldReturnValidateIfOrderExists() {
 		Customer customer = CustomerTestBuilder.aCustomer().build();
-		customers.add(customer);
+		sut.add(customer);
 
-		Assertions.assertTrue(customers.exists(customer.id()));
-		Assertions.assertFalse(customers.exists(new CustomerId()));
+		Assertions.assertTrue(sut.exists(customer.id()));
+		Assertions.assertFalse(sut.exists(new CustomerId()));
 	}
 
 	@Test
 	public void shouldFindByEmail() {
 		Customer customer = CustomerTestBuilder.aCustomer().build();
-		customers.add(customer);
+		sut.add(customer);
 
-		Optional<Customer> customerOptional = customers.ofEmail(customer.email());
+		Optional<Customer> customerOptional = sut.ofEmail(customer.email());
 
 		Assertions.assertTrue(customerOptional.isPresent());
 	}
 
 	@Test
 	public void shouldNotFindByEmailIfNoCustomerExistsWithEmail() {
-		Optional<Customer> customerOptional = customers
+		Optional<Customer> customerOptional = sut
 				.ofEmail(new Email(UUID.randomUUID() + "@email.com"));
 
 		Assertions.assertFalse(customerOptional.isPresent());
 	}
 
+	@Test
+	void shouldReturnTrueIfEmailIsInUse() {
+		Customer customer = CustomerTestBuilder.aCustomer().build();
+		Customer customer2 = CustomerTestBuilder
+				.aCustomer()
+				.withId(new CustomerId())
+				.withEmail(new Email("different@email.com"))
+				.build();
+
+		sut.add(customer);
+		sut.add(customer2);
+
+		Assertions.assertTrue(sut.isEmailUnique(customer.email(), customer.id()));
+	}
 }
