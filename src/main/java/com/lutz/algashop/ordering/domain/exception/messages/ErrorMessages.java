@@ -1,5 +1,6 @@
 package com.lutz.algashop.ordering.domain.exception.messages;
 
+import com.lutz.algashop.ordering.domain.entity.customer.vo.CustomerId;
 import com.lutz.algashop.ordering.domain.entity.order.OrderStatus;
 import com.lutz.algashop.ordering.domain.entity.order.vo.OrderId;
 import com.lutz.algashop.ordering.domain.entity.order.vo.OrderItemId;
@@ -56,8 +57,16 @@ public class ErrorMessages {
 			                                                 ));
 		}
 
+		public static String orderHasWrongStatus(OrderId orderId, OrderStatus is, OrderStatus shouldBe) {
+			return orderMessageWrapper(orderId, String.format("This order has the wrong status. Is [%s] but should be [%s]", is, shouldBe));
+		}
+
 		public static String orderDoesNotContainOrderItem(OrderId orderId, OrderItemId orderItemId) {
 			return orderMessageWrapper(orderId, String.format("The order does not contain this item: [%s]", orderItemId));
+		}
+
+		public static final String orderNotFromThisCustomer(OrderId orderId, CustomerId customerId) {
+			return orderMessageWrapper(orderId, String.format("This order does not belong to the customer %s", customerId));
 		}
 
 		private static String orderMessageWrapper(OrderId orderId, String message) {
