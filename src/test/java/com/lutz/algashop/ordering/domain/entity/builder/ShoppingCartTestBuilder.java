@@ -21,20 +21,20 @@ public class ShoppingCartTestBuilder {
     private ShoppingCartTestBuilder() {
     }
 
-    public static ShoppingCartTestBuilder aFreshShoppingCart() {
+    public static ShoppingCartTestBuilder fresh() {
         return new ShoppingCartTestBuilder()
                 .withId(new ShoppingCartId())
-                .withCustomerId(new CustomerId())
+                .withCustomerId(CustomerTestBuilder.DEFAULT_CUSTOMER_ID)
                 .withItems(new HashSet<>())
                 .withTotalAmount(Money.ZERO)
                 .withTotalItems(Quantity.ZERO)
                 .withCreatedAt(OffsetDateTime.now());
     }
 
-    public static ShoppingCartTestBuilder anExistingShoppingCart() {
+    public static ShoppingCartTestBuilder existing() {
         return new ShoppingCartTestBuilder()
                 .withId(new ShoppingCartId())
-                .withCustomerId(new CustomerId())
+                .withCustomerId(CustomerTestBuilder.DEFAULT_CUSTOMER_ID)
                 .withItems(new HashSet<>())
                 .withTotalAmount(Money.ZERO)
                 .withTotalItems(Quantity.ZERO)

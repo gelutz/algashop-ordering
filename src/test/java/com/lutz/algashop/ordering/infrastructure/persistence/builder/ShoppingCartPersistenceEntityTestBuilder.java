@@ -1,6 +1,5 @@
 package com.lutz.algashop.ordering.infrastructure.persistence.builder;
 
-import com.lutz.algashop.ordering.domain.entity.customer.vo.CustomerId;
 import com.lutz.algashop.ordering.domain.utils.IdGenerator;
 import com.lutz.algashop.ordering.infrastructure.persistence.entity.ShoppingCartItemPersistenceEntity;
 import com.lutz.algashop.ordering.infrastructure.persistence.entity.ShoppingCartPersistenceEntity;
@@ -8,7 +7,6 @@ import com.lutz.algashop.ordering.infrastructure.persistence.entity.ShoppingCart
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.Set;
-import java.util.UUID;
 
 public class ShoppingCartPersistenceEntityTestBuilder {
 
