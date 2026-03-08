@@ -7,8 +7,10 @@ import com.lutz.algashop.ordering.domain.entity.order.OrderStatus;
 import com.lutz.algashop.ordering.domain.entity.order.vo.Money;
 import com.lutz.algashop.ordering.domain.exception.OrderNotFromThisCustomerException;
 import com.lutz.algashop.ordering.domain.exception.WrongOrderStatusException;
+import com.lutz.algashop.ordering.domain.utils.annotations.DomainService;
 import lombok.NonNull;
 
+@DomainService
 public class CustomerLoyaltyPointsService {
 	public static final LoyaltyPoints multiplier = new LoyaltyPoints(1);
 	public static final Money VALUE_PER_POINT = new Money("100");

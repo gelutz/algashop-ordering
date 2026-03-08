@@ -4,8 +4,10 @@ import com.lutz.algashop.ordering.domain.entity.customer.Customer;
 import com.lutz.algashop.ordering.domain.entity.customer.vo.*;
 import com.lutz.algashop.ordering.domain.exception.DomainException;
 import com.lutz.algashop.ordering.domain.repository.Customers;
+import com.lutz.algashop.ordering.domain.utils.annotations.DomainService;
 import lombok.RequiredArgsConstructor;
 
+@DomainService
 @RequiredArgsConstructor
 public class CustomerRegistrationService {
 	private final Customers customers;
