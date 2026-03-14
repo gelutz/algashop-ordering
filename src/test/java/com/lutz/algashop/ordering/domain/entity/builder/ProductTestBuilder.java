@@ -17,4 +17,12 @@ public class ProductTestBuilder {
 				      .price(new Money("25.00"))
 				      .inStock(true);
 	}
+
+	public static Product.ProductBuilder aProductUnavailable() {
+		return Product.builder()
+				.id(new ProductId())
+				.productName(new ProductName("Unavailable Product"))
+				.price(new Money("25.00"))
+				.inStock(false);
+	}
 }
