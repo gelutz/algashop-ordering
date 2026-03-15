@@ -1,17 +1,12 @@
 package com.lutz.algashop.ordering.domain.commons;
 
-import com.lutz.algashop.ordering.domain.customer.CustomerId;
-import com.lutz.algashop.ordering.domain.order.entity.OrderStatus;
-import com.lutz.algashop.ordering.domain.order.OrderId;
-import com.lutz.algashop.ordering.domain.order.OrderItemId;
 import com.lutz.algashop.ordering.domain.product.ProductId;
 import com.lutz.algashop.ordering.domain.shoppingCart.entity.ShoppingCartId;
 import com.lutz.algashop.ordering.domain.shoppingCart.entity.ShoppingCartItemId;
 
-import java.time.LocalDate;
-
 public class ErrorMessages {
 	public static final String CUSTOMER_ARCHIVED = "This customer is already archived.";
+	public static final String CUSTOMER_NOT_FOUND = "Customer not found.";
 
 	public static class Fields {
 		public static String fieldIsNullMessage(String field) {
@@ -39,77 +34,7 @@ public class ErrorMessages {
 		public static final String VALUE_IS_NEGATIVE_OR_ZERO = "Cannot instantiate with negative (or zero) value.";
 	}
 
-	public static class Orders {
-		public static String orderCannotBePlaced(OrderId orderId, String reason) {
-			return orderMessageWrapper(orderId, String.format("The order could not be placed. %s", reason));
-		}
-
-		public static String orderCannotBeEdited(OrderId orderId, OrderStatus status) {
-			return orderMessageWrapper(orderId, String.format("This order with status %s cannot be edited.", status.name()));
-		}
-
-		public static String orderExpectedDeliveryDateIsInvalid(OrderId orderId, LocalDate expectedDeliveryDate) {
-			return orderMessageWrapper(orderId, String.format("The delivery date cannot be set to a past date (%s).", expectedDeliveryDate));
-		}
-		public static String orderStatusCannotBeChanged(OrderId orderId, OrderStatus oldStatus, OrderStatus newStatus) {
-			return orderMessageWrapper(orderId, String.format(
-					"Order status [%s] cannot be changed to [%s].",oldStatus, newStatus
-			                                                 ));
-		}
-
-		public static String orderHasWrongStatus(OrderId orderId, OrderStatus is, OrderStatus shouldBe) {
-			return orderMessageWrapper(orderId, String.format("This order has the wrong status. Is [%s] but should be [%s]", is, shouldBe));
-		}
-
-		public static String orderDoesNotContainOrderItem(OrderId orderId, OrderItemId orderItemId) {
-			return orderMessageWrapper(orderId, String.format("The order does not contain this item: [%s]", orderItemId));
-		}
-
-		public static final String orderNotFromThisCustomer(OrderId orderId, CustomerId customerId) {
-			return orderMessageWrapper(orderId, String.format("This order does not belong to the customer %s", customerId));
-		}
-
-		private static String orderMessageWrapper(OrderId orderId, String message) {
-			return String.format("Order [%s]: %s", orderId, message);
-		}
-	}
-
-	public static class Products {
-		public static String productOutOfStock(ProductId productId) {
-			return productMessageWrapper(productId, "The product is out of stock.");
-		}
-
-		private static String productMessageWrapper(ProductId productId, String message) {
-			return String.format("Product [%s]: %s", productId, message);
-		}
-	}
-
-	public class ShoppingCart {
-		public static String cartDoesNotContainCartItem(ShoppingCartId id, ShoppingCartItemId itemid) {
-			return shoppingCartMessageWrapper(id, String.format("The shopping cart does not contain this item: [%s]", itemid));
-		}
-
-		public static String cartDoesNotContainProduct(ShoppingCartId id, ProductId productId) {
-			return shoppingCartMessageWrapper(id, String.format("The shopping cart does not contain this product: [%s]", productId));
-		}
-
-		private static String shoppingCartMessageWrapper(ShoppingCartId id, String message) {
-			return String.format("ShoppingCart [%s]: %s", id, message);
-		}
-	}
-
-	public class ShoppingCartItem {
-		public static String shoppingCartProductsDontMatch(ShoppingCartItemId id, ProductId that, ProductId other) {
-			return shoppingCartItemMessageWrapper(
-					id,
-					String.format("Cannot refresh. Given Product id %s does not match Shopping cart item id %s", that, other)
-			                                     );
-
-		}
 
 
-		private static String shoppingCartItemMessageWrapper(ShoppingCartItemId id, String message) {
-			return String.format("ShoppingCartItem [%s]: %s", id, message);
-		}
-	}
+
 }

@@ -1,7 +1,6 @@
 package com.lutz.algashop.ordering.domain.order.exception;
 
 import com.lutz.algashop.ordering.domain.DomainException;
-import com.lutz.algashop.ordering.domain.commons.ErrorMessages;
 import com.lutz.algashop.ordering.domain.order.entity.OrderStatus;
 import com.lutz.algashop.ordering.domain.order.OrderId;
 
@@ -11,7 +10,7 @@ public class OrderStatusCannotBeChangedException extends DomainException {
 	private final OrderStatus newStatus;
 
 	public OrderStatusCannotBeChangedException(OrderId orderId, OrderStatus oldStatus, OrderStatus newStatus) {
-		super(ErrorMessages.Orders.orderStatusCannotBeChanged(orderId, oldStatus, newStatus));
+		super(ErrorMessages.orderStatusCannotBeChanged(orderId, oldStatus, newStatus));
 		this.orderId = orderId;
 		this.oldStatus = oldStatus;
 		this.newStatus = newStatus;

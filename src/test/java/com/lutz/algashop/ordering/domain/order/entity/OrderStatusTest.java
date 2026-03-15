@@ -1,7 +1,7 @@
 package com.lutz.algashop.ordering.domain.order.entity;
 
-import com.lutz.algashop.ordering.domain.commons.ErrorMessages;
 import com.lutz.algashop.ordering.domain.order.builder.OrderTestBuilder;
+import com.lutz.algashop.ordering.domain.order.exception.ErrorMessages;
 import com.lutz.algashop.ordering.domain.order.exception.OrderStatusCannotBeChangedException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -54,7 +54,7 @@ class OrderStatusTest {
 			OrderStatusCannotBeChangedException exception =
 					assertThrows(OrderStatusCannotBeChangedException.class, sut::place);
 
-			assertEquals(exception.getMessage(), ErrorMessages.Orders.orderStatusCannotBeChanged(sut.id(), OrderStatus.PLACED, OrderStatus.PLACED));
+			assertEquals(exception.getMessage(), ErrorMessages.orderStatusCannotBeChanged(sut.id(), OrderStatus.PLACED, OrderStatus.PLACED));
 		}
 	}
 
