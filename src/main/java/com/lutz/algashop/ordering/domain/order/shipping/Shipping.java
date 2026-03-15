@@ -2,7 +2,7 @@ package com.lutz.algashop.ordering.domain.order.shipping;
 
 import com.lutz.algashop.ordering.domain.commons.Address;
 import com.lutz.algashop.ordering.domain.commons.Money;
-import com.lutz.algashop.ordering.domain.order.vo.Recipient;
+import com.lutz.algashop.ordering.domain.order.Recipient;
 import lombok.Builder;
 import lombok.NonNull;
 

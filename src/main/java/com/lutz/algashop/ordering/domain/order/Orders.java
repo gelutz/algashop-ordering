@@ -2,9 +2,8 @@ package com.lutz.algashop.ordering.domain.order;
 
 import com.lutz.algashop.ordering.domain.Repository;
 import com.lutz.algashop.ordering.domain.commons.Money;
-import com.lutz.algashop.ordering.domain.customer.vo.CustomerId;
+import com.lutz.algashop.ordering.domain.customer.CustomerId;
 import com.lutz.algashop.ordering.domain.order.entity.Order;
-import com.lutz.algashop.ordering.domain.order.vo.OrderId;
 
 import java.time.Year;
 import java.util.List;

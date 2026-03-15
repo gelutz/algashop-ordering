@@ -2,9 +2,9 @@ package com.lutz.algashop.ordering.domain.customer.builder;
 
 import com.lutz.algashop.ordering.domain.commons.*;
 import com.lutz.algashop.ordering.domain.customer.Customer;
-import com.lutz.algashop.ordering.domain.customer.vo.Birthdate;
-import com.lutz.algashop.ordering.domain.customer.vo.CustomerId;
-import com.lutz.algashop.ordering.domain.customer.vo.LoyaltyPoints;
+import com.lutz.algashop.ordering.domain.customer.Birthdate;
+import com.lutz.algashop.ordering.domain.customer.CustomerId;
+import com.lutz.algashop.ordering.domain.customer.LoyaltyPoints;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;

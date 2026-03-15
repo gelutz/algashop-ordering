@@ -2,7 +2,8 @@ package com.lutz.algashop.ordering.domain.order.entity;
 
 import com.lutz.algashop.ordering.domain.commons.Money;
 import com.lutz.algashop.ordering.domain.commons.Quantity;
-import com.lutz.algashop.ordering.domain.order.vo.*;
+import com.lutz.algashop.ordering.domain.order.OrderId;
+import com.lutz.algashop.ordering.domain.order.OrderItemId;
 import com.lutz.algashop.ordering.domain.product.Product;
 import com.lutz.algashop.ordering.domain.product.ProductId;
 import com.lutz.algashop.ordering.domain.product.ProductName;

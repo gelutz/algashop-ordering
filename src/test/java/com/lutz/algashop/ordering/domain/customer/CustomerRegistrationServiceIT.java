@@ -3,7 +3,6 @@ package com.lutz.algashop.ordering.domain.customer;
 import com.lutz.algashop.ordering.domain.commons.Email;
 import com.lutz.algashop.ordering.domain.commons.FullName;
 import com.lutz.algashop.ordering.domain.customer.builder.CustomerTestBuilder;
-import com.lutz.algashop.ordering.domain.customer.vo.CustomerId;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

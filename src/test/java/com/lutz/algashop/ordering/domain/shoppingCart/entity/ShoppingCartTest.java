@@ -2,7 +2,7 @@ package com.lutz.algashop.ordering.domain.shoppingCart.entity;
 
 import com.lutz.algashop.ordering.domain.commons.Money;
 import com.lutz.algashop.ordering.domain.commons.Quantity;
-import com.lutz.algashop.ordering.domain.customer.vo.CustomerId;
+import com.lutz.algashop.ordering.domain.customer.CustomerId;
 import com.lutz.algashop.ordering.domain.product.Product;
 import com.lutz.algashop.ordering.domain.product.ProductId;
 import com.lutz.algashop.ordering.domain.product.ProductName;

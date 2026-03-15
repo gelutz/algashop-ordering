@@ -2,8 +2,8 @@ package com.lutz.algashop.ordering.domain.order.exception;
 
 import com.lutz.algashop.ordering.domain.DomainException;
 import com.lutz.algashop.ordering.domain.commons.ErrorMessages;
-import com.lutz.algashop.ordering.domain.customer.vo.CustomerId;
-import com.lutz.algashop.ordering.domain.order.vo.OrderId;
+import com.lutz.algashop.ordering.domain.customer.CustomerId;
+import com.lutz.algashop.ordering.domain.order.OrderId;
 
 public class OrderNotFromThisCustomerException extends DomainException {
 	public OrderNotFromThisCustomerException(OrderId orderId, CustomerId customerId) {

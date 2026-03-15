@@ -1,7 +1,7 @@
 package com.lutz.algashop.ordering.domain.entity.customer.vo;
 
 import com.lutz.algashop.ordering.domain.commons.ErrorMessages;
-import com.lutz.algashop.ordering.domain.customer.vo.Birthdate;
+import com.lutz.algashop.ordering.domain.customer.Birthdate;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

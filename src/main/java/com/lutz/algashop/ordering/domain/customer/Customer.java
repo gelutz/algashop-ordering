@@ -2,9 +2,6 @@ package com.lutz.algashop.ordering.domain.customer;
 
 import com.lutz.algashop.ordering.domain.AggregateRoot;
 import com.lutz.algashop.ordering.domain.commons.*;
-import com.lutz.algashop.ordering.domain.customer.vo.Birthdate;
-import com.lutz.algashop.ordering.domain.customer.vo.CustomerId;
-import com.lutz.algashop.ordering.domain.customer.vo.LoyaltyPoints;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

@@ -2,14 +2,14 @@ package com.lutz.algashop.ordering.domain.order.entity;
 
 import com.lutz.algashop.ordering.domain.commons.Money;
 import com.lutz.algashop.ordering.domain.commons.Quantity;
-import com.lutz.algashop.ordering.domain.customer.vo.CustomerId;
+import com.lutz.algashop.ordering.domain.customer.CustomerId;
 import com.lutz.algashop.ordering.domain.order.builder.OrderTestBuilder;
 import com.lutz.algashop.ordering.domain.order.exception.OrderCannotBeEditedException;
 import com.lutz.algashop.ordering.domain.order.exception.OrderDoesNotContainOrderItemException;
 import com.lutz.algashop.ordering.domain.order.shipping.Shipping;
-import com.lutz.algashop.ordering.domain.order.vo.Billing;
-import com.lutz.algashop.ordering.domain.order.vo.OrderId;
-import com.lutz.algashop.ordering.domain.order.vo.OrderItemId;
+import com.lutz.algashop.ordering.domain.order.Billing;
+import com.lutz.algashop.ordering.domain.order.OrderId;
+import com.lutz.algashop.ordering.domain.order.OrderItemId;
 import com.lutz.algashop.ordering.domain.product.Product;
 import com.lutz.algashop.ordering.domain.product.ProductId;
 import com.lutz.algashop.ordering.domain.product.ProductName;

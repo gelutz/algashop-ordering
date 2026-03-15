@@ -1,9 +1,9 @@
 package com.lutz.algashop.ordering.domain.commons;
 
-import com.lutz.algashop.ordering.domain.customer.vo.CustomerId;
+import com.lutz.algashop.ordering.domain.customer.CustomerId;
 import com.lutz.algashop.ordering.domain.order.entity.OrderStatus;
-import com.lutz.algashop.ordering.domain.order.vo.OrderId;
-import com.lutz.algashop.ordering.domain.order.vo.OrderItemId;
+import com.lutz.algashop.ordering.domain.order.OrderId;
+import com.lutz.algashop.ordering.domain.order.OrderItemId;
 import com.lutz.algashop.ordering.domain.product.ProductId;
 import com.lutz.algashop.ordering.domain.shoppingCart.entity.ShoppingCartId;
 import com.lutz.algashop.ordering.domain.shoppingCart.entity.ShoppingCartItemId;

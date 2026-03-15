@@ -5,7 +5,6 @@ import com.lutz.algashop.ordering.domain.commons.Email;
 import com.lutz.algashop.ordering.domain.commons.FullName;
 import com.lutz.algashop.ordering.domain.commons.Phone;
 import com.lutz.algashop.ordering.domain.customer.builder.CustomerTestBuilder;
-import com.lutz.algashop.ordering.domain.customer.vo.LoyaltyPoints;
 import org.junit.jupiter.api.*;
 
 public class CustomerTest {

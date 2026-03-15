@@ -3,7 +3,7 @@ package com.lutz.algashop.ordering.domain.shoppingCart.builder;
 import com.lutz.algashop.ordering.domain.commons.Money;
 import com.lutz.algashop.ordering.domain.commons.Quantity;
 import com.lutz.algashop.ordering.domain.customer.builder.CustomerTestBuilder;
-import com.lutz.algashop.ordering.domain.customer.vo.CustomerId;
+import com.lutz.algashop.ordering.domain.customer.CustomerId;
 import com.lutz.algashop.ordering.domain.shoppingCart.entity.ShoppingCart;
 import com.lutz.algashop.ordering.domain.shoppingCart.entity.ShoppingCartId;
 import com.lutz.algashop.ordering.domain.shoppingCart.entity.ShoppingCartItem;

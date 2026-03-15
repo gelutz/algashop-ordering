@@ -2,7 +2,6 @@ package com.lutz.algashop.ordering.domain.customer;
 
 import com.lutz.algashop.ordering.domain.DomainService;
 import com.lutz.algashop.ordering.domain.commons.Money;
-import com.lutz.algashop.ordering.domain.customer.vo.LoyaltyPoints;
 import com.lutz.algashop.ordering.domain.order.entity.Order;
 import com.lutz.algashop.ordering.domain.order.entity.OrderStatus;
 import com.lutz.algashop.ordering.domain.order.exception.OrderNotFromThisCustomerException;

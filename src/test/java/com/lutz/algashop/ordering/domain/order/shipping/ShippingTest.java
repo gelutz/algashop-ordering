@@ -1,7 +1,7 @@
 package com.lutz.algashop.ordering.domain.order.shipping;
 
 import com.lutz.algashop.ordering.domain.commons.*;
-import com.lutz.algashop.ordering.domain.order.vo.Recipient;
+import com.lutz.algashop.ordering.domain.order.Recipient;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;

@@ -2,7 +2,7 @@ package com.lutz.algashop.ordering.domain.order.exception;
 
 import com.lutz.algashop.ordering.domain.DomainException;
 import com.lutz.algashop.ordering.domain.commons.ErrorMessages;
-import com.lutz.algashop.ordering.domain.order.vo.OrderId;
+import com.lutz.algashop.ordering.domain.order.OrderId;
 
 public class OrderCannotBePlacedException extends DomainException {
 	public OrderCannotBePlacedException(OrderId orderId) {

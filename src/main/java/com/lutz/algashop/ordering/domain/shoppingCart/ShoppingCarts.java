@@ -1,7 +1,7 @@
 package com.lutz.algashop.ordering.domain.shoppingCart;
 
 import com.lutz.algashop.ordering.domain.RemoveCapableRepository;
-import com.lutz.algashop.ordering.domain.customer.vo.CustomerId;
+import com.lutz.algashop.ordering.domain.customer.CustomerId;
 import com.lutz.algashop.ordering.domain.shoppingCart.entity.ShoppingCart;
 import com.lutz.algashop.ordering.domain.shoppingCart.entity.ShoppingCartId;
 

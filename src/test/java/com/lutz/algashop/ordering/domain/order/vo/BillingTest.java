@@ -1,6 +1,7 @@
 package com.lutz.algashop.ordering.domain.order.vo;
 
 import com.lutz.algashop.ordering.domain.commons.*;
+import com.lutz.algashop.ordering.domain.order.Billing;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

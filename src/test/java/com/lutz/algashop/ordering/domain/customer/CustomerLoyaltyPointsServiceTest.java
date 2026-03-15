@@ -2,7 +2,6 @@ package com.lutz.algashop.ordering.domain.customer;
 
 import com.lutz.algashop.ordering.domain.commons.Money;
 import com.lutz.algashop.ordering.domain.customer.builder.CustomerTestBuilder;
-import com.lutz.algashop.ordering.domain.customer.vo.LoyaltyPoints;
 import com.lutz.algashop.ordering.domain.order.builder.OrderTestBuilder;
 import com.lutz.algashop.ordering.domain.order.entity.Order;
 import org.junit.jupiter.api.Assertions;
