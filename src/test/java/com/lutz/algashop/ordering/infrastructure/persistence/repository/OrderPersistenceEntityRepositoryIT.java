@@ -1,7 +1,7 @@
 package com.lutz.algashop.ordering.infrastructure.persistence.repository;
 
-import com.lutz.algashop.ordering.domain.entity.builder.CustomerTestBuilder;
-import com.lutz.algashop.ordering.domain.utils.IdGenerator;
+import com.lutz.algashop.ordering.domain.IdGenerator;
+import com.lutz.algashop.ordering.domain.customer.builder.CustomerTestBuilder;
 import com.lutz.algashop.ordering.infrastructure.persistence.builder.CustomerPersistenceEntityTestBuilder;
 import com.lutz.algashop.ordering.infrastructure.persistence.builder.OrderPersistenceEntityTestBuilder;
 import com.lutz.algashop.ordering.infrastructure.persistence.config.SpringDataAuditingConfiguration;

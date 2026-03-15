@@ -1,8 +1,8 @@
 package com.lutz.algashop.ordering.infrastructure.persistence.provider;
 
-import com.lutz.algashop.ordering.domain.entity.order.vo.Money;
-import com.lutz.algashop.ordering.domain.entity.order.vo.ProductId;
-import com.lutz.algashop.ordering.domain.service.ShoppingCartAdjustmentService;
+import com.lutz.algashop.ordering.domain.commons.Money;
+import com.lutz.algashop.ordering.domain.product.ProductId;
+import com.lutz.algashop.ordering.domain.shoppingCart.ShoppingCartAdjustmentService;
 import com.lutz.algashop.ordering.infrastructure.persistence.repository.ShoppingCartPersistenceEntityRepository;
 import jakarta.transaction.Transactional;
 import lombok.NonNull;

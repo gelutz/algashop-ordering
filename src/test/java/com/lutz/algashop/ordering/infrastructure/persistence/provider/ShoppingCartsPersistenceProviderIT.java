@@ -1,10 +1,10 @@
 package com.lutz.algashop.ordering.infrastructure.persistence.provider;
 
-import com.lutz.algashop.ordering.domain.entity.builder.CustomerTestBuilder;
-import com.lutz.algashop.ordering.domain.entity.builder.ShoppingCartTestBuilder;
-import com.lutz.algashop.ordering.domain.entity.customer.Customer;
-import com.lutz.algashop.ordering.domain.entity.customer.vo.CustomerId;
-import com.lutz.algashop.ordering.domain.entity.shoppingCart.ShoppingCart;
+import com.lutz.algashop.ordering.domain.customer.Customer;
+import com.lutz.algashop.ordering.domain.customer.builder.CustomerTestBuilder;
+import com.lutz.algashop.ordering.domain.customer.vo.CustomerId;
+import com.lutz.algashop.ordering.domain.shoppingCart.builder.ShoppingCartTestBuilder;
+import com.lutz.algashop.ordering.domain.shoppingCart.entity.ShoppingCart;
 import com.lutz.algashop.ordering.infrastructure.persistence.assembler.CustomerPersistenceEntityAssembler;
 import com.lutz.algashop.ordering.infrastructure.persistence.assembler.ShoppingCartItemPersistenceEntityAssembler;
 import com.lutz.algashop.ordering.infrastructure.persistence.assembler.ShoppingCartPersistenceEntityAssembler;

@@ -1,9 +1,9 @@
 package com.lutz.algashop.ordering.infrastructure.persistence.provider;
 
-import com.lutz.algashop.ordering.domain.entity.customer.Customer;
-import com.lutz.algashop.ordering.domain.entity.customer.vo.CustomerId;
-import com.lutz.algashop.ordering.domain.entity.customer.vo.Email;
-import com.lutz.algashop.ordering.domain.repository.Customers;
+import com.lutz.algashop.ordering.domain.commons.Email;
+import com.lutz.algashop.ordering.domain.customer.Customer;
+import com.lutz.algashop.ordering.domain.customer.Customers;
+import com.lutz.algashop.ordering.domain.customer.vo.CustomerId;
 import com.lutz.algashop.ordering.infrastructure.persistence.assembler.CustomerPersistenceEntityAssembler;
 import com.lutz.algashop.ordering.infrastructure.persistence.disassembler.CustomerPersistenceEntityDisassembler;
 import com.lutz.algashop.ordering.infrastructure.persistence.entity.CustomerPersistenceEntity;

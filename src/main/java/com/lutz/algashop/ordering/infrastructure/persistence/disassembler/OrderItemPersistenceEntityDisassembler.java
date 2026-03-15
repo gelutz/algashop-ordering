@@ -1,7 +1,12 @@
 package com.lutz.algashop.ordering.infrastructure.persistence.disassembler;
 
-import com.lutz.algashop.ordering.domain.entity.order.OrderItem;
-import com.lutz.algashop.ordering.domain.entity.order.vo.*;
+import com.lutz.algashop.ordering.domain.commons.Money;
+import com.lutz.algashop.ordering.domain.commons.Quantity;
+import com.lutz.algashop.ordering.domain.order.entity.OrderItem;
+import com.lutz.algashop.ordering.domain.order.vo.OrderId;
+import com.lutz.algashop.ordering.domain.order.vo.OrderItemId;
+import com.lutz.algashop.ordering.domain.product.ProductId;
+import com.lutz.algashop.ordering.domain.product.ProductName;
 import com.lutz.algashop.ordering.infrastructure.persistence.entity.OrderItemPersistenceEntity;
 import org.springframework.stereotype.Component;
 

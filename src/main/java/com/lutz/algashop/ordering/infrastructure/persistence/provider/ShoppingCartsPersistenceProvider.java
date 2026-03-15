@@ -1,9 +1,9 @@
 package com.lutz.algashop.ordering.infrastructure.persistence.provider;
 
-import com.lutz.algashop.ordering.domain.entity.customer.vo.CustomerId;
-import com.lutz.algashop.ordering.domain.entity.shoppingCart.ShoppingCart;
-import com.lutz.algashop.ordering.domain.entity.shoppingCart.ShoppingCartId;
-import com.lutz.algashop.ordering.domain.repository.ShoppingCarts;
+import com.lutz.algashop.ordering.domain.customer.vo.CustomerId;
+import com.lutz.algashop.ordering.domain.shoppingCart.entity.ShoppingCart;
+import com.lutz.algashop.ordering.domain.shoppingCart.entity.ShoppingCartId;
+import com.lutz.algashop.ordering.domain.shoppingCart.ShoppingCarts;
 import com.lutz.algashop.ordering.infrastructure.persistence.assembler.ShoppingCartPersistenceEntityAssembler;
 import com.lutz.algashop.ordering.infrastructure.persistence.disassembler.ShoppingCartPersistenceEntityDisassembler;
 import com.lutz.algashop.ordering.infrastructure.persistence.entity.ShoppingCartPersistenceEntity;

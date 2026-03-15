@@ -1,12 +1,12 @@
 package com.lutz.algashop.ordering.infrastructure.persistence.disassembler;
 
-import com.lutz.algashop.ordering.domain.entity.shoppingCart.ShoppingCartItem;
-import com.lutz.algashop.ordering.domain.entity.shoppingCart.ShoppingCartItemId;
-import com.lutz.algashop.ordering.domain.entity.shoppingCart.ShoppingCartId;
-import com.lutz.algashop.ordering.domain.entity.order.vo.Money;
-import com.lutz.algashop.ordering.domain.entity.order.vo.ProductId;
-import com.lutz.algashop.ordering.domain.entity.order.vo.ProductName;
-import com.lutz.algashop.ordering.domain.entity.order.vo.Quantity;
+import com.lutz.algashop.ordering.domain.commons.Money;
+import com.lutz.algashop.ordering.domain.commons.Quantity;
+import com.lutz.algashop.ordering.domain.product.ProductId;
+import com.lutz.algashop.ordering.domain.product.ProductName;
+import com.lutz.algashop.ordering.domain.shoppingCart.entity.ShoppingCartId;
+import com.lutz.algashop.ordering.domain.shoppingCart.entity.ShoppingCartItem;
+import com.lutz.algashop.ordering.domain.shoppingCart.entity.ShoppingCartItemId;
 import com.lutz.algashop.ordering.infrastructure.persistence.entity.ShoppingCartItemPersistenceEntity;
 import org.springframework.stereotype.Component;
 

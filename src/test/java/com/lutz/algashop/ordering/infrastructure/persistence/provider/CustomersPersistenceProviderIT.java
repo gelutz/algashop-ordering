@@ -1,9 +1,9 @@
 package com.lutz.algashop.ordering.infrastructure.persistence.provider;
 
-import com.lutz.algashop.ordering.domain.entity.builder.CustomerTestBuilder;
-import com.lutz.algashop.ordering.domain.entity.customer.Customer;
-import com.lutz.algashop.ordering.domain.entity.customer.vo.CustomerId;
-import com.lutz.algashop.ordering.domain.entity.customer.vo.FullName;
+import com.lutz.algashop.ordering.domain.commons.FullName;
+import com.lutz.algashop.ordering.domain.customer.Customer;
+import com.lutz.algashop.ordering.domain.customer.builder.CustomerTestBuilder;
+import com.lutz.algashop.ordering.domain.customer.vo.CustomerId;
 import com.lutz.algashop.ordering.infrastructure.persistence.assembler.CustomerPersistenceEntityAssembler;
 import com.lutz.algashop.ordering.infrastructure.persistence.config.SpringDataAuditingConfiguration;
 import com.lutz.algashop.ordering.infrastructure.persistence.disassembler.CustomerPersistenceEntityDisassembler;

@@ -1,14 +1,14 @@
 package com.lutz.algashop.ordering.infrastructure.persistence.provider;
 
-import com.lutz.algashop.ordering.domain.entity.builder.CustomerTestBuilder;
-import com.lutz.algashop.ordering.domain.entity.builder.ProductTestBuilder;
-import com.lutz.algashop.ordering.domain.entity.builder.ShoppingCartTestBuilder;
-import com.lutz.algashop.ordering.domain.entity.order.vo.Money;
-import com.lutz.algashop.ordering.domain.entity.order.vo.Product;
-import com.lutz.algashop.ordering.domain.entity.order.vo.ProductId;
-import com.lutz.algashop.ordering.domain.entity.order.vo.Quantity;
-import com.lutz.algashop.ordering.domain.entity.shoppingCart.ShoppingCart;
-import com.lutz.algashop.ordering.domain.entity.shoppingCart.ShoppingCartItem;
+import com.lutz.algashop.ordering.domain.commons.Money;
+import com.lutz.algashop.ordering.domain.commons.Quantity;
+import com.lutz.algashop.ordering.domain.customer.builder.CustomerTestBuilder;
+import com.lutz.algashop.ordering.domain.product.Product;
+import com.lutz.algashop.ordering.domain.product.ProductId;
+import com.lutz.algashop.ordering.domain.product.builder.ProductTestBuilder;
+import com.lutz.algashop.ordering.domain.shoppingCart.builder.ShoppingCartTestBuilder;
+import com.lutz.algashop.ordering.domain.shoppingCart.entity.ShoppingCart;
+import com.lutz.algashop.ordering.domain.shoppingCart.entity.ShoppingCartItem;
 import com.lutz.algashop.ordering.infrastructure.persistence.assembler.CustomerPersistenceEntityAssembler;
 import com.lutz.algashop.ordering.infrastructure.persistence.assembler.ShoppingCartItemPersistenceEntityAssembler;
 import com.lutz.algashop.ordering.infrastructure.persistence.assembler.ShoppingCartPersistenceEntityAssembler;
@@ -16,7 +16,6 @@ import com.lutz.algashop.ordering.infrastructure.persistence.config.SpringDataAu
 import com.lutz.algashop.ordering.infrastructure.persistence.disassembler.CustomerPersistenceEntityDisassembler;
 import com.lutz.algashop.ordering.infrastructure.persistence.disassembler.ShoppingCartItemPersistenceEntityDisassembler;
 import com.lutz.algashop.ordering.infrastructure.persistence.disassembler.ShoppingCartPersistenceEntityDisassembler;
-import com.lutz.algashop.ordering.infrastructure.persistence.repository.ShoppingCartPersistenceEntityRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,18 +47,15 @@ class ShoppingCartUpdateProviderIT {
 
 	private final ShoppingCartsPersistenceProvider persistenceProvider;
 	private final CustomersPersistenceProvider customersPersistenceProvider;
-	private final ShoppingCartPersistenceEntityRepository entityRepository;
 
 	private final ShoppingCartUpdateProvider shoppingCartUpdateProvider;
 
 	@Autowired
 	public ShoppingCartUpdateProviderIT(ShoppingCartsPersistenceProvider persistenceProvider,
 	                                    CustomersPersistenceProvider customersPersistenceProvider,
-	                                    ShoppingCartPersistenceEntityRepository entityRepository,
 	                                    ShoppingCartUpdateProvider shoppingCartUpdateProvider) {
 		this.persistenceProvider = persistenceProvider;
 		this.customersPersistenceProvider = customersPersistenceProvider;
-		this.entityRepository = entityRepository;
 		this.shoppingCartUpdateProvider = shoppingCartUpdateProvider;
 	}
 

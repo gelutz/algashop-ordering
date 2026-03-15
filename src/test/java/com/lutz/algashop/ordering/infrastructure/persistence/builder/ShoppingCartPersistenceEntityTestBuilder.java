@@ -1,6 +1,6 @@
 package com.lutz.algashop.ordering.infrastructure.persistence.builder;
 
-import com.lutz.algashop.ordering.domain.utils.IdGenerator;
+import com.lutz.algashop.ordering.domain.IdGenerator;
 import com.lutz.algashop.ordering.infrastructure.persistence.entity.ShoppingCartItemPersistenceEntity;
 import com.lutz.algashop.ordering.infrastructure.persistence.entity.ShoppingCartPersistenceEntity;
 

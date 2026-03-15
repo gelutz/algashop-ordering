@@ -1,10 +1,10 @@
 package com.lutz.algashop.ordering.infrastructure.persistence.assembler;
 
-import com.lutz.algashop.ordering.domain.entity.builder.OrderTestBuilder;
-import com.lutz.algashop.ordering.domain.entity.order.Order;
-import com.lutz.algashop.ordering.domain.entity.order.OrderItem;
-import com.lutz.algashop.ordering.domain.entity.order.vo.Product;
-import com.lutz.algashop.ordering.domain.entity.order.vo.ProductId;
+import com.lutz.algashop.ordering.domain.order.builder.OrderTestBuilder;
+import com.lutz.algashop.ordering.domain.order.entity.Order;
+import com.lutz.algashop.ordering.domain.order.entity.OrderItem;
+import com.lutz.algashop.ordering.domain.product.Product;
+import com.lutz.algashop.ordering.domain.product.ProductId;
 import com.lutz.algashop.ordering.infrastructure.persistence.builder.CustomerPersistenceEntityTestBuilder;
 import com.lutz.algashop.ordering.infrastructure.persistence.builder.OrderPersistenceEntityTestBuilder;
 import com.lutz.algashop.ordering.infrastructure.persistence.entity.OrderItemPersistenceEntity;

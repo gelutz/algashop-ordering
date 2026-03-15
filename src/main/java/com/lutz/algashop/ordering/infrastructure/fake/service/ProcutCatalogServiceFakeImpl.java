@@ -1,10 +1,10 @@
 package com.lutz.algashop.ordering.infrastructure.fake.service;
 
-import com.lutz.algashop.ordering.domain.entity.order.vo.Money;
-import com.lutz.algashop.ordering.domain.entity.order.vo.Product;
-import com.lutz.algashop.ordering.domain.entity.order.vo.ProductId;
-import com.lutz.algashop.ordering.domain.entity.order.vo.ProductName;
-import com.lutz.algashop.ordering.domain.service.ProductCatalogService;
+import com.lutz.algashop.ordering.domain.commons.Money;
+import com.lutz.algashop.ordering.domain.product.Product;
+import com.lutz.algashop.ordering.domain.product.ProductId;
+import com.lutz.algashop.ordering.domain.product.ProductName;
+import com.lutz.algashop.ordering.domain.product.ProductCatalogService;
 
 import java.util.Optional;
 

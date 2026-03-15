@@ -1,8 +1,8 @@
 package com.lutz.algashop.ordering.infrastructure.fake.service;
 
-import com.lutz.algashop.ordering.domain.entity.customer.vo.Address;
-import com.lutz.algashop.ordering.domain.entity.customer.vo.ZipCode;
-import com.lutz.algashop.ordering.domain.service.OriginAddressService;
+import com.lutz.algashop.ordering.domain.commons.Address;
+import com.lutz.algashop.ordering.domain.commons.ZipCode;
+import com.lutz.algashop.ordering.domain.order.shipping.OriginAddressService;
 import org.springframework.stereotype.Component;
 
 @Component

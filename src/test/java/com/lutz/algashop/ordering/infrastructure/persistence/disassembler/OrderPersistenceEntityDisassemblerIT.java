@@ -1,12 +1,12 @@
 package com.lutz.algashop.ordering.infrastructure.persistence.disassembler;
 
-import com.lutz.algashop.ordering.domain.entity.customer.vo.CustomerId;
-import com.lutz.algashop.ordering.domain.entity.order.Order;
-import com.lutz.algashop.ordering.domain.entity.order.OrderStatus;
-import com.lutz.algashop.ordering.domain.entity.order.PaymentMethod;
-import com.lutz.algashop.ordering.domain.entity.order.vo.Money;
-import com.lutz.algashop.ordering.domain.entity.order.vo.OrderId;
-import com.lutz.algashop.ordering.domain.entity.order.vo.Quantity;
+import com.lutz.algashop.ordering.domain.commons.Money;
+import com.lutz.algashop.ordering.domain.commons.Quantity;
+import com.lutz.algashop.ordering.domain.customer.vo.CustomerId;
+import com.lutz.algashop.ordering.domain.order.entity.Order;
+import com.lutz.algashop.ordering.domain.order.entity.OrderStatus;
+import com.lutz.algashop.ordering.domain.order.entity.PaymentMethod;
+import com.lutz.algashop.ordering.domain.order.vo.OrderId;
 import com.lutz.algashop.ordering.infrastructure.persistence.builder.OrderPersistenceEntityTestBuilder;
 import com.lutz.algashop.ordering.infrastructure.persistence.entity.OrderPersistenceEntity;
 import org.junit.jupiter.api.BeforeEach;

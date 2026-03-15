@@ -1,10 +1,10 @@
 package com.lutz.algashop.ordering.infrastructure.persistence.provider;
 
-import com.lutz.algashop.ordering.domain.entity.customer.vo.CustomerId;
-import com.lutz.algashop.ordering.domain.entity.order.Order;
-import com.lutz.algashop.ordering.domain.entity.order.vo.Money;
-import com.lutz.algashop.ordering.domain.entity.order.vo.OrderId;
-import com.lutz.algashop.ordering.domain.repository.Orders;
+import com.lutz.algashop.ordering.domain.commons.Money;
+import com.lutz.algashop.ordering.domain.customer.vo.CustomerId;
+import com.lutz.algashop.ordering.domain.order.Orders;
+import com.lutz.algashop.ordering.domain.order.entity.Order;
+import com.lutz.algashop.ordering.domain.order.vo.OrderId;
 import com.lutz.algashop.ordering.infrastructure.persistence.assembler.OrderPersistenceEntityAssembler;
 import com.lutz.algashop.ordering.infrastructure.persistence.disassembler.OrderPersistenceEntityDisassembler;
 import com.lutz.algashop.ordering.infrastructure.persistence.entity.OrderPersistenceEntity;

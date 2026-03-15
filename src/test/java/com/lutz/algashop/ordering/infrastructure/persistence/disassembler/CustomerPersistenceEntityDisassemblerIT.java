@@ -1,7 +1,7 @@
 package com.lutz.algashop.ordering.infrastructure.persistence.disassembler;
 
-import com.lutz.algashop.ordering.domain.entity.customer.Customer;
-import com.lutz.algashop.ordering.domain.entity.customer.vo.CustomerId;
+import com.lutz.algashop.ordering.domain.customer.Customer;
+import com.lutz.algashop.ordering.domain.customer.vo.CustomerId;
 import com.lutz.algashop.ordering.infrastructure.persistence.builder.CustomerPersistenceEntityTestBuilder;
 import com.lutz.algashop.ordering.infrastructure.persistence.entity.CustomerPersistenceEntity;
 import org.junit.jupiter.api.BeforeEach;

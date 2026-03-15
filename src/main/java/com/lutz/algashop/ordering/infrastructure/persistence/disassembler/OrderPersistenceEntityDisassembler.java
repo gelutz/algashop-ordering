@@ -1,10 +1,14 @@
 package com.lutz.algashop.ordering.infrastructure.persistence.disassembler;
 
-import com.lutz.algashop.ordering.domain.entity.customer.vo.*;
-import com.lutz.algashop.ordering.domain.entity.order.Order;
-import com.lutz.algashop.ordering.domain.entity.order.OrderStatus;
-import com.lutz.algashop.ordering.domain.entity.order.PaymentMethod;
-import com.lutz.algashop.ordering.domain.entity.order.vo.*;
+import com.lutz.algashop.ordering.domain.commons.*;
+import com.lutz.algashop.ordering.domain.customer.vo.CustomerId;
+import com.lutz.algashop.ordering.domain.order.entity.Order;
+import com.lutz.algashop.ordering.domain.order.entity.OrderStatus;
+import com.lutz.algashop.ordering.domain.order.entity.PaymentMethod;
+import com.lutz.algashop.ordering.domain.order.vo.Billing;
+import com.lutz.algashop.ordering.domain.order.vo.OrderId;
+import com.lutz.algashop.ordering.domain.order.vo.Recipient;
+import com.lutz.algashop.ordering.domain.order.shipping.Shipping;
 import com.lutz.algashop.ordering.infrastructure.persistence.entity.OrderPersistenceEntity;
 import com.lutz.algashop.ordering.infrastructure.persistence.entity.embeddable.AddressEmbeddable;
 import com.lutz.algashop.ordering.infrastructure.persistence.entity.embeddable.BillingEmbeddable;

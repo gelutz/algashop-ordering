@@ -1,6 +1,6 @@
 package com.lutz.algashop.ordering.infrastructure.persistence.assembler;
 
-import com.lutz.algashop.ordering.domain.entity.shoppingCart.ShoppingCartItem;
+import com.lutz.algashop.ordering.domain.shoppingCart.entity.ShoppingCartItem;
 import com.lutz.algashop.ordering.infrastructure.persistence.entity.ShoppingCartItemPersistenceEntity;
 import org.springframework.stereotype.Component;
 

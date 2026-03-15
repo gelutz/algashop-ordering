@@ -1,6 +1,6 @@
 package com.lutz.algashop.ordering.infrastructure.persistence.builder;
 
-import com.lutz.algashop.ordering.domain.entity.builder.CustomerTestBuilder;
+import com.lutz.algashop.ordering.domain.customer.builder.CustomerTestBuilder;
 import com.lutz.algashop.ordering.infrastructure.persistence.entity.CustomerPersistenceEntity;
 import com.lutz.algashop.ordering.infrastructure.persistence.entity.embeddable.AddressEmbeddable;
 
