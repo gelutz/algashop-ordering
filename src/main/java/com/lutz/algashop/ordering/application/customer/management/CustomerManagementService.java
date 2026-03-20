@@ -1,6 +1,7 @@
 package com.lutz.algashop.ordering.application.customer.management;
 
 import com.lutz.algashop.ordering.application.commons.AddressData;
+import com.lutz.algashop.ordering.application.utility.Mapper;
 import com.lutz.algashop.ordering.domain.commons.Document;
 import com.lutz.algashop.ordering.domain.commons.Email;
 import com.lutz.algashop.ordering.domain.commons.FullName;
@@ -18,6 +19,7 @@ import java.util.UUID;
 public class CustomerManagementService {
 	private final CustomerRegistrationService customerRegistration;
 	private final Customers customers;
+	private final Mapper mapper;
 
 	@Transactional
 	public UUID create(@NonNull CustomerInput input) {
@@ -39,20 +41,25 @@ public class CustomerManagementService {
 	public CustomerOutput findById(@NonNull UUID id) {
 		Customer customer = customers.ofId(new CustomerId(id)).orElseThrow(CustomerNotFoundException::new);
 
-		return CustomerOutput.builder()
-		              .id(customer.id().value())
-		              .firstName(customer.fullName().firstName())
-		              .lastName(customer.fullName().lastName())
-		              .email(customer.email().toString())
-		              .phone(customer.phone().toString())
-		              .document(customer.document().toString())
-		              .birthdate(customer.birthdate().date())
-		              .promotionNotificationAllowed(customer.promotionNotificationAllowed())
-		              .archived(customer.archived())
-		              .loyaltyPoints(customer.loyaltyPoints().value())
-		              .registeredAt(customer.registeredAt())
-		              .archivedAt(customer.archivedAt())
-		              .address(AddressData.fromDomain(customer.address()))
-		              .build();
+		return mapper.convert(customer, CustomerOutput.class);
+	}
+
+	@Transactional
+	public void update(@NonNull UUID customerId, @NonNull CustomerUpdateInput input) {
+		Customer customer = customers.ofId(new CustomerId(customerId))
+		                             .orElseThrow(CustomerNotFoundException::new);
+
+		customer.changeName(new FullName(input.getFirstName(), input.getLastName()));
+		customer.changePhone(new Phone(input.getPhone()));
+
+		if (Boolean.TRUE.equals(input.getPromotionNotificationsAllowed())) {
+			customer.enablePromotionNotifications();
+		} else {
+			customer.disablePromotionNotifications();
+		}
+
+		customer.changeAddress(AddressData.toDomain(input.getAddress()));
+
+		customers.add(customer);
 	}
 }
