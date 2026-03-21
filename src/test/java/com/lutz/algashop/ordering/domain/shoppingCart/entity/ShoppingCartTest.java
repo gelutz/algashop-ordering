@@ -159,6 +159,7 @@ class ShoppingCartTest {
 					.price(new Money("10.00"))
 					.build();
 			Product product2 = ProductTestBuilder.aProduct()
+												 .id(new ProductId())
 			                                     .price(new Money("20.00"))
 			                                     .build();
 

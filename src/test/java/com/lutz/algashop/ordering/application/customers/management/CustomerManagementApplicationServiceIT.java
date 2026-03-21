@@ -1,7 +1,7 @@
 package com.lutz.algashop.ordering.application.customers.management;
 
 import com.lutz.algashop.ordering.application.commons.AddressData;
-import com.lutz.algashop.ordering.application.customer.management.CustomerManagementService;
+import com.lutz.algashop.ordering.application.customer.management.CustomerManagementApplicationService;
 import com.lutz.algashop.ordering.application.customer.management.CustomerOutput;
 import com.lutz.algashop.ordering.application.customer.management.CustomerUpdateInput;
 import com.lutz.algashop.ordering.domain.customer.CustomerNotFoundException;
@@ -18,10 +18,10 @@ import static com.lutz.algashop.ordering.application.customer.management.builder
 
 @SpringBootTest
 @Transactional
-class CustomerManagementServiceIT {
+class CustomerManagementApplicationServiceIT {
 
 	@Autowired
-	private CustomerManagementService sut;
+	private CustomerManagementApplicationService sut;
 
 	@Test
 	void shouldRegister() {
