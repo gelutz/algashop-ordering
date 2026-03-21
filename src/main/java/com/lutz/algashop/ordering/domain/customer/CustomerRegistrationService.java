@@ -1,6 +1,5 @@
 package com.lutz.algashop.ordering.domain.customer;
 
-import com.lutz.algashop.ordering.domain.DomainException;
 import com.lutz.algashop.ordering.domain.DomainService;
 import com.lutz.algashop.ordering.domain.commons.*;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +33,7 @@ public class CustomerRegistrationService {
 
 	private void verifyEmail(Email email, CustomerId customerId) {
 		if (!customers.isEmailUnique(email, customerId)) {
-			throw new DomainException("UniqueFieldException");
+			throw new CustomerEmailIsInUseException();
 		}
 	}
 }

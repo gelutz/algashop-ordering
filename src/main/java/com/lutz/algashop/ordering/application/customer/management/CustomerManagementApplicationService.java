@@ -45,6 +45,24 @@ public class CustomerManagementApplicationService {
 	}
 
 	@Transactional
+	public void archive(@NonNull UUID customerId) {
+		Customer customer = customers.ofId(new CustomerId(customerId))
+		                             .orElseThrow(CustomerNotFoundException::new);
+		customer.archive();
+		customers.add(customer);
+	}
+
+	@Transactional
+	public void changeEmail(@NonNull UUID rawCustomerId, @NonNull String newEmail) {
+		Customer customer = customers.ofId(new CustomerId(rawCustomerId))
+		                             .orElseThrow(CustomerNotFoundException::new);
+
+		customerRegistration.changeEmail(new Email(newEmail), customer);
+
+		customers.add(customer);
+	}
+
+	@Transactional
 	public void update(@NonNull UUID customerId, @NonNull CustomerUpdateInput input) {
 		Customer customer = customers.ofId(new CustomerId(customerId))
 		                             .orElseThrow(CustomerNotFoundException::new);
