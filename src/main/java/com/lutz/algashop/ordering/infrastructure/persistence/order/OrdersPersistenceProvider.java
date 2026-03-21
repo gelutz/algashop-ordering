@@ -5,6 +5,7 @@ import com.lutz.algashop.ordering.domain.customer.CustomerId;
 import com.lutz.algashop.ordering.domain.order.Orders;
 import com.lutz.algashop.ordering.domain.order.entity.Order;
 import com.lutz.algashop.ordering.domain.order.OrderId;
+import com.lutz.algashop.ordering.domain.order.exception.OrderNotFoundException;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -30,7 +31,7 @@ public class OrdersPersistenceProvider implements Orders {
 	@Override
 	public Optional<Order> ofId(OrderId orderId) {
 		var result = orderPersistenceEntityRepository.findById(orderId.value().toLong())
-				.orElseThrow();
+				.orElseThrow(OrderNotFoundException::new);
 		return Optional.of(disassembler.fromPersistence(result));
 	}
 

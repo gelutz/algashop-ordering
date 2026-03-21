@@ -37,6 +37,8 @@ public class ErrorMessages {
 		return orderMessageWrapper(orderId, String.format("This order does not belong to the customer %s", customerId));
 	}
 
+	public static final String ORDER_NOT_FOUND = "Order not found.";
+
 	private static String orderMessageWrapper(OrderId orderId, String message) {
 		return String.format("Order [%s]: %s", orderId, message);
 	}

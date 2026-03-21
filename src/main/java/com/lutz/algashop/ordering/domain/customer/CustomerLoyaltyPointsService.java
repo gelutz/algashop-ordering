@@ -10,8 +10,8 @@ import lombok.NonNull;
 
 @DomainService
 public class CustomerLoyaltyPointsService {
-	public static final LoyaltyPoints multiplier = new LoyaltyPoints(1);
-	public static final Money VALUE_PER_POINT = new Money("100");
+	public static final LoyaltyPoints multiplier = new LoyaltyPoints(5);
+	public static final Money VALUE_PER_POINT = new Money("1000");
 
 	public void addPoints(@NonNull Customer customer, @NonNull Order order) {
 		if (!customer.id().equals(order.customerId())) {
@@ -22,7 +22,10 @@ public class CustomerLoyaltyPointsService {
 			throw new WrongOrderStatusException(order.id(), order.status(), OrderStatus.READY);
 		}
 
-		customer.addLoyaltyPoints(calculatePoints(order));
+		LoyaltyPoints points = calculatePoints(order);
+		if (points.value() > 0) {
+			customer.addLoyaltyPoints(points);
+		}
 	}
 
 	private LoyaltyPoints calculatePoints(@NonNull Order order) {
@@ -37,6 +40,6 @@ public class CustomerLoyaltyPointsService {
 
 	private boolean shouldGivePointsByAmount(Money money) {
 
-		return money.compareTo(VALUE_PER_POINT) > 0;
+		return money.compareTo(VALUE_PER_POINT) >= 0;
 	}
 }
