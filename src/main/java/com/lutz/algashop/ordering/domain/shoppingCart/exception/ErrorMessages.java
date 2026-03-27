@@ -1,5 +1,6 @@
 package com.lutz.algashop.ordering.domain.shoppingCart.exception;
 
+import com.lutz.algashop.ordering.domain.customer.CustomerId;
 import com.lutz.algashop.ordering.domain.product.ProductId;
 import com.lutz.algashop.ordering.domain.shoppingCart.entity.ShoppingCartId;
 import com.lutz.algashop.ordering.domain.shoppingCart.entity.ShoppingCartItemId;
@@ -25,6 +26,14 @@ public class ErrorMessages {
 
 	}
 
+
+	public static String shoppingCartNotFound(ShoppingCartId id) {
+		return shoppingCartMessageWrapper(id, "Shopping cart not found.");
+	}
+
+	public static String customerAlreadyHasShoppingCart(CustomerId customerId) {
+		return String.format("Customer [%s] already has an active shopping cart.", customerId);
+	}
 
 	private static String shoppingCartItemMessageWrapper(ShoppingCartItemId id, String message) {
 		return String.format("ShoppingCartItem [%s]: %s", id, message);

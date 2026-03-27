@@ -26,9 +26,8 @@ public class ShoppingCartsPersistenceProvider implements ShoppingCarts {
 
 	@Override
 	public Optional<ShoppingCart> ofId(ShoppingCartId shoppingCartId) {
-		var result = shoppingCartPersistenceEntityRepository.findById(shoppingCartId.value())
-				.orElseThrow();
-		return Optional.of(disassembler.fromPersistence(result));
+		return shoppingCartPersistenceEntityRepository.findById(shoppingCartId.value())
+				.map(disassembler::fromPersistence);
 	}
 
 	@Override
