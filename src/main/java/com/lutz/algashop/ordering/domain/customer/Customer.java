@@ -1,5 +1,6 @@
 package com.lutz.algashop.ordering.domain.customer;
 
+import com.lutz.algashop.ordering.domain.AbstractEventSourceEntity;
 import com.lutz.algashop.ordering.domain.AggregateRoot;
 import com.lutz.algashop.ordering.domain.commons.*;
 import lombok.Builder;
@@ -14,8 +15,10 @@ import java.util.UUID;
 
 @Getter
 @Accessors(fluent = true)
-@EqualsAndHashCode(of = "id")
-public class Customer implements AggregateRoot<CustomerId> {
+@EqualsAndHashCode(of = "id", callSuper = true)
+public class Customer
+		extends AbstractEventSourceEntity
+		implements AggregateRoot<CustomerId> {
 	private CustomerId id;
 	private FullName fullName;
 	private Birthdate birthdate;
@@ -30,7 +33,6 @@ public class Customer implements AggregateRoot<CustomerId> {
 	private LoyaltyPoints loyaltyPoints;
 	private Long version;
 
-	// existing customer
 	@Builder(builderClassName = "ExistingCustomerBuilder", builderMethodName = "existing")
 	private Customer(CustomerId id, FullName fullName, Birthdate birthDate, Email email, Phone phone, Document document, Address address, Boolean promotionNotificationAllowed, Boolean archived, OffsetDateTime registeredAt, OffsetDateTime archivedAt, LoyaltyPoints loyaltyPoints, Long version) {
 		setId(id);
@@ -50,20 +52,25 @@ public class Customer implements AggregateRoot<CustomerId> {
 
 	// new customer
 	@Builder(builderClassName = "NewCustomerBuilder", builderMethodName = "fresh")
-	private Customer(FullName fullName, Birthdate birthDate, Email email, Phone phone, Document document, Address address, Boolean promotionNotificationAllowed) {
-		setId(new CustomerId());
-		setFullName(fullName);
-		setBirthdate(birthDate.date());
-		setEmail(email);
-		setPhone(phone);
-		setDocument(document);
-		setAddress(address);
-		setPromotionNotificationAllowed(promotionNotificationAllowed);
-		setArchived(false);
-		setRegisteredAt(OffsetDateTime.now());
-		setArchivedAt(null);
-		setLoyaltyPoints(LoyaltyPoints.ZERO);
-		setVersion(null);
+	private static Customer createFresh(FullName fullName, Birthdate birthDate, Email email, Phone phone, Document document, Address address, Boolean promotionNotificationAllowed) {
+		Customer customer = new Customer(
+				new CustomerId(),
+				fullName,
+				birthDate,
+				email,
+				phone,
+				document,
+				address,
+				promotionNotificationAllowed,
+				false,
+				OffsetDateTime.now(),
+				null,
+				LoyaltyPoints.ZERO,
+				null
+		);
+
+		customer.publishDomainEvent(new CustomerRegisteredEvent(customer.id(), customer.registeredAt()));
+		return customer;
 	}
 
 	public void archive() {
@@ -85,6 +92,8 @@ public class Customer implements AggregateRoot<CustomerId> {
 				.city("anon")
 				.state("anon")
 				.build());
+
+		this.publishDomainEvent(new CustomerArchivedEvent(this.id(), this.archivedAt()));
 	}
 
 	public void addLoyaltyPoints(LoyaltyPoints points) {

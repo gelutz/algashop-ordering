@@ -36,6 +36,19 @@ public class CustomerTestBuilder {
         return new CustomerTestBuilder();
     }
 
+    public static Customer newCustomer() {
+        Customer customer = CustomerTestBuilder.aCustomer().build();
+        return Customer.fresh()
+                       .fullName(customer.fullName())
+                       .birthDate(customer.birthdate())
+                       .email(customer.email())
+                       .phone(customer.phone())
+                       .document(customer.document())
+                       .address(customer.address())
+                       .promotionNotificationAllowed(customer.promotionNotificationAllowed())
+                       .build();
+    }
+
     public CustomerTestBuilder withId(CustomerId id) {
         this.id = id;
         return this;

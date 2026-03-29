@@ -1,5 +1,6 @@
 package com.lutz.algashop.ordering.domain.shoppingCart.entity;
 
+import com.lutz.algashop.ordering.domain.AbstractEventSourceEntity;
 import com.lutz.algashop.ordering.domain.AggregateRoot;
 import com.lutz.algashop.ordering.domain.commons.Money;
 import com.lutz.algashop.ordering.domain.commons.Quantity;
@@ -22,7 +23,9 @@ import java.util.Set;
 
 @Getter
 @Accessors(fluent = true)
-public class ShoppingCart implements AggregateRoot<ShoppingCartId> {
+public class ShoppingCart
+		extends AbstractEventSourceEntity
+		implements AggregateRoot<ShoppingCartId> {
 	private ShoppingCartId id;
 	private CustomerId customerId;
 	private Set<ShoppingCartItem> items;

@@ -78,4 +78,26 @@ public class CustomerTest {
 					() -> sut.addLoyaltyPoints(new LoyaltyPoints(newPoints)));
 		}
 	}
+
+	@Nested
+	@DisplayName("Event tests")
+	class EventTests {
+		@Test
+		void givenValidWhenCreatingNewCustomerShouldSendCustomerRegisteredEvent() {
+			Customer customer = CustomerTestBuilder.newCustomer();
+			CustomerRegisteredEvent event = new CustomerRegisteredEvent(customer.id(), customer.registeredAt());
+
+			Assertions.assertTrue(customer.domainEvents().contains(event));
+		}
+
+		@Test
+		void givenValidCustomerWhenArchivedShouldSendCustomerArchivedEvent() {
+			Customer customer = CustomerTestBuilder.aCustomer().build();
+			customer.archive();
+			CustomerArchivedEvent event = new CustomerArchivedEvent(customer.id(), customer.archivedAt());
+
+			Assertions.assertTrue(customer.domainEvents().contains(event));
+
+		}
+	}
 }
