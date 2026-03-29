@@ -18,6 +18,6 @@ public abstract class AbstractEventSourceEntity implements DomainEventSource {
 	}
 
 	public void clearDomainEvents() {
-
+		this.domainEvents.clear();
 	}
 }

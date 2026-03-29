@@ -30,6 +30,7 @@ public class CustomerPersistenceEntityAssembler {
 		customerPersistenceEntity.setAddress(addressFromDomain(customer.address()));
 		customerPersistenceEntity.setVersion(customer.version());
 
+		customerPersistenceEntity.addEvents(customer.domainEvents());
 		return customerPersistenceEntity;
 	}
 

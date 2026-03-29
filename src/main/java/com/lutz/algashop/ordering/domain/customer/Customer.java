@@ -15,7 +15,7 @@ import java.util.UUID;
 
 @Getter
 @Accessors(fluent = true)
-@EqualsAndHashCode(of = "id", callSuper = true)
+@EqualsAndHashCode(of = "id", callSuper = false)
 public class Customer
 		extends AbstractEventSourceEntity
 		implements AggregateRoot<CustomerId> {

@@ -11,6 +11,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.util.Collection;
 import java.util.UUID;
 
 @Entity
@@ -19,7 +20,7 @@ import java.util.UUID;
 @ToString(of = "id")
 @Table(name = "customer")
 @NoArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 @EntityListeners(AuditingEntityListener.class)
 public class CustomerPersistenceEntity
 	extends AbstractAggregateRoot<CustomerPersistenceEntity> {
@@ -80,5 +81,13 @@ public class CustomerPersistenceEntity
 		this.lastModifiedAt = lastModifiedAt;
 		this.lastModifiedUserId = lastModifiedUserId;
 		this.version = version;
+	}
+
+	public Collection<Object> getEvents() {
+		return super.domainEvents();
+	}
+
+	public void addEvents(@NonNull Collection<Object> events) {
+		events.forEach(super::registerEvent);
 	}
 }

@@ -4,22 +4,23 @@ import com.lutz.algashop.ordering.application.commons.AddressData;
 import com.lutz.algashop.ordering.application.customer.management.CustomerManagementApplicationService;
 import com.lutz.algashop.ordering.application.customer.management.CustomerOutput;
 import com.lutz.algashop.ordering.application.customer.management.CustomerUpdateInput;
-import com.lutz.algashop.ordering.domain.customer.CustomerArchivedException;
-import com.lutz.algashop.ordering.domain.customer.CustomerEmailIsInUseException;
-import com.lutz.algashop.ordering.domain.customer.CustomerNotFoundException;
+import com.lutz.algashop.ordering.application.customer.notification.CustomerNotificationService;
+import com.lutz.algashop.ordering.domain.customer.*;
+import com.lutz.algashop.ordering.infrastructure.listener.customer.CustomerEventListener;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
 import static com.lutz.algashop.ordering.application.customer.management.builder.CustomerInputTestBuilder.aCustomerInput;
 import static com.lutz.algashop.ordering.application.customer.management.builder.CustomerUpdateInputTestBuilder.aCustomerUpdateInput;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
@@ -27,6 +28,12 @@ class CustomerManagementApplicationServiceIT {
 
 	@Autowired
 	private CustomerManagementApplicationService sut;
+
+	@MockitoSpyBean
+	private CustomerEventListener customerEventListener;
+
+	@MockitoSpyBean
+	private CustomerNotificationService customerNotificationService;
 
 	@Test
 	void shouldRegister() {
@@ -43,6 +50,9 @@ class CustomerManagementApplicationServiceIT {
 		Assertions.assertEquals(customer.getPhone(), resultingOutput.getPhone());
 		Assertions.assertEquals(customer.getDocument(), resultingOutput.getDocument());
 		Assertions.assertEquals(customer.getBirthdate(), resultingOutput.getBirthdate());
+
+		Mockito.verify(customerEventListener).listen(Mockito.any(CustomerRegisteredEvent.class));
+		Mockito.verify(customerNotificationService).notifyNewRegistration(Mockito.any(UUID.class));
 	}
 
 	@Test
