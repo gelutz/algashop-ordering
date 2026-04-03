@@ -52,7 +52,8 @@ class CustomerManagementApplicationServiceIT {
 		Assertions.assertEquals(customer.getBirthdate(), resultingOutput.getBirthdate());
 
 		Mockito.verify(customerEventListener).listen(Mockito.any(CustomerRegisteredEvent.class));
-		Mockito.verify(customerNotificationService).notifyNewRegistration(Mockito.any(UUID.class));
+
+		Mockito.verify(customerNotificationService).notifyNewRegistration(Mockito.any(CustomerNotificationService.NotifyNewRegistrationInput.class));
 	}
 
 	@Test

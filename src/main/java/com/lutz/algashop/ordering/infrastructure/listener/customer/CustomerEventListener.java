@@ -1,6 +1,7 @@
 package com.lutz.algashop.ordering.infrastructure.listener.customer;
 
 import com.lutz.algashop.ordering.application.customer.notification.CustomerNotificationService;
+import com.lutz.algashop.ordering.application.customer.notification.CustomerNotificationService.NotifyNewRegistrationInput;
 import com.lutz.algashop.ordering.domain.customer.CustomerArchivedEvent;
 import com.lutz.algashop.ordering.domain.customer.CustomerRegisteredEvent;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,12 @@ public class CustomerEventListener {
 	@EventListener
 	public void listen(CustomerRegisteredEvent event) {
 		log.info(event.toString());
-		notificationService.notifyNewRegistration(event.id().value());
+		var input = new NotifyNewRegistrationInput(
+				event.id().value(),
+				event.fullName().firstName(),
+				event.email().toString()
+		);
+		notificationService.notifyNewRegistration(input);
 	}
 
 	@EventListener

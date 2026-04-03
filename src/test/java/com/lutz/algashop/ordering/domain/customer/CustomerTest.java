@@ -85,7 +85,7 @@ public class CustomerTest {
 		@Test
 		void givenValidWhenCreatingNewCustomerShouldSendCustomerRegisteredEvent() {
 			Customer customer = CustomerTestBuilder.newCustomer();
-			CustomerRegisteredEvent event = new CustomerRegisteredEvent(customer.id(), customer.registeredAt());
+			CustomerRegisteredEvent event = new CustomerRegisteredEvent(customer.id(), customer.fullName(), customer.email(), customer.registeredAt());
 
 			Assertions.assertTrue(customer.domainEvents().contains(event));
 		}

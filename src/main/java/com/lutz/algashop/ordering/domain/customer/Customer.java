@@ -69,7 +69,7 @@ public class Customer
 				null
 		);
 
-		customer.publishDomainEvent(new CustomerRegisteredEvent(customer.id(), customer.registeredAt()));
+		customer.publishDomainEvent(new CustomerRegisteredEvent(customer.id(), customer.fullName(), customer.email(), customer.registeredAt()));
 		return customer;
 	}
 
