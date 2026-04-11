@@ -1,13 +1,9 @@
-package com.lutz.algashop.ordering.application.customers.management;
+package com.lutz.algashop.ordering.application.customer.management;
 
 import com.lutz.algashop.ordering.application.commons.AddressData;
-import com.lutz.algashop.ordering.application.customer.management.CustomerManagementApplicationService;
-import com.lutz.algashop.ordering.application.customer.management.CustomerOutput;
-import com.lutz.algashop.ordering.application.customer.management.CustomerUpdateInput;
-import com.lutz.algashop.ordering.application.customer.notification.CustomerNotificationService;
+import com.lutz.algashop.ordering.application.customer.notification.CustomerNotificationApplicationService;
 import com.lutz.algashop.ordering.domain.customer.*;
 import com.lutz.algashop.ordering.infrastructure.listener.customer.CustomerEventListener;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,27 +29,28 @@ class CustomerManagementApplicationServiceIT {
 	private CustomerEventListener customerEventListener;
 
 	@MockitoSpyBean
-	private CustomerNotificationService customerNotificationService;
+	private CustomerNotificationApplicationService customerNotificationApplicationService;
 
 	@Test
 	void shouldRegister() {
 		var customer = aCustomerInput().build();
 		UUID resultingId = sut.create(customer);
 
-		Assertions.assertNotNull(resultingId);
+		assertThat(resultingId).isNotNull();
 
 		CustomerOutput resultingOutput = sut.findById(resultingId);
 
-		Assertions.assertEquals(customer.getFirstName(), resultingOutput.getFirstName());
-		Assertions.assertEquals(customer.getLastName(), resultingOutput.getLastName());
-		Assertions.assertEquals(customer.getEmail(), resultingOutput.getEmail());
-		Assertions.assertEquals(customer.getPhone(), resultingOutput.getPhone());
-		Assertions.assertEquals(customer.getDocument(), resultingOutput.getDocument());
-		Assertions.assertEquals(customer.getBirthdate(), resultingOutput.getBirthdate());
+		assertThat(resultingOutput.getFirstName()).isEqualTo(customer.getFirstName());
+		assertThat(resultingOutput.getLastName()).isEqualTo(customer.getLastName());
+		assertThat(resultingOutput.getEmail()).isEqualTo(customer.getEmail());
+		assertThat(resultingOutput.getPhone()).isEqualTo(customer.getPhone());
+		assertThat(resultingOutput.getDocument()).isEqualTo(customer.getDocument());
+		assertThat(resultingOutput.getBirthdate()).isEqualTo(customer.getBirthdate());
 
 		Mockito.verify(customerEventListener).listen(Mockito.any(CustomerRegisteredEvent.class));
 
-		Mockito.verify(customerNotificationService).notifyNewRegistration(Mockito.any(CustomerNotificationService.NotifyNewRegistrationInput.class));
+		Mockito.verify(customerNotificationApplicationService).notifyNewRegistration(Mockito.any(
+				CustomerNotificationApplicationService.NotifyNewRegistrationInput.class));
 	}
 
 	@Test
@@ -80,25 +77,25 @@ class CustomerManagementApplicationServiceIT {
 
 		CustomerOutput updated = sut.findById(customerId);
 
-		Assertions.assertEquals("Jane", updated.getFirstName());
-		Assertions.assertEquals("Smith", updated.getLastName());
-		Assertions.assertEquals("999888777", updated.getPhone());
-		Assertions.assertEquals(true, updated.getPromotionNotificationAllowed());
-		Assertions.assertEquals("New street", updated.getAddress().getStreet());
-		Assertions.assertEquals("200", updated.getAddress().getNumber());
-		Assertions.assertEquals("apt 5", updated.getAddress().getComplement());
-		Assertions.assertEquals("downtown", updated.getAddress().getNeighborhood());
-		Assertions.assertEquals("Manhattan", updated.getAddress().getCity());
-		Assertions.assertEquals("New York", updated.getAddress().getState());
-		Assertions.assertEquals("456456", updated.getAddress().getZipCode());
+		assertThat(updated.getFirstName()).isEqualTo("Jane");
+		assertThat(updated.getLastName()).isEqualTo("Smith");
+		assertThat(updated.getPhone()).isEqualTo("999888777");
+		assertThat(updated.getPromotionNotificationAllowed()).isTrue();
+		assertThat(updated.getAddress().getStreet()).isEqualTo("New street");
+		assertThat(updated.getAddress().getNumber()).isEqualTo("200");
+		assertThat(updated.getAddress().getComplement()).isEqualTo("apt 5");
+		assertThat(updated.getAddress().getNeighborhood()).isEqualTo("downtown");
+		assertThat(updated.getAddress().getCity()).isEqualTo("Manhattan");
+		assertThat(updated.getAddress().getState()).isEqualTo("New York");
+		assertThat(updated.getAddress().getZipCode()).isEqualTo("456456");
 	}
 
 	@Test
 	void shouldThrowWhenUpdatingNonExistentCustomer() {
 		CustomerUpdateInput updateInput = aCustomerUpdateInput().build();
 
-		Assertions.assertThrows(CustomerNotFoundException.class,
-				() -> sut.update(UUID.randomUUID(), updateInput));
+		assertThatThrownBy(() -> sut.update(UUID.randomUUID(), updateInput))
+				.isInstanceOf(CustomerNotFoundException.class);
 	}
 
 	@Test
@@ -110,25 +107,25 @@ class CustomerManagementApplicationServiceIT {
 
 		CustomerOutput result = sut.findById(customerId);
 
-		Assertions.assertTrue(result.getArchived());
-		Assertions.assertNotNull(result.getArchivedAt());
-		Assertions.assertEquals("Archived", result.getFirstName());
-		Assertions.assertEquals("-", result.getLastName());
-		Assertions.assertTrue(result.getEmail().endsWith("@archived.com"));
-		Assertions.assertEquals("0", result.getPhone());
-		Assertions.assertEquals("0", result.getDocument());
-		Assertions.assertNull(result.getBirthdate());
-		Assertions.assertFalse(result.getPromotionNotificationAllowed());
-		Assertions.assertEquals("000", result.getAddress().getNumber());
-		Assertions.assertEquals("anon", result.getAddress().getStreet());
-		Assertions.assertEquals("anon", result.getAddress().getCity());
-		Assertions.assertEquals("anon", result.getAddress().getState());
+		assertThat(result.getArchived()).isTrue();
+		assertThat(result.getArchivedAt()).isNotNull();
+		assertThat(result.getFirstName()).isEqualTo("Archived");
+		assertThat(result.getLastName()).isEqualTo("-");
+		assertThat(result.getEmail()).endsWith("@archived.com");
+		assertThat(result.getPhone()).isEqualTo("0");
+		assertThat(result.getDocument()).isEqualTo("0");
+		assertThat(result.getBirthdate()).isNull();
+		assertThat(result.getPromotionNotificationAllowed()).isFalse();
+		assertThat(result.getAddress().getNumber()).isEqualTo("000");
+		assertThat(result.getAddress().getStreet()).isEqualTo("anon");
+		assertThat(result.getAddress().getCity()).isEqualTo("anon");
+		assertThat(result.getAddress().getState()).isEqualTo("anon");
 	}
 
 	@Test
 	void shouldThrowWhenArchivingNonExistentCustomer() {
-		Assertions.assertThrows(CustomerNotFoundException.class,
-				() -> sut.archive(UUID.randomUUID()));
+		assertThatThrownBy(() -> sut.archive(UUID.randomUUID()))
+				.isInstanceOf(CustomerNotFoundException.class);
 	}
 
 	@Test
@@ -136,8 +133,8 @@ class CustomerManagementApplicationServiceIT {
 		UUID customerId = sut.create(aCustomerInput().build());
 		sut.archive(customerId);
 
-		Assertions.assertThrows(CustomerArchivedException.class,
-				() -> sut.archive(customerId));
+		assertThatThrownBy(() -> sut.archive(customerId))
+				.isInstanceOf(CustomerArchivedException.class);
 	}
 
 	@Test

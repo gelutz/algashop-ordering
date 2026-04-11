@@ -4,11 +4,10 @@ import com.lutz.algashop.ordering.domain.customer.Customers;
 import com.lutz.algashop.ordering.domain.customer.builder.CustomerTestBuilder;
 import com.lutz.algashop.ordering.domain.order.builder.OrderTestBuilder;
 import com.lutz.algashop.ordering.domain.order.entity.Order;
-import com.lutz.algashop.ordering.domain.order.entity.OrderStatus;
-import com.lutz.algashop.ordering.infrastructure.persistence.customers.CustomerPersistenceEntityAssembler;
-import com.lutz.algashop.ordering.infrastructure.persistence.customers.CustomersPersistenceProvider;
 import com.lutz.algashop.ordering.infrastructure.persistence.SpringDataAuditingConfiguration;
+import com.lutz.algashop.ordering.infrastructure.persistence.customers.CustomerPersistenceEntityAssembler;
 import com.lutz.algashop.ordering.infrastructure.persistence.customers.CustomerPersistenceEntityDisassembler;
+import com.lutz.algashop.ordering.infrastructure.persistence.customers.CustomersPersistenceProvider;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -54,7 +53,8 @@ class OrdersPersistenceProviderIT {
 
 	@Test
 	void givenDifferentObjectWithSameIdShouldUpdate() {
-		Order order = OrderTestBuilder.aFilledDraftOrder().withStatus(OrderStatus.PLACED).build();
+		Order order = OrderTestBuilder.aFilledDraftOrder()
+		                              .build();
 		sut.add(order);
 
 		OrderPersistenceEntity result = orderPersistenceEntityRepository.findById(order.id().value().toLong()).orElseThrow();
@@ -65,6 +65,7 @@ class OrdersPersistenceProviderIT {
 		assertNotNull(result.getLastModifiedAt());
 		assertNotNull(result.getLastModifiedUserId());
 
+		order.place();
 		order.markAsPaid();
 		sut.add(order);
 

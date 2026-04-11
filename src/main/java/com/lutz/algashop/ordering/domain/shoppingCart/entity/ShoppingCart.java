@@ -7,6 +7,10 @@ import com.lutz.algashop.ordering.domain.commons.Quantity;
 import com.lutz.algashop.ordering.domain.customer.CustomerId;
 import com.lutz.algashop.ordering.domain.product.Product;
 import com.lutz.algashop.ordering.domain.product.ProductId;
+import com.lutz.algashop.ordering.domain.shoppingCart.ShoppingCartCreatedEvent;
+import com.lutz.algashop.ordering.domain.shoppingCart.ShoppingCartEmptiedEvent;
+import com.lutz.algashop.ordering.domain.shoppingCart.ShoppingCartItemAddedEvent;
+import com.lutz.algashop.ordering.domain.shoppingCart.ShoppingCartItemRemovedEvent;
 import com.lutz.algashop.ordering.domain.shoppingCart.exception.ShoppingCartDoesNotContainItemException;
 import com.lutz.algashop.ordering.domain.shoppingCart.exception.ShoppingCartDoesNotContainProduct;
 import lombok.Builder;
@@ -46,7 +50,7 @@ public class ShoppingCart
 	}
 
 	public static ShoppingCart startShopping(@NonNull CustomerId customerId) {
-		return new ShoppingCart(
+		ShoppingCart shoppingCart = new ShoppingCart(
 				new ShoppingCartId(),
 				customerId,
 				Money.ZERO,
@@ -55,6 +59,8 @@ public class ShoppingCart
 				new HashSet<>(),
 				null
 		);
+		shoppingCart.publishDomainEvent(new ShoppingCartCreatedEvent(shoppingCart.id(), shoppingCart.customerId(), shoppingCart.createdAt()));
+		return shoppingCart;
 	}
 
 	public Set<ShoppingCartItem> items() {
@@ -65,6 +71,7 @@ public class ShoppingCart
 		this.items.clear();
 		this.totalAmount = Money.ZERO;
 		this.totalItems = Quantity.ZERO;
+		this.publishDomainEvent(new ShoppingCartEmptiedEvent(id(), customerId(), OffsetDateTime.now()));
 	}
 
 	public ShoppingCartItem findItem(@NonNull ShoppingCartItemId itemId) {
@@ -98,6 +105,7 @@ public class ShoppingCart
 		}
 
 		recalculateTotals();
+		this.publishDomainEvent(new ShoppingCartItemAddedEvent(id(), customerId(), product.id(), OffsetDateTime.now()));
 	}
 
 	public void refreshItem(@NonNull Product product) {
@@ -107,9 +115,12 @@ public class ShoppingCart
 	}
 
 	public void removeItem(@NonNull ShoppingCartItemId id) {
-		this.items.remove(findItem(id));
+		ShoppingCartItem item = findItem(id);
+		ProductId productId = item.productId();
+		this.items.remove(item);
 
 		recalculateTotals();
+		this.publishDomainEvent(new ShoppingCartItemRemovedEvent(id(), customerId(), productId, OffsetDateTime.now()));
 	}
 
 	public void changeItemQuantity(@NonNull ShoppingCartItemId itemId, @NonNull Quantity quantity) {

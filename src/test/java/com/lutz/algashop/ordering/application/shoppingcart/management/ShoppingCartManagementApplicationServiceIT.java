@@ -13,9 +13,14 @@ import com.lutz.algashop.ordering.domain.shoppingCart.ShoppingCarts;
 import com.lutz.algashop.ordering.domain.shoppingCart.entity.ShoppingCart;
 import com.lutz.algashop.ordering.domain.shoppingCart.entity.ShoppingCartId;
 import com.lutz.algashop.ordering.domain.shoppingCart.entity.ShoppingCartItemId;
+import com.lutz.algashop.ordering.domain.shoppingCart.ShoppingCartCreatedEvent;
+import com.lutz.algashop.ordering.domain.shoppingCart.ShoppingCartEmptiedEvent;
+import com.lutz.algashop.ordering.domain.shoppingCart.ShoppingCartItemAddedEvent;
+import com.lutz.algashop.ordering.domain.shoppingCart.ShoppingCartItemRemovedEvent;
 import com.lutz.algashop.ordering.domain.shoppingCart.exception.CustomerAlreadyHasShoppingCartException;
 import com.lutz.algashop.ordering.domain.shoppingCart.exception.ShoppingCartDoesNotContainItemException;
 import com.lutz.algashop.ordering.domain.shoppingCart.exception.ShoppingCartNotFoundException;
+import com.lutz.algashop.ordering.infrastructure.listener.shoppingcart.ShoppingCartEventListener;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -23,6 +28,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
@@ -45,6 +51,9 @@ class ShoppingCartManagementApplicationServiceIT {
 
 	@MockitoBean
 	private ProductCatalogService productCatalogService;
+
+	@MockitoSpyBean
+	private ShoppingCartEventListener shoppingCartEventListener;
 
 	@BeforeEach
 	void setup() {
@@ -260,6 +269,82 @@ class ShoppingCartManagementApplicationServiceIT {
 		void shouldThrowWhenCartNotFound() {
 			assertThrows(ShoppingCartNotFoundException.class,
 					() -> sut.delete(UUID.randomUUID()));
+		}
+	}
+
+	@Nested
+	class DomainEvents {
+
+		@Test
+		void shouldEmitShoppingCartCreatedEventWhenCartIsCreated() {
+			sut.createNew(CustomerTestBuilder.DEFAULT_CUSTOMER_ID.value());
+
+			Mockito.verify(shoppingCartEventListener, Mockito.times(1))
+					.listen(Mockito.any(ShoppingCartCreatedEvent.class));
+		}
+
+		@Test
+		void shouldEmitShoppingCartEmptiedEventWhenCartIsEmptied() {
+			UUID cartId = sut.createNew(CustomerTestBuilder.DEFAULT_CUSTOMER_ID.value());
+
+			Product product = ProductTestBuilder.aProduct().build();
+			Mockito.when(productCatalogService.ofId(product.id()))
+					.thenReturn(Optional.of(product));
+
+			ShoppingCartItemInput input = ShoppingCartItemInput.builder()
+					.shoppingCartId(cartId)
+					.productId(product.id().value())
+					.quantity(1)
+					.build();
+			sut.addItem(input);
+
+			sut.empty(cartId);
+
+			Mockito.verify(shoppingCartEventListener, Mockito.times(1))
+					.listen(Mockito.any(ShoppingCartEmptiedEvent.class));
+		}
+
+		@Test
+		void shouldEmitShoppingCartItemAddedEventWhenItemIsAdded() {
+			UUID cartId = sut.createNew(CustomerTestBuilder.DEFAULT_CUSTOMER_ID.value());
+
+			Product product = ProductTestBuilder.aProduct().build();
+			Mockito.when(productCatalogService.ofId(product.id()))
+					.thenReturn(Optional.of(product));
+
+			ShoppingCartItemInput input = ShoppingCartItemInput.builder()
+					.shoppingCartId(cartId)
+					.productId(product.id().value())
+					.quantity(2)
+					.build();
+			sut.addItem(input);
+
+			Mockito.verify(shoppingCartEventListener, Mockito.times(1))
+					.listen(Mockito.any(ShoppingCartItemAddedEvent.class));
+		}
+
+		@Test
+		void shouldEmitShoppingCartItemRemovedEventWhenItemIsRemoved() {
+			UUID cartId = sut.createNew(CustomerTestBuilder.DEFAULT_CUSTOMER_ID.value());
+
+			Product product = ProductTestBuilder.aProduct().build();
+			Mockito.when(productCatalogService.ofId(product.id()))
+					.thenReturn(Optional.of(product));
+
+			ShoppingCartItemInput input = ShoppingCartItemInput.builder()
+					.shoppingCartId(cartId)
+					.productId(product.id().value())
+					.quantity(1)
+					.build();
+			sut.addItem(input);
+
+			ShoppingCart cart = shoppingCarts.ofId(new ShoppingCartId(cartId)).orElseThrow();
+			ShoppingCartItemId itemId = cart.items().iterator().next().id();
+
+			sut.removeItem(cartId, itemId.value());
+
+			Mockito.verify(shoppingCartEventListener, Mockito.times(1))
+					.listen(Mockito.any(ShoppingCartItemRemovedEvent.class));
 		}
 	}
 }

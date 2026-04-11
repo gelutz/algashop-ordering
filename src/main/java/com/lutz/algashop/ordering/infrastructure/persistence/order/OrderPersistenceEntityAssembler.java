@@ -48,6 +48,7 @@ public class OrderPersistenceEntityAssembler {
 
 		Set<OrderItemPersistenceEntity> mergedItems = mergeItems(orderPersistenceEntity, order);
 		orderPersistenceEntity.setItems(mergedItems);
+		orderPersistenceEntity.addEvents(order.domainEvents());
 		return orderPersistenceEntity;
 	}
 

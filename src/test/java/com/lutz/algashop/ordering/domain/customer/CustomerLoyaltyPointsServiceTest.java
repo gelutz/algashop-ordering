@@ -23,7 +23,7 @@ class CustomerLoyaltyPointsServiceTest {
 		order.markAsReady();
 
 		int points = order.totalAmount().divide(threshold).value().intValue();
-		LoyaltyPoints expectedPoints = new LoyaltyPoints(points * CustomerLoyaltyPointsService.multiplier.value());
+		LoyaltyPoints expectedPoints = new LoyaltyPoints(points * CustomerLoyaltyPointsService.MULTIPLIER.value());
 		sut.addPoints(customer, order);
 		LoyaltyPoints result = customer.loyaltyPoints();
 

@@ -67,7 +67,6 @@ public class OrderChangeMethodsTest {
 		void setUp() {
 			shipping = OrderTestBuilder.aShipping().build();
 			sut = OrderTestBuilder.anExistingOrder()
-			                      .withStatus(OrderStatus.DRAFT)
 			                      .withShipping(shipping)
 			                      .build();
 		}
@@ -119,7 +118,6 @@ public class OrderChangeMethodsTest {
 			Money totalAmount = new Money(price.value().multiply(BigDecimal.valueOf(quantity.value())));
 
 			sut = OrderTestBuilder.anExistingOrder()
-			                      .withStatus(OrderStatus.DRAFT)
 			                      .withProducts(Set.of(OrderTestBuilder.aProduct().build()))
 			                      .withTotalAmount(totalAmount)
 			                      .withItemsAmount(quantity)

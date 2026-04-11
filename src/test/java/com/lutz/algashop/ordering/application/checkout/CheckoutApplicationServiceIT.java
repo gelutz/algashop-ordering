@@ -6,8 +6,10 @@ import com.lutz.algashop.ordering.domain.commons.Quantity;
 import com.lutz.algashop.ordering.domain.customer.Customers;
 import com.lutz.algashop.ordering.domain.customer.builder.CustomerTestBuilder;
 import com.lutz.algashop.ordering.domain.order.OrderId;
+import com.lutz.algashop.ordering.domain.order.OrderPlacedEvent;
 import com.lutz.algashop.ordering.domain.order.Orders;
 import com.lutz.algashop.ordering.domain.order.shipping.ShippingCostService;
+import com.lutz.algashop.ordering.infrastructure.listener.order.OrderEventListener;
 import com.lutz.algashop.ordering.domain.shoppingCart.ShoppingCarts;
 import com.lutz.algashop.ordering.domain.shoppingCart.builder.ShoppingCartItemTestBuilder;
 import com.lutz.algashop.ordering.domain.shoppingCart.builder.ShoppingCartTestBuilder;
@@ -22,6 +24,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -46,6 +49,9 @@ public class CheckoutApplicationServiceIT {
 
 	@MockitoBean
 	private ShippingCostService shippingCostService;
+
+	@MockitoSpyBean
+	private OrderEventListener orderEventListener;
 
 	@BeforeEach
 	void setup() {
@@ -76,6 +82,8 @@ public class CheckoutApplicationServiceIT {
 
 		ShoppingCart updatedCart = shoppingCarts.ofId(shoppingCart.id()).orElseThrow();
 		Assertions.assertTrue(updatedCart.isEmpty());
+		Mockito.verify(orderEventListener, Mockito.times(1))
+				.listen(Mockito.any(OrderPlacedEvent.class));
 	}
 
 	@Test

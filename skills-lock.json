@@ -1,6 +1,21 @@
 {
   "version": 1,
   "skills": {
+    "caveman": {
+      "source": "JuliusBrussee/caveman",
+      "sourceType": "github",
+      "computedHash": "a818cdc41dcfaa50dd891c5cb5e5705968338de02e7e37949ca56e8c30ad4176"
+    },
+    "caveman-compress": {
+      "source": "JuliusBrussee/caveman",
+      "sourceType": "github",
+      "computedHash": "ed0f21f26011a8e8faa64cb49ac43b6533c64e0ec626b07cce4d4eca6c40a428"
+    },
+    "grill-me": {
+      "source": "evans-sam/skills",
+      "sourceType": "github",
+      "computedHash": "f343ef02aa0ada0f8b13a77b6db7fb6a11f88d8067128215585500ef4fd3b5e0"
+    },
     "java-docs": {
       "source": "github/awesome-copilot",
       "sourceType": "github",

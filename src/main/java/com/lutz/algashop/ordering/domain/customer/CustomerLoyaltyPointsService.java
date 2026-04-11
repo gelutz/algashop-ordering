@@ -10,7 +10,7 @@ import lombok.NonNull;
 
 @DomainService
 public class CustomerLoyaltyPointsService {
-	public static final LoyaltyPoints multiplier = new LoyaltyPoints(5);
+	public static final LoyaltyPoints MULTIPLIER = new LoyaltyPoints(5);
 	public static final Money VALUE_PER_POINT = new Money("1000");
 
 	public void addPoints(@NonNull Customer customer, @NonNull Order order) {
@@ -35,7 +35,7 @@ public class CustomerLoyaltyPointsService {
 
 		int points = order.totalAmount().divide(VALUE_PER_POINT).value().intValue();
 
-		return new LoyaltyPoints(points * multiplier.value());
+		return new LoyaltyPoints(points * MULTIPLIER.value());
 	}
 
 	private boolean shouldGivePointsByAmount(Money money) {

@@ -1,20 +1,15 @@
 package com.lutz.algashop.ordering.domain.order;
 
 import com.lutz.algashop.ordering.domain.commons.Money;
+import com.lutz.algashop.ordering.domain.customer.CustomerId;
 import com.lutz.algashop.ordering.domain.customer.Customers;
 import com.lutz.algashop.ordering.domain.customer.builder.CustomerTestBuilder;
-import com.lutz.algashop.ordering.domain.customer.CustomerId;
 import com.lutz.algashop.ordering.domain.order.builder.OrderTestBuilder;
 import com.lutz.algashop.ordering.domain.order.entity.Order;
-import com.lutz.algashop.ordering.domain.order.entity.OrderStatus;
 import com.lutz.algashop.ordering.infrastructure.persistence.customers.CustomerPersistenceEntityAssembler;
-import com.lutz.algashop.ordering.infrastructure.persistence.order.OrderItemPersistenceEntityAssembler;
-import com.lutz.algashop.ordering.infrastructure.persistence.order.OrderPersistenceEntityAssembler;
 import com.lutz.algashop.ordering.infrastructure.persistence.customers.CustomerPersistenceEntityDisassembler;
-import com.lutz.algashop.ordering.infrastructure.persistence.order.OrderItemPersistenceEntityDisassembler;
-import com.lutz.algashop.ordering.infrastructure.persistence.order.OrderPersistenceEntityDisassembler;
 import com.lutz.algashop.ordering.infrastructure.persistence.customers.CustomersPersistenceProvider;
-import com.lutz.algashop.ordering.infrastructure.persistence.order.OrdersPersistenceProvider;
+import com.lutz.algashop.ordering.infrastructure.persistence.order.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -76,7 +71,9 @@ class OrdersIT {
 	void shouldUpdateExistingOrder() {
 		Order order = OrderTestBuilder
 				.anExistingOrder()
-				.withStatus(OrderStatus.PLACED).build();
+				.build();
+
+		order.place();
 		sut.add(order);
 
 		// change the object for an equal (new) one
@@ -94,9 +91,9 @@ class OrdersIT {
 	void givenDifferentObjectsOfSameEntityWithSameVersionShouldThrowOptimisticLockingFailureExceptionWhenUpdatingBoth() {
 		OrderId id = new OrderId();
 		Order order = OrderTestBuilder.aFilledDraftOrder()
-		                              .withStatus(OrderStatus.PLACED)
 		                              .withId(id)
 		                              .build();
+		order.place();
 		sut.add(order);
 
 		Order order1 = sut.ofId(id).orElseThrow();
@@ -118,9 +115,9 @@ class OrdersIT {
 	@Test
 	void shouldSeeIfExistsAndCountExistingOrders() {
 		Order order1 = OrderTestBuilder.aFilledDraftOrder()
-		                              .withStatus(OrderStatus.PLACED)
 		                              .build();
 
+		order1.place();
 		sut.add(order1);
 
 		Order order2 = OrderTestBuilder.aFilledDraftOrder()

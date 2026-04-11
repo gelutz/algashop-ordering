@@ -1,7 +1,8 @@
 package com.lutz.algashop.ordering.infrastructure.listener.customer;
 
-import com.lutz.algashop.ordering.application.customer.notification.CustomerNotificationService;
-import com.lutz.algashop.ordering.application.customer.notification.CustomerNotificationService.NotifyNewRegistrationInput;
+import com.lutz.algashop.ordering.application.customer.loyalty.CustomerLoyaltyPointsApplicationService;
+import com.lutz.algashop.ordering.application.customer.notification.CustomerNotificationApplicationService;
+import com.lutz.algashop.ordering.application.customer.notification.CustomerNotificationApplicationService.NotifyNewRegistrationInput;
 import com.lutz.algashop.ordering.domain.customer.CustomerArchivedEvent;
 import com.lutz.algashop.ordering.domain.customer.CustomerRegisteredEvent;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +14,8 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @RequiredArgsConstructor
 public class CustomerEventListener {
-	private final CustomerNotificationService notificationService;
+	private final CustomerNotificationApplicationService notificationApplicationService;
+	private final CustomerLoyaltyPointsApplicationService clpaService;
 
 	@EventListener
 	public void listen(CustomerRegisteredEvent event) {
@@ -23,7 +25,7 @@ public class CustomerEventListener {
 				event.fullName().firstName(),
 				event.email().toString()
 		);
-		notificationService.notifyNewRegistration(input);
+		notificationApplicationService.notifyNewRegistration(input);
 	}
 
 	@EventListener

@@ -7,7 +7,7 @@ import java.util.Locale;
 public enum OrderStatus {
 	DRAFT, PLACED(DRAFT), PAID(PLACED), READY(PAID), CANCELED(DRAFT, PLACED, PAID, READY);
 
-	private List<OrderStatus> previousStatuses;
+	private final List<OrderStatus> previousStatuses;
 	OrderStatus(OrderStatus... previousStatuses) {
 		this.previousStatuses = Arrays.asList(previousStatuses);
 	}

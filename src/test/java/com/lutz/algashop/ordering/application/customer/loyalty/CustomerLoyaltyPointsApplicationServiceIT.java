@@ -2,22 +2,19 @@ package com.lutz.algashop.ordering.application.customer.loyalty;
 
 import com.lutz.algashop.ordering.domain.commons.Money;
 import com.lutz.algashop.ordering.domain.commons.Quantity;
-import com.lutz.algashop.ordering.domain.customer.CustomerArchivedException;
-import com.lutz.algashop.ordering.domain.customer.CustomerId;
-import com.lutz.algashop.ordering.domain.customer.CustomerNotFoundException;
-import com.lutz.algashop.ordering.domain.customer.Customers;
-import com.lutz.algashop.ordering.domain.customer.LoyaltyPoints;
+import com.lutz.algashop.ordering.domain.customer.*;
 import com.lutz.algashop.ordering.domain.customer.builder.CustomerTestBuilder;
 import com.lutz.algashop.ordering.domain.order.OrderId;
 import com.lutz.algashop.ordering.domain.order.Orders;
 import com.lutz.algashop.ordering.domain.order.builder.OrderTestBuilder;
-import com.lutz.algashop.ordering.domain.order.entity.OrderStatus;
 import com.lutz.algashop.ordering.domain.order.exception.OrderNotFoundException;
 import com.lutz.algashop.ordering.domain.order.exception.OrderNotFromThisCustomerException;
 import com.lutz.algashop.ordering.domain.order.exception.WrongOrderStatusException;
+import com.lutz.algashop.ordering.infrastructure.listener.customer.CustomerEventListener;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
@@ -38,6 +35,9 @@ class CustomerLoyaltyPointsApplicationServiceIT {
 	@Autowired
 	private Orders orders;
 
+	@MockitoBean
+	private CustomerEventListener customerEventListener;
+
 	@Test
 	void shouldAddLoyaltyPointsSuccessfully() {
 		var customer = CustomerTestBuilder.aCustomer().build();
@@ -45,13 +45,14 @@ class CustomerLoyaltyPointsApplicationServiceIT {
 
 		var order = OrderTestBuilder.aFilledDraftOrder()
 				.withCustomerId(customer.id())
-				.withStatus(OrderStatus.READY)
 				.withTotalAmount(new Money("2000"))
 				.withItemsAmount(new Quantity(1))
 				.build();
-		orders.add(order);
 
-		sut.addLoyaltyPoints(customer.id().value(), order.id().toString());
+		order.place();
+		order.markAsPaid();
+		order.markAsReady();
+		orders.add(order);
 
 		var updatedCustomer = customers.ofId(customer.id()).orElseThrow();
 		assertThat(updatedCustomer.loyaltyPoints()).isEqualTo(new LoyaltyPoints(10));
@@ -64,10 +65,13 @@ class CustomerLoyaltyPointsApplicationServiceIT {
 
 		var order = OrderTestBuilder.aFilledDraftOrder()
 				.withCustomerId(customer.id())
-				.withStatus(OrderStatus.READY)
 				.withTotalAmount(new Money("2000"))
 				.withItemsAmount(new Quantity(1))
 				.build();
+
+		order.place();
+		order.markAsPaid();
+		order.markAsReady();
 		orders.add(order);
 
 		assertThatThrownBy(() -> sut.addLoyaltyPoints(UUID.randomUUID(), order.id().toString()))
@@ -93,13 +97,15 @@ class CustomerLoyaltyPointsApplicationServiceIT {
 
 		var order = OrderTestBuilder.aFilledDraftOrder()
 				.withCustomerId(customer.id())
-				.withStatus(OrderStatus.READY)
 				.withTotalAmount(new Money("2000"))
 				.withItemsAmount(new Quantity(1))
 				.build();
-		orders.add(order);
 
-		assertThatThrownBy(() -> sut.addLoyaltyPoints(customer.id().value(), order.id().toString()))
+		order.place();
+		order.markAsPaid();
+		order.markAsReady();
+
+		assertThatThrownBy(() -> orders.add(order))
 				.isInstanceOf(CustomerArchivedException.class);
 	}
 
@@ -119,10 +125,13 @@ class CustomerLoyaltyPointsApplicationServiceIT {
 
 		var orderForB = OrderTestBuilder.aFilledDraftOrder()
 				.withCustomerId(customerB.id())
-				.withStatus(OrderStatus.READY)
 				.withTotalAmount(new Money("2000"))
 				.withItemsAmount(new Quantity(1))
 				.build();
+
+		orderForB.place();
+		orderForB.markAsPaid();
+		orderForB.markAsReady();
 		orders.add(orderForB);
 
 		assertThatThrownBy(() -> sut.addLoyaltyPoints(customerA.id().value(), orderForB.id().toString()))
@@ -136,10 +145,11 @@ class CustomerLoyaltyPointsApplicationServiceIT {
 
 		var order = OrderTestBuilder.aFilledDraftOrder()
 				.withCustomerId(customer.id())
-				.withStatus(OrderStatus.PLACED)
 				.withTotalAmount(new Money("2000"))
 				.withItemsAmount(new Quantity(1))
 				.build();
+
+		order.place();
 		orders.add(order);
 
 		assertThatThrownBy(() -> sut.addLoyaltyPoints(customer.id().value(), order.id().toString()))
@@ -153,10 +163,13 @@ class CustomerLoyaltyPointsApplicationServiceIT {
 
 		var order = OrderTestBuilder.aFilledDraftOrder()
 				.withCustomerId(customer.id())
-				.withStatus(OrderStatus.READY)
 				.withTotalAmount(new Money("500"))
 				.withItemsAmount(new Quantity(1))
 				.build();
+
+		order.place();
+		order.markAsPaid();
+		order.markAsReady();
 		orders.add(order);
 
 		sut.addLoyaltyPoints(customer.id().value(), order.id().toString());

@@ -5,8 +5,12 @@ import com.lutz.algashop.ordering.domain.AggregateRoot;
 import com.lutz.algashop.ordering.domain.commons.Money;
 import com.lutz.algashop.ordering.domain.commons.Quantity;
 import com.lutz.algashop.ordering.domain.order.Billing;
+import com.lutz.algashop.ordering.domain.order.OrderCanceledEvent;
 import com.lutz.algashop.ordering.domain.order.OrderId;
 import com.lutz.algashop.ordering.domain.order.OrderItemId;
+import com.lutz.algashop.ordering.domain.order.OrderPaidEvent;
+import com.lutz.algashop.ordering.domain.order.OrderPlacedEvent;
+import com.lutz.algashop.ordering.domain.order.OrderReadyEvent;
 import com.lutz.algashop.ordering.domain.order.shipping.InvalidShippingDeliveryDateException;
 import com.lutz.algashop.ordering.domain.customer.CustomerId;
 import com.lutz.algashop.ordering.domain.order.exception.OrderCannotBeEditedException;
@@ -123,22 +127,25 @@ public class Order
 
 		this.setPlacedAt(OffsetDateTime.now());
 		this.changeStatus(OrderStatus.PLACED);
+		this.publishDomainEvent(new OrderPlacedEvent(id(), customerId(), placedAt()));
 	}
 
 	public void cancel() {
 		this.setCanceledAt(OffsetDateTime.now());
 		this.changeStatus(OrderStatus.CANCELED);
-
+		this.publishDomainEvent(new OrderCanceledEvent(id(), customerId(), canceledAt()));
 	}
 
 	public void markAsPaid() {
 		this.changeStatus(OrderStatus.PAID);
 		this.setPaidAt(OffsetDateTime.now());
+		this.publishDomainEvent(new OrderPaidEvent(id(), customerId(), paidAt()));
 	}
 
 	public void markAsReady() {
 		this.changeStatus(OrderStatus.READY);
 		this.setReadyAt(OffsetDateTime.now());
+		this.publishDomainEvent(new OrderReadyEvent(id(), customerId(), readyAt()));
 	}
 
 	public boolean isDraft() {

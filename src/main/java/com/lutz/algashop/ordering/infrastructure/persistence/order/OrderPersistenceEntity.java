@@ -8,8 +8,11 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import org.springframework.data.domain.AbstractAggregateRoot;
+
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -20,9 +23,10 @@ import java.util.UUID;
 @ToString(of = "id")
 @Table(name = "\"order\"")
 @NoArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 @EntityListeners(AuditingEntityListener.class)
-public class OrderPersistenceEntity {
+public class OrderPersistenceEntity
+		extends AbstractAggregateRoot<OrderPersistenceEntity> {
 	@Id
 	@EqualsAndHashCode.Include
 	private Long id;
@@ -100,5 +104,13 @@ public class OrderPersistenceEntity {
 
 	public UUID getCustomerId() {
 		return getCustomer().getId();
+	}
+
+	public void addEvents(Collection<Object> events) {
+		if (events != null) {
+			for (Object event : events) {
+				this.registerEvent(event);
+			}
+		}
 	}
 }

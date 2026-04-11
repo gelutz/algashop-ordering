@@ -39,7 +39,6 @@ public class OrderTestBuilder {
         return new OrderTestBuilder()
                 .withCustomerId(CustomerTestBuilder.DEFAULT_CUSTOMER_ID)
                 .withId(new OrderId())
-                .withStatus(OrderStatus.DRAFT)
                 .withBilling(aBilling().build())
                 .withShipping(aShipping().build())
                 .withPaymentMethod(PaymentMethod.GATEWAY_BALANCE)
@@ -50,10 +49,10 @@ public class OrderTestBuilder {
         return new OrderTestBuilder()
                 .withId(new OrderId())
                 .withCustomerId(CustomerTestBuilder.DEFAULT_CUSTOMER_ID)
-                .withStatus(OrderStatus.PLACED)
                 .withPaymentMethod(PaymentMethod.GATEWAY_BALANCE)
                 .withBilling(aBilling().build())
-                .withShipping(aShipping().build());
+                .withShipping(aShipping().build())
+                .withProducts(Set.of(OrderTestBuilder.aProduct().build()));
     }
 
     public static Shipping.ShippingBuilder aShipping() {
@@ -120,11 +119,6 @@ public class OrderTestBuilder {
 
     public OrderTestBuilder withShipping(Shipping shipping) {
         this.shipping = shipping;
-        return this;
-    }
-
-    public OrderTestBuilder withStatus(OrderStatus status) {
-        this.status = status;
         return this;
     }
 

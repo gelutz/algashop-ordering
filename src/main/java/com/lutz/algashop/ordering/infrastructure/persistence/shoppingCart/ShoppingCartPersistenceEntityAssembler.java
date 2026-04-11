@@ -35,6 +35,7 @@ public class ShoppingCartPersistenceEntityAssembler {
 
 		Set<ShoppingCartItemPersistenceEntity> mergedItems = mergeItems(shoppingCart, persistenceEntity);
 		persistenceEntity.setItems(mergedItems);
+		persistenceEntity.addEvents(shoppingCart.domainEvents());
 		return persistenceEntity;
 	}
 
