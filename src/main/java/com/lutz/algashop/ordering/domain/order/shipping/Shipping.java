@@ -8,7 +8,7 @@ import lombok.NonNull;
 
 import java.time.LocalDate;
 
-@Builder
+@Builder(toBuilder = true)
 public record Shipping(
 		@NonNull Recipient recipient,
 		@NonNull Address address,

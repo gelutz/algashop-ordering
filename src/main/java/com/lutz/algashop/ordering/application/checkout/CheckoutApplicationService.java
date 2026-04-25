@@ -1,6 +1,9 @@
 package com.lutz.algashop.ordering.application.checkout;
 
 import com.lutz.algashop.ordering.domain.commons.ZipCode;
+import com.lutz.algashop.ordering.domain.customer.Customer;
+import com.lutz.algashop.ordering.domain.customer.CustomerNotFoundException;
+import com.lutz.algashop.ordering.domain.customer.Customers;
 import com.lutz.algashop.ordering.domain.order.Billing;
 import com.lutz.algashop.ordering.domain.order.CheckoutService;
 import com.lutz.algashop.ordering.domain.order.Orders;
@@ -28,6 +31,7 @@ public class CheckoutApplicationService {
 
 	private final ShoppingCarts shoppingCarts;
 	private final Orders orders;
+	private final Customers customers;
 
 	private final BillingInputDisassembler billingInputDisassembler;
 	private final ShippingInputDisassembler shippingInputDisassembler;
@@ -40,12 +44,14 @@ public class CheckoutApplicationService {
 		ShoppingCart shoppingCart = shoppingCarts.ofId(shoppingCartId)
 				.orElseThrow(() -> new ShoppingCartNotFoundException(shoppingCartId));
 
+		Customer customer = customers.ofId(shoppingCart.customerId()).orElseThrow(CustomerNotFoundException::new);
+
 		var calculationResult = calculateShippingCost(input.getShipping());
 
 		Shipping shipping = shippingInputDisassembler.toDomainModel(input.getShipping(), calculationResult);
 		Billing billing = billingInputDisassembler.toDomainModel(input.getBilling());
 
-		Order order = checkoutService.checkout(shoppingCart, billing, shipping, paymentMethod);
+		Order order = checkoutService.checkout(customer, shoppingCart, billing, shipping, paymentMethod);
 
 		orders.add(order);
 		shoppingCarts.add(shoppingCart);

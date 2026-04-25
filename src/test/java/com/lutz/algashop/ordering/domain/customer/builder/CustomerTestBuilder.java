@@ -27,6 +27,7 @@ public class CustomerTestBuilder {
                                      .state("New York")
                                      .zipCode(new ZipCode("123123"))
                                      .build();
+    private LoyaltyPoints loyaltyPoints = LoyaltyPoints.ZERO;
     private Boolean promotionNotificationAllowed = false;
 
     private CustomerTestBuilder() {
@@ -54,18 +55,8 @@ public class CustomerTestBuilder {
         return this;
     }
 
-    public CustomerTestBuilder withBirthdate(Birthdate birthdate) {
-        this.birthdate = birthdate;
-        return this;
-    }
-
     public CustomerTestBuilder withEmail(Email email) {
         this.email = email;
-        return this;
-    }
-
-    public CustomerTestBuilder withPhone(Phone phone) {
-        this.phone = phone;
         return this;
     }
 
@@ -74,17 +65,8 @@ public class CustomerTestBuilder {
         return this;
     }
 
-    public CustomerTestBuilder withAddress(Address address) {
-        this.address = address;
-        return this;
-    }
-
-    public CustomerTestBuilder withPromotionNotificationAllowed(Boolean allowed) {
-        this.promotionNotificationAllowed = allowed;
-        return this;
-    }
-
-    public CustomerTestBuilder with() {
+    public CustomerTestBuilder withLoyaltyPoints(LoyaltyPoints loyaltyPoints) {
+        this.loyaltyPoints = loyaltyPoints;
         return this;
     }
 
@@ -101,7 +83,7 @@ public class CustomerTestBuilder {
                        .promotionNotificationAllowed(promotionNotificationAllowed)
                        .archived(false)
                        .registeredAt(OffsetDateTime.now())
-                       .loyaltyPoints(LoyaltyPoints.ZERO)
+                       .loyaltyPoints(loyaltyPoints)
                        .build();
     }
 }

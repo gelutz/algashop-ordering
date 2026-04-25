@@ -25,7 +25,6 @@ import java.util.Optional;
 @SpringBootTest
 @Transactional
 public class BuyNowApplicationServiceIT {
-
 	@Autowired
 	private BuyNowApplicationService sut;
 
@@ -40,8 +39,6 @@ public class BuyNowApplicationServiceIT {
 
 	@MockitoBean
 	private ShippingCostService shippingCostService;
-	@Autowired
-	private BuyNowApplicationService buyNowApplicationService;
 
 	@BeforeEach
 	void setup() {
@@ -63,7 +60,7 @@ public class BuyNowApplicationServiceIT {
 
 		BuyNowInput input = BuyNowInputTestBuilder.aBuyNowInput().build();
 
-		String orderId = buyNowApplicationService.buyNow(input);
+		String orderId = sut.buyNow(input);
 		Assertions.assertNotNull(orderId);
 		Assertions.assertTrue(orders.exists(new OrderId(orderId)));
 	}

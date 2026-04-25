@@ -2,7 +2,10 @@ package com.lutz.algashop.ordering.application.checkout;
 
 import com.lutz.algashop.ordering.domain.commons.Quantity;
 import com.lutz.algashop.ordering.domain.commons.ZipCode;
+import com.lutz.algashop.ordering.domain.customer.Customer;
 import com.lutz.algashop.ordering.domain.customer.CustomerId;
+import com.lutz.algashop.ordering.domain.customer.CustomerNotFoundException;
+import com.lutz.algashop.ordering.domain.customer.Customers;
 import com.lutz.algashop.ordering.domain.order.Billing;
 import com.lutz.algashop.ordering.domain.order.BuyNowService;
 import com.lutz.algashop.ordering.domain.order.Orders;
@@ -30,6 +33,7 @@ public class BuyNowApplicationService {
 	private final OriginAddressService originAddressService;
 
 	private final Orders orders;
+	private final Customers customers;
 
 	private final BillingInputDisassembler billingInputDisassembler;
 	private final ShippingInputDisassembler shippingInputDisassembler;
@@ -40,17 +44,17 @@ public class BuyNowApplicationService {
 		CustomerId customerId = new CustomerId(input.getCustomerId());
 		Quantity quantity = new Quantity(input.getQuantity());
 
+		Customer customer = customers.ofId(customerId).orElseThrow(CustomerNotFoundException::new);
 		Product product = findProduct(new ProductId(input.getProductId()));
-
-		var calculationResult = calculateShippingCost(input.getShipping());
-
-		Shipping shipping = shippingInputDisassembler.toDomainModel(input.getShipping(), calculationResult);
-
 		Billing billing = billingInputDisassembler.toDomainModel(input.getBilling());
 
+		var calculationResult = calculateShippingCost(input.getShipping());
+		Shipping shipping = shippingInputDisassembler.toDomainModel(input.getShipping(), calculationResult);
+
 		Order order = buyNowService.buyNow(
-				product, customerId, billing, shipping, quantity, paymentMethod
-		                                  );
+				product, customer, billing, shipping, quantity, paymentMethod
+		);
+
 		orders.add(order);
 
 		return order.id().toString();
@@ -65,6 +69,6 @@ public class BuyNowApplicationService {
 
 	private Product findProduct(ProductId productId) {
 		return productCatalogService.ofId(productId)
-				.orElseThrow(() -> new ProductNotFoundException(productId));
+		                            .orElseThrow(() -> new ProductNotFoundException(productId));
 	}
 }
