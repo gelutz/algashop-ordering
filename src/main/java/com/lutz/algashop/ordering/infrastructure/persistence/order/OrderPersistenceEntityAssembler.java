@@ -6,9 +6,9 @@ import com.lutz.algashop.ordering.domain.order.entity.OrderItem;
 import com.lutz.algashop.ordering.domain.order.Billing;
 import com.lutz.algashop.ordering.domain.order.Recipient;
 import com.lutz.algashop.ordering.domain.order.shipping.Shipping;
-import com.lutz.algashop.ordering.infrastructure.persistence.customers.CustomerPersistenceEntity;
+import com.lutz.algashop.ordering.infrastructure.persistence.customer.CustomerPersistenceEntity;
 import com.lutz.algashop.ordering.infrastructure.persistence.commons.embeddable.AddressEmbeddable;
-import com.lutz.algashop.ordering.infrastructure.persistence.customers.CustomerPersistenceEntityRepository;
+import com.lutz.algashop.ordering.infrastructure.persistence.customer.CustomerPersistenceEntityRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

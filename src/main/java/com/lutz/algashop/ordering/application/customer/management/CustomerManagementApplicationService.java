@@ -1,7 +1,6 @@
 package com.lutz.algashop.ordering.application.customer.management;
 
 import com.lutz.algashop.ordering.application.commons.AddressData;
-import com.lutz.algashop.ordering.application.utility.Mapper;
 import com.lutz.algashop.ordering.domain.commons.Document;
 import com.lutz.algashop.ordering.domain.commons.Email;
 import com.lutz.algashop.ordering.domain.commons.FullName;
@@ -19,7 +18,6 @@ import java.util.UUID;
 public class CustomerManagementApplicationService {
 	private final CustomerRegistrationService customerRegistration;
 	private final Customers customers;
-	private final Mapper mapper;
 
 	@Transactional
 	public UUID create(@NonNull CustomerInput input) {
@@ -35,13 +33,6 @@ public class CustomerManagementApplicationService {
 		customers.add(registered);
 
 		return registered.id().value();
-	}
-
-	@Transactional(readOnly = true)
-	public CustomerOutput findById(@NonNull UUID id) {
-		Customer customer = customers.ofId(new CustomerId(id)).orElseThrow(CustomerNotFoundException::new);
-
-		return mapper.convert(customer, CustomerOutput.class);
 	}
 
 	@Transactional

@@ -1,8 +1,8 @@
 package com.lutz.algashop.ordering.application.checkout.builder;
 
-import com.lutz.algashop.ordering.application.checkout.BillingData;
+import com.lutz.algashop.ordering.application.order.query.BillingData;
 import com.lutz.algashop.ordering.application.checkout.CheckoutInput;
-import com.lutz.algashop.ordering.application.checkout.RecipientData;
+import com.lutz.algashop.ordering.application.order.query.RecipientData;
 import com.lutz.algashop.ordering.application.checkout.ShippingInput;
 import com.lutz.algashop.ordering.application.commons.AddressData;
 

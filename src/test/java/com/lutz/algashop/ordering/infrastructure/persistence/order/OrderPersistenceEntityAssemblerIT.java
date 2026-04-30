@@ -6,7 +6,7 @@ import com.lutz.algashop.ordering.domain.order.entity.OrderItem;
 import com.lutz.algashop.ordering.domain.product.Product;
 import com.lutz.algashop.ordering.domain.product.ProductId;
 import com.lutz.algashop.ordering.infrastructure.persistence.customer.CustomerPersistenceEntityTestBuilder;
-import com.lutz.algashop.ordering.infrastructure.persistence.customers.CustomerPersistenceEntityRepository;
+import com.lutz.algashop.ordering.infrastructure.persistence.customer.CustomerPersistenceEntityRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

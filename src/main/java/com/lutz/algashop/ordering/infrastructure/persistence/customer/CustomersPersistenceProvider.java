@@ -1,4 +1,4 @@
-package com.lutz.algashop.ordering.infrastructure.persistence.customers;
+package com.lutz.algashop.ordering.infrastructure.persistence.customer;
 
 import com.lutz.algashop.ordering.domain.commons.Email;
 import com.lutz.algashop.ordering.domain.customer.Customer;

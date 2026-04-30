@@ -1,4 +1,4 @@
-package com.lutz.algashop.ordering.infrastructure.persistence.customers;
+package com.lutz.algashop.ordering.infrastructure.persistence.customer;
 
 import com.lutz.algashop.ordering.infrastructure.persistence.commons.embeddable.AddressEmbeddable;
 import jakarta.persistence.*;

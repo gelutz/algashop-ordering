@@ -1,20 +1,21 @@
-package com.lutz.algashop.ordering.application.checkout;
+package com.lutz.algashop.ordering.application.order.query;
 
-import com.lutz.algashop.ordering.application.commons.AddressData;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class BillingData {
+@NoArgsConstructor
+public class CustomerMinimalOutput {
+	private UUID id;
 	private String firstName;
 	private String lastName;
+	private String email;
 	private String document;
 	private String phone;
-	private String email;
-	private AddressData address;
 }

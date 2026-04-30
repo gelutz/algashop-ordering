@@ -2,6 +2,8 @@ package com.lutz.algashop.ordering.application.customer.management;
 
 import com.lutz.algashop.ordering.application.commons.AddressData;
 import com.lutz.algashop.ordering.application.customer.notification.CustomerNotificationApplicationService;
+import com.lutz.algashop.ordering.application.customer.query.CustomerOutput;
+import com.lutz.algashop.ordering.application.customer.query.CustomerQueryService;
 import com.lutz.algashop.ordering.domain.customer.*;
 import com.lutz.algashop.ordering.infrastructure.listener.customer.CustomerEventListener;
 import org.junit.jupiter.api.Test;
@@ -25,6 +27,9 @@ class CustomerManagementApplicationServiceIT {
 	@Autowired
 	private CustomerManagementApplicationService sut;
 
+	@Autowired
+	private CustomerQueryService queryService;
+
 	@MockitoSpyBean
 	private CustomerEventListener customerEventListener;
 
@@ -38,7 +43,7 @@ class CustomerManagementApplicationServiceIT {
 
 		assertThat(resultingId).isNotNull();
 
-		CustomerOutput resultingOutput = sut.findById(resultingId);
+		CustomerOutput resultingOutput = queryService.findById(resultingId);
 
 		assertThat(resultingOutput.getFirstName()).isEqualTo(customer.getFirstName());
 		assertThat(resultingOutput.getLastName()).isEqualTo(customer.getLastName());
@@ -75,7 +80,7 @@ class CustomerManagementApplicationServiceIT {
 
 		sut.update(customerId, updateInput);
 
-		CustomerOutput updated = sut.findById(customerId);
+		CustomerOutput updated = queryService.findById(customerId);
 
 		assertThat(updated.getFirstName()).isEqualTo("Jane");
 		assertThat(updated.getLastName()).isEqualTo("Smith");
@@ -105,7 +110,7 @@ class CustomerManagementApplicationServiceIT {
 
 		sut.archive(customerId);
 
-		CustomerOutput result = sut.findById(customerId);
+		CustomerOutput result = queryService.findById(customerId);
 
 		assertThat(result.getArchived()).isTrue();
 		assertThat(result.getArchivedAt()).isNotNull();
@@ -143,7 +148,7 @@ class CustomerManagementApplicationServiceIT {
 
 		sut.changeEmail(customerId, "newemail@email.com");
 
-		CustomerOutput result = sut.findById(customerId);
+		CustomerOutput result = queryService.findById(customerId);
 		assertThat(result.getEmail()).isEqualTo("newemail@email.com");
 	}
 

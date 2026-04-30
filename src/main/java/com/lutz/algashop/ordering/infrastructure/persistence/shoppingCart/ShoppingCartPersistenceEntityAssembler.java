@@ -2,8 +2,8 @@ package com.lutz.algashop.ordering.infrastructure.persistence.shoppingCart;
 
 import com.lutz.algashop.ordering.domain.shoppingCart.entity.ShoppingCart;
 import com.lutz.algashop.ordering.domain.shoppingCart.entity.ShoppingCartItem;
-import com.lutz.algashop.ordering.infrastructure.persistence.customers.CustomerPersistenceEntity;
-import com.lutz.algashop.ordering.infrastructure.persistence.customers.CustomerPersistenceEntityRepository;
+import com.lutz.algashop.ordering.infrastructure.persistence.customer.CustomerPersistenceEntity;
+import com.lutz.algashop.ordering.infrastructure.persistence.customer.CustomerPersistenceEntityRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

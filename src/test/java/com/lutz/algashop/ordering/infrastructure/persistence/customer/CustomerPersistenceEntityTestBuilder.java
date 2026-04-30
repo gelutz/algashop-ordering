@@ -1,7 +1,6 @@
 package com.lutz.algashop.ordering.infrastructure.persistence.customer;
 
 import com.lutz.algashop.ordering.domain.customer.builder.CustomerTestBuilder;
-import com.lutz.algashop.ordering.infrastructure.persistence.customers.CustomerPersistenceEntity;
 import com.lutz.algashop.ordering.infrastructure.persistence.commons.embeddable.AddressEmbeddable;
 
 import java.time.LocalDate;

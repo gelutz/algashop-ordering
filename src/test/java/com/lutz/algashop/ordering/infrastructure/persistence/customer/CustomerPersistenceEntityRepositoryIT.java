@@ -1,8 +1,6 @@
 package com.lutz.algashop.ordering.infrastructure.persistence.customer;
 
 import com.lutz.algashop.ordering.infrastructure.persistence.SpringDataAuditingConfiguration;
-import com.lutz.algashop.ordering.infrastructure.persistence.customers.CustomerPersistenceEntity;
-import com.lutz.algashop.ordering.infrastructure.persistence.customers.CustomerPersistenceEntityRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

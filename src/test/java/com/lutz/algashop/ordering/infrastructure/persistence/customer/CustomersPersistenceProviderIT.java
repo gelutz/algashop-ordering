@@ -4,7 +4,6 @@ import com.lutz.algashop.ordering.domain.commons.FullName;
 import com.lutz.algashop.ordering.domain.customer.Customer;
 import com.lutz.algashop.ordering.domain.customer.builder.CustomerTestBuilder;
 import com.lutz.algashop.ordering.domain.customer.CustomerId;
-import com.lutz.algashop.ordering.infrastructure.persistence.customers.*;
 import com.lutz.algashop.ordering.infrastructure.persistence.SpringDataAuditingConfiguration;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Assertions;

@@ -1,4 +1,4 @@
-package com.lutz.algashop.ordering.application.checkout;
+package com.lutz.algashop.ordering.application.order.query;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
