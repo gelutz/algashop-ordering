@@ -3,12 +3,16 @@ package com.lutz.algashop.ordering.infrastructure.utility.modelmapper;
 import com.lutz.algashop.ordering.application.customer.query.CustomerOutput;
 import com.lutz.algashop.ordering.application.order.query.detail.OrderDetailOutput;
 import com.lutz.algashop.ordering.application.order.query.detail.OrderItemDetailOutput;
+import com.lutz.algashop.ordering.application.shoppingcart.query.ShoppingCartItemOutput;
+import com.lutz.algashop.ordering.application.shoppingcart.query.ShoppingCartOutput;
 import com.lutz.algashop.ordering.application.utility.Mapper;
 import com.lutz.algashop.ordering.domain.commons.FullName;
 import com.lutz.algashop.ordering.domain.customer.Birthdate;
 import com.lutz.algashop.ordering.domain.customer.Customer;
 import com.lutz.algashop.ordering.infrastructure.persistence.order.OrderItemPersistenceEntity;
 import com.lutz.algashop.ordering.infrastructure.persistence.order.OrderPersistenceEntity;
+import com.lutz.algashop.ordering.infrastructure.persistence.shoppingCart.ShoppingCartItemPersistenceEntity;
+import com.lutz.algashop.ordering.infrastructure.persistence.shoppingCart.ShoppingCartPersistenceEntity;
 import io.hypersistence.tsid.TSID;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
@@ -74,6 +78,7 @@ public class ModelMapperConfig {
 
 		addCustomerMappings(modelMapper);
 		addOrderPersistenceEntityMappings(modelMapper);
+		addShoppingCartMappings(modelMapper);
 	}
 
 	private static void addOrderPersistenceEntityMappings(ModelMapper modelMapper) {
@@ -89,6 +94,20 @@ public class ModelMapperConfig {
 		           .addMappings(mapping ->
 				                        mapping.using(longToStringTSIDConverter).map(OrderItemPersistenceEntity::getOrderId, OrderItemDetailOutput::setOrderId)
 		           );
+	}
+
+	private static void addShoppingCartMappings(ModelMapper modelMapper) {
+		modelMapper.createTypeMap(ShoppingCartPersistenceEntity.class, ShoppingCartOutput.class)
+		           .addMappings(m -> m.map(
+				           e -> e.getCustomer().getId(),
+				           ShoppingCartOutput::setCustomerId
+		           ));
+
+		modelMapper.createTypeMap(ShoppingCartItemPersistenceEntity.class, ShoppingCartItemOutput.class)
+		           .addMappings(m -> m.map(
+				           ShoppingCartItemPersistenceEntity::getProductName,
+				           ShoppingCartItemOutput::setName
+		           ));
 	}
 
 	private static void addCustomerMappings(ModelMapper modelMapper) {
