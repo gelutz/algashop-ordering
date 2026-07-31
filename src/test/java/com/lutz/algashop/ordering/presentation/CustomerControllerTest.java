@@ -1,9 +1,9 @@
 package com.lutz.algashop.ordering.presentation;
 
+import com.lutz.algashop.ordering.application.commons.AddressData;
 import com.lutz.algashop.ordering.application.customer.management.CustomerInput;
 import com.lutz.algashop.ordering.application.customer.management.CustomerManagementApplicationService;
-import com.lutz.algashop.ordering.application.customer.query.CustomerOutputTestBuilder;
-import com.lutz.algashop.ordering.application.customer.query.CustomerQueryService;
+import com.lutz.algashop.ordering.application.customer.query.*;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -18,6 +19,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.nio.charset.StandardCharsets;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.UUID;
 
 @WebMvcTest(controllers = CustomerController.class)
@@ -27,11 +30,12 @@ class CustomerControllerTest {
 	private WebApplicationContext webApplicationContext;
 
 	@MockitoBean
-	private CustomerManagementApplicationService cmasMock;
+	private CustomerManagementApplicationService customerManagementApplicationServiceMock;
 
 	@MockitoBean
-	private CustomerQueryService cqsMock;
+	private CustomerQueryService customerQueryServiceMock;
 
+	DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
 
 	@BeforeEach
 	public void setup() {
@@ -44,9 +48,10 @@ class CustomerControllerTest {
 
 	@Test
 	public void createCustomerContract() {
-		Mockito.when(cmasMock.create(Mockito.any(CustomerInput.class)))
-				       .thenReturn(UUID.randomUUID());
-		Mockito.when(cqsMock.findById(Mockito.any(UUID.class)))
+		UUID customerId = UUID.randomUUID();
+		Mockito.when(customerManagementApplicationServiceMock.create(Mockito.any(CustomerInput.class)))
+		       .thenReturn(customerId);
+		Mockito.when(customerQueryServiceMock.findById(Mockito.any(UUID.class)))
 				.thenReturn(CustomerOutputTestBuilder.existing().build());
 
 		String jsonInput = """
@@ -80,6 +85,7 @@ class CustomerControllerTest {
 				.assertThat()
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.statusCode(HttpStatus.CREATED.value())
+				.header("Location", Matchers.containsString("/api/v1/customers/" + customerId))
 				.body(
 						"id", Matchers.notNullValue(),
 						"registeredAt", Matchers.notNullValue(),
@@ -101,11 +107,12 @@ class CustomerControllerTest {
 				);
 	}
 
+	@Test
 	public void createCustomerErrorContratct() {
 		String jsonInput = """
 				{
-				  "firstName": "John",
-				  "lastName": "Doe",
+				  "firstName": "",
+				  "lastName": "",
 				  "email": "johndoe@email.com",
 				  "document": "12345",
 				  "phone": "1191234564",
@@ -124,21 +131,116 @@ class CustomerControllerTest {
 				""";
 		RestAssuredMockMvc
 				.given()
-				.accept(MediaType.APPLICATION_JSON_VALUE)
-				.contentType(MediaType.APPLICATION_JSON_VALUE)
-				.body(jsonInput)
+					.accept(MediaType.APPLICATION_JSON_VALUE)
+					.contentType(MediaType.APPLICATION_JSON_VALUE)
+					.body(jsonInput)
 				.when()
-				.post("/api/v1/customers")
+					.post("/api/v1/customers")
+				.then()
+					.assertThat()
+					.contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE)
+					.statusCode(HttpStatus.BAD_REQUEST.value())
+					.body(
+							"status", Matchers.is(HttpStatus.BAD_REQUEST.value()),						"type", Matchers.is("/errors/invalid-fields"),
+							"title", Matchers.notNullValue(),
+							"detail", Matchers.notNullValue(),
+							"instance", Matchers.notNullValue(),
+							"fields", Matchers.notNullValue()
+					);
+	}
+
+	@Test
+	public void findCustomersContract() {
+		int sizeLimit = 5;
+		int pageNumber = 0;
+
+		CustomerSummaryOutput customer1 = CustomerSummaryOutputTestBuilder.existing().build();
+		CustomerSummaryOutput customer2 = CustomerSummaryOutputTestBuilder.existingAlt1().build();
+
+		List<CustomerSummaryOutput> customers = List.of(customer1, customer2);
+
+		Mockito.when(customerQueryServiceMock.filter(Mockito.any(CustomerFilter.class)))
+				.thenReturn(new PageImpl<>(customers));
+
+
+		RestAssuredMockMvc
+				.given()
+				.accept(MediaType.APPLICATION_JSON)
+				.queryParam("size", sizeLimit)
+				.queryParam("page", pageNumber)
+				.when()
+				.get("/api/v1/customers")
+				.then().assertThat().contentType(MediaType.APPLICATION_JSON_VALUE)
+				.statusCode(HttpStatus.OK.value())
+				.body(
+						"number", Matchers.equalTo(pageNumber),
+						"size", Matchers.equalTo(customers.size()),
+						"totalPages", Matchers.equalTo(1),
+						"totalElements", Matchers.equalTo(customers.size()),
+
+						"content[0].id", Matchers.equalTo(customer1.getId().toString()),
+						"content[0].firstName", Matchers.is(customer1.getFirstName()),
+						"content[0].lastName", Matchers.is(customer1.getLastName()),
+						"content[0].email", Matchers.is(customer1.getEmail()),
+						"content[0].document", Matchers.is(customer1.getDocument()),
+						"content[0].phone", Matchers.is(customer1.getPhone()),
+						"content[0].birthDate", Matchers.is(customer1.getBirthDate().toString()),
+						"content[0].loyaltyPoints", Matchers.is(customer1.getLoyaltyPoints()),
+						"content[0].promotionNotificationsAllowed", Matchers.is(customer1.getPromotionNotificationsAllowed()),
+						"content[0].archived", Matchers.is(customer1.getArchived()),
+						"content[0].registeredAt", Matchers.is(formatter.format(customer1.getRegisteredAt())),
+
+						"content[1].id", Matchers.equalTo(customer2.getId().toString()),
+						"content[1].firstName", Matchers.is(customer2.getFirstName()),
+						"content[1].lastName", Matchers.is(customer2.getLastName()),
+						"content[1].email", Matchers.is(customer2.getEmail()),
+						"content[1].document", Matchers.is(customer2.getDocument()),
+						"content[1].phone", Matchers.is(customer2.getPhone()),
+						"content[1].birthDate", Matchers.is(customer2.getBirthDate().toString()),
+						"content[1].loyaltyPoints", Matchers.is(customer2.getLoyaltyPoints()),
+						"content[1].promotionNotificationsAllowed", Matchers.is(customer2.getPromotionNotificationsAllowed()),
+						"content[1].archived", Matchers.is(customer2.getArchived()),
+						"content[1].registeredAt", Matchers.is(formatter.format(customer2.getRegisteredAt()))
+				);
+	}
+
+	@Test
+	public void findByIdContract() {
+		CustomerOutput customer = CustomerOutputTestBuilder.existing().build();
+		AddressData address = customer.getAddress();
+
+		Mockito.when(customerQueryServiceMock.findById(customer.getId()))
+				.thenReturn(customer);
+
+		RestAssuredMockMvc
+				.given()
+				.accept(MediaType.APPLICATION_JSON)
+				.when()
+				.get("/api/v1/customers/{customerId}", customer.getId())
 				.then()
 				.assertThat()
-				.contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE)
-				.statusCode(HttpStatus.BAD_REQUEST.value())
+				.contentType(MediaType.APPLICATION_JSON_VALUE)
+				.statusCode(HttpStatus.OK.value())
 				.body(
-						"status", Matchers.is(HttpStatus.BAD_REQUEST.value()),						"type", Matchers.is("/errors/invalid-fields"),
-						"title", Matchers.notNullValue(),
-						"detail", Matchers.notNullValue(),
-						"instance", Matchers.notNullValue(),
-						"fields", Matchers.notNullValue()
+						"id", Matchers.equalTo(customer.getId().toString()),
+						"firstName", Matchers.equalTo(customer.getFirstName()),
+						"lastName", Matchers.is(customer.getLastName()),
+						"email", Matchers.is(customer.getEmail()),
+						"document", Matchers.is(customer.getDocument()),
+						"phone", Matchers.is(customer.getPhone()),
+						"birthdate", Matchers.is(customer.getBirthdate().toString()),
+						"loyaltyPoints", Matchers.is(customer.getLoyaltyPoints()),
+						"promotionNotificationAllowed", Matchers.is(customer.getPromotionNotificationAllowed()),
+						"archived", Matchers.is(customer.getArchived()),
+						"registeredAt", Matchers.is(formatter.format(customer.getRegisteredAt())),
+						"address.street", Matchers.is(address.getStreet()),
+						"address.number", Matchers.is(address.getNumber()),
+						"address.complement", Matchers.is(address.getComplement()),
+						"address.neighborhood", Matchers.is(address.getNeighborhood()),
+						"address.city", Matchers.is(address.getCity()),
+						"address.state", Matchers.is(address.getState()),
+						"address.zipCode", Matchers.is(address.getZipCode())
 				);
+
 	}
 }
