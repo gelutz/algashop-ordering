@@ -2,49 +2,20 @@ package com.lutz.algashop.ordering.presentation;
 
 import com.lutz.algashop.ordering.application.commons.AddressData;
 import com.lutz.algashop.ordering.application.customer.management.CustomerInput;
-import com.lutz.algashop.ordering.application.customer.management.CustomerManagementApplicationService;
+import com.lutz.algashop.ordering.application.customer.management.CustomerUpdateInput;
 import com.lutz.algashop.ordering.application.customer.query.*;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
-import java.nio.charset.StandardCharsets;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
 
-@WebMvcTest(controllers = CustomerController.class)
-class CustomerControllerTest {
-
-	@Autowired
-	private WebApplicationContext webApplicationContext;
-
-	@MockitoBean
-	private CustomerManagementApplicationService customerManagementApplicationServiceMock;
-
-	@MockitoBean
-	private CustomerQueryService customerQueryServiceMock;
-
-	DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
-
-	@BeforeEach
-	public void setup() {
-		RestAssuredMockMvc.mockMvc(MockMvcBuilders.webAppContextSetup(webApplicationContext)
-				                           .defaultResponseCharacterEncoding(StandardCharsets.UTF_8)
-				                           .build()
-		);
-		RestAssuredMockMvc.enableLoggingOfRequestAndResponseIfValidationFails();
-	}
+class CustomerControllerContractTest extends AbstractCustomerControllerTest {
 
 	@Test
 	public void createCustomerContract() {
@@ -105,48 +76,6 @@ class CustomerControllerTest {
 						"address.state", Matchers.is("South Carolina"),
 						"address.zipCode", Matchers.is("12321")
 				);
-	}
-
-	@Test
-	public void createCustomerErrorContratct() {
-		String jsonInput = """
-				{
-				  "firstName": "",
-				  "lastName": "",
-				  "email": "johndoe@email.com",
-				  "document": "12345",
-				  "phone": "1191234564",
-				  "birthdate": "1991-07-05",
-				  "promotionNotificationsAllowed": false,
-				  "address": {
-				    "street": "Bourbon Street",
-				    "number": "2000",
-				    "complement": "apt 122",
-				    "neighborhood": "North Ville",
-				    "city": "Yostfort",
-				    "state": "South Carolina",
-				    "zipCode": "12321"
-				  }
-				}
-				""";
-		RestAssuredMockMvc
-				.given()
-					.accept(MediaType.APPLICATION_JSON_VALUE)
-					.contentType(MediaType.APPLICATION_JSON_VALUE)
-					.body(jsonInput)
-				.when()
-					.post("/api/v1/customers")
-				.then()
-					.assertThat()
-					.contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE)
-					.statusCode(HttpStatus.BAD_REQUEST.value())
-					.body(
-							"status", Matchers.is(HttpStatus.BAD_REQUEST.value()),						"type", Matchers.is("/errors/invalid-fields"),
-							"title", Matchers.notNullValue(),
-							"detail", Matchers.notNullValue(),
-							"instance", Matchers.notNullValue(),
-							"fields", Matchers.notNullValue()
-					);
 	}
 
 	@Test
@@ -242,5 +171,75 @@ class CustomerControllerTest {
 						"address.zipCode", Matchers.is(address.getZipCode())
 				);
 
+	}
+
+	@Test
+	public void updateCustomerContract() {
+		CustomerOutput customer = CustomerOutputTestBuilder.existing().build();
+		AddressData address = customer.getAddress();
+
+		Mockito.doNothing().when(customerManagementApplicationServiceMock)
+		       .update(Mockito.eq(customer.getId()), Mockito.any(CustomerUpdateInput.class));
+		Mockito.when(customerQueryServiceMock.findById(customer.getId()))
+				.thenReturn(customer);
+
+		String jsonInput = """
+				{
+				  "firstName": "John",
+				  "lastName": "Doe",
+				  "phone": "1191234564",
+				  "promotionNotificationsAllowed": false,
+				  "address": {
+				    "street": "Bourbon Street",
+				    "number": "2000",
+				    "complement": "apt 122",
+				    "neighborhood": "North Ville",
+				    "city": "Yostfort",
+				    "state": "South Carolina",
+				    "zipCode": "12321"
+				  }
+				}
+				""";
+
+		RestAssuredMockMvc
+				.given()
+					.accept(MediaType.APPLICATION_JSON_VALUE)
+					.contentType(MediaType.APPLICATION_JSON_VALUE)
+					.body(jsonInput)
+				.when()
+				.put("/api/v1/customers/{customerId}", customer.getId())
+				.then()
+				.assertThat()
+				.contentType(MediaType.APPLICATION_JSON_VALUE)
+				.statusCode(HttpStatus.OK.value())
+				.body(
+						"id", Matchers.equalTo(customer.getId().toString()),
+						"firstName", Matchers.is(customer.getFirstName()),
+						"lastName", Matchers.is(customer.getLastName()),
+						"phone", Matchers.is(customer.getPhone()),
+						"promotionNotificationAllowed", Matchers.is(customer.getPromotionNotificationAllowed()),
+						"address.street", Matchers.is(address.getStreet()),
+						"address.number", Matchers.is(address.getNumber()),
+						"address.complement", Matchers.is(address.getComplement()),
+						"address.neighborhood", Matchers.is(address.getNeighborhood()),
+						"address.city", Matchers.is(address.getCity()),
+						"address.state", Matchers.is(address.getState()),
+						"address.zipCode", Matchers.is(address.getZipCode())
+				);
+	}
+
+	@Test
+	public void deleteCustomerContract() {
+		UUID customerId = UUID.randomUUID();
+
+		Mockito.doNothing().when(customerManagementApplicationServiceMock).archive(customerId);
+
+		RestAssuredMockMvc
+				.given()
+				.when()
+				.delete("/api/v1/customers/{customerId}", customerId)
+				.then()
+				.assertThat()
+				.statusCode(HttpStatus.NO_CONTENT.value());
 	}
 }
