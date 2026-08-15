@@ -3,16 +3,7 @@
 echo "Running Gradle tests..."
 
 # Use wrapper if it exists (recommended)
-gradle test
-
-RESULT=$?
-
-if [ $RESULT -ne 0 ]; then
-  echo "❌ Tests failed. Commit aborted."
-  exit 1
-fi
-
-gradle integrationTest
+gradle check
 
 RESULT=$?
 
