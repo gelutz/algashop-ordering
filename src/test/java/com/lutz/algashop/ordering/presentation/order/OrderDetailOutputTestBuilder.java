@@ -1,4 +1,4 @@
-package com.lutz.algashop.ordering.presentation;
+package com.lutz.algashop.ordering.presentation.order;
 
 import com.lutz.algashop.ordering.application.commons.AddressData;
 import com.lutz.algashop.ordering.application.order.query.BillingData;

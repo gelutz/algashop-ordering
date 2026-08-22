@@ -7,7 +7,7 @@ import com.lutz.algashop.ordering.application.shoppingcart.query.ShoppingCartOut
 import com.lutz.algashop.ordering.application.shoppingcart.query.ShoppingCartQueryService;
 import com.lutz.algashop.ordering.domain.shoppingCart.entity.ShoppingCartId;
 import com.lutz.algashop.ordering.domain.shoppingCart.exception.ShoppingCartNotFoundException;
-import com.lutz.algashop.ordering.presentation.ShoppingCartController;
+import com.lutz.algashop.ordering.presentation.shoppingCart.ShoppingCartController;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mockito;

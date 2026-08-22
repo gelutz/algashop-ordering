@@ -6,9 +6,9 @@ import com.lutz.algashop.ordering.application.checkout.CheckoutApplicationServic
 import com.lutz.algashop.ordering.application.order.query.OrderFilter;
 import com.lutz.algashop.ordering.application.order.query.OrderQueryService;
 import com.lutz.algashop.ordering.domain.order.exception.OrderNotFoundException;
-import com.lutz.algashop.ordering.presentation.OrderController;
-import com.lutz.algashop.ordering.presentation.OrderDetailOutputTestBuilder;
-import com.lutz.algashop.ordering.presentation.OrderSummaryOutputTestBuilder;
+import com.lutz.algashop.ordering.presentation.order.OrderController;
+import com.lutz.algashop.ordering.presentation.order.OrderDetailOutputTestBuilder;
+import com.lutz.algashop.ordering.presentation.order.OrderSummaryOutputTestBuilder;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mockito;

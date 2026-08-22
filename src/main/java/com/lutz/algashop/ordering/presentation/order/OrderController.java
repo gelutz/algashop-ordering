@@ -1,4 +1,4 @@
-package com.lutz.algashop.ordering.presentation;
+package com.lutz.algashop.ordering.presentation.order;
 
 import com.lutz.algashop.ordering.application.checkout.BuyNowApplicationService;
 import com.lutz.algashop.ordering.application.checkout.BuyNowInput;
@@ -8,6 +8,7 @@ import com.lutz.algashop.ordering.application.order.query.OrderFilter;
 import com.lutz.algashop.ordering.application.order.query.OrderQueryService;
 import com.lutz.algashop.ordering.application.order.query.detail.OrderDetailOutput;
 import com.lutz.algashop.ordering.application.order.query.summary.OrderSummaryOutput;
+import com.lutz.algashop.ordering.presentation.PageModel;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

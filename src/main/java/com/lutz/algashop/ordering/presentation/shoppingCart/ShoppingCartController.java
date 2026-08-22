@@ -1,4 +1,4 @@
-package com.lutz.algashop.ordering.presentation;
+package com.lutz.algashop.ordering.presentation.shoppingCart;
 
 import com.lutz.algashop.ordering.application.shoppingcart.management.ShoppingCartInput;
 import com.lutz.algashop.ordering.application.shoppingcart.management.ShoppingCartItemInput;

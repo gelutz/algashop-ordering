@@ -1,9 +1,10 @@
-package com.lutz.algashop.ordering.presentation;
+package com.lutz.algashop.ordering.presentation.customer;
 
 import com.lutz.algashop.ordering.application.commons.AddressData;
 import com.lutz.algashop.ordering.application.customer.management.CustomerInput;
 import com.lutz.algashop.ordering.application.customer.management.CustomerUpdateInput;
 import com.lutz.algashop.ordering.application.customer.query.*;
+import com.lutz.algashop.ordering.presentation.AbstractCustomerControllerTest;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;

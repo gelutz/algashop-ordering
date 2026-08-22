@@ -1,4 +1,4 @@
-package com.lutz.algashop.ordering.presentation;
+package com.lutz.algashop.ordering.presentation.customer;
 
 import com.lutz.algashop.ordering.application.customer.management.CustomerInput;
 import com.lutz.algashop.ordering.application.customer.management.CustomerUpdateInput;
@@ -6,6 +6,7 @@ import com.lutz.algashop.ordering.domain.DomainException;
 import com.lutz.algashop.ordering.domain.customer.CustomerArchivedException;
 import com.lutz.algashop.ordering.domain.customer.CustomerEmailIsInUseException;
 import com.lutz.algashop.ordering.domain.customer.CustomerNotFoundException;
+import com.lutz.algashop.ordering.presentation.AbstractCustomerControllerTest;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;

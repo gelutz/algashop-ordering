@@ -2,6 +2,7 @@ package com.lutz.algashop.ordering.presentation;
 
 import com.lutz.algashop.ordering.application.customer.management.CustomerManagementApplicationService;
 import com.lutz.algashop.ordering.application.customer.query.CustomerQueryService;
+import com.lutz.algashop.ordering.presentation.customer.CustomerController;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.format.DateTimeFormatter;
 
 @WebMvcTest(controllers = CustomerController.class)
-abstract class AbstractCustomerControllerTest {
+public abstract class AbstractCustomerControllerTest {
 
 	@Autowired
 	protected WebApplicationContext webApplicationContext;

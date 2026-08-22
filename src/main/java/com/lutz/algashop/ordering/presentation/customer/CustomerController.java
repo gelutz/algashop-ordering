@@ -1,4 +1,4 @@
-package com.lutz.algashop.ordering.presentation;
+package com.lutz.algashop.ordering.presentation.customer;
 
 import com.lutz.algashop.ordering.application.customer.management.CustomerInput;
 import com.lutz.algashop.ordering.application.customer.management.CustomerManagementApplicationService;
@@ -7,6 +7,7 @@ import com.lutz.algashop.ordering.application.customer.query.CustomerFilter;
 import com.lutz.algashop.ordering.application.customer.query.CustomerOutput;
 import com.lutz.algashop.ordering.application.customer.query.CustomerQueryService;
 import com.lutz.algashop.ordering.application.customer.query.CustomerSummaryOutput;
+import com.lutz.algashop.ordering.presentation.PageModel;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
