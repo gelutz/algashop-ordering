@@ -11,4 +11,8 @@ public class CustomerNotFoundException extends DomainEntityNotFoundException {
 	public CustomerNotFoundException(Throwable cause) {
 		super(ErrorMessages.CUSTOMER_NOT_FOUND, cause);
 	}
+
+	public CustomerNotFoundException(CustomerId id) {
+		super(ErrorMessages.customerNotFound(id));
+	}
 }

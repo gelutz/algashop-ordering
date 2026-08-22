@@ -8,7 +8,11 @@ import com.lutz.algashop.ordering.application.order.query.OrderFilter;
 import com.lutz.algashop.ordering.application.order.query.OrderQueryService;
 import com.lutz.algashop.ordering.application.order.query.detail.OrderDetailOutput;
 import com.lutz.algashop.ordering.application.order.query.summary.OrderSummaryOutput;
+import com.lutz.algashop.ordering.domain.customer.CustomerNotFoundException;
+import com.lutz.algashop.ordering.domain.product.ProductNotFoundException;
+import com.lutz.algashop.ordering.domain.shoppingCart.exception.ShoppingCartNotFoundException;
 import com.lutz.algashop.ordering.presentation.PageModel;
+import com.lutz.algashop.ordering.presentation.UnprocessableException;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -38,14 +42,24 @@ public class OrderController {
 	@PostMapping(consumes = "application/vnd.order-with-product.v1+json")
 	@ResponseStatus(HttpStatus.CREATED)
 	public OrderDetailOutput buyNow(@RequestBody @Valid BuyNowInput input, HttpServletResponse httpServletResponse) {
-		String orderId = buyNowApplicationService.buyNow(input);
+		String orderId;
+		try {
+			orderId = buyNowApplicationService.buyNow(input);
+		} catch (CustomerNotFoundException | ProductNotFoundException e) {
+			throw new UnprocessableException(e.getMessage(), e);
+		}
 		return findByIdWithLocation(orderId, httpServletResponse);
 	}
 
 	@PostMapping(consumes = "application/vnd.order-with-shopping-cart.v1+json")
 	@ResponseStatus(HttpStatus.CREATED)
 	public OrderDetailOutput checkout(@RequestBody @Valid CheckoutInput input, HttpServletResponse httpServletResponse) {
-		String orderId = checkoutApplicationService.checkout(input);
+		String orderId;
+		try {
+			orderId = checkoutApplicationService.checkout(input);
+		} catch (CustomerNotFoundException | ShoppingCartNotFoundException e) {
+			throw new UnprocessableException(e.getMessage(), e);
+		}
 		return findByIdWithLocation(orderId, httpServletResponse);
 	}
 

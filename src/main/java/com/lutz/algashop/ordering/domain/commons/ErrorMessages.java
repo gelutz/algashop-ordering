@@ -1,5 +1,6 @@
 package com.lutz.algashop.ordering.domain.commons;
 
+import com.lutz.algashop.ordering.domain.customer.CustomerId;
 import com.lutz.algashop.ordering.domain.product.ProductId;
 import com.lutz.algashop.ordering.domain.shoppingCart.entity.ShoppingCartId;
 import com.lutz.algashop.ordering.domain.shoppingCart.entity.ShoppingCartItemId;
@@ -7,6 +8,10 @@ import com.lutz.algashop.ordering.domain.shoppingCart.entity.ShoppingCartItemId;
 public class ErrorMessages {
 	public static final String CUSTOMER_ARCHIVED = "This customer is already archived.";
 	public static final String CUSTOMER_NOT_FOUND = "Customer not found.";
+
+	public static String customerNotFound(CustomerId id) {
+		return String.format("Customer [%s]: Customer not found.", id);
+	}
 
 	public static class Fields {
 		public static String fieldIsNullMessage(String field) {

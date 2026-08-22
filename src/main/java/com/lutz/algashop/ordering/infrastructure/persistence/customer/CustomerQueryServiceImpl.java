@@ -1,6 +1,7 @@
 package com.lutz.algashop.ordering.infrastructure.persistence.customer;
 
 import com.lutz.algashop.ordering.application.customer.query.*;
+import com.lutz.algashop.ordering.domain.customer.CustomerId;
 import com.lutz.algashop.ordering.domain.customer.CustomerNotFoundException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
@@ -59,7 +60,7 @@ public class CustomerQueryServiceImpl implements CustomerQueryService {
 
 			return query.getSingleResult();
 		} catch (NoResultException e) {
-			throw new CustomerNotFoundException();
+			throw new CustomerNotFoundException(new CustomerId(customerId));
 		}
 	}
 
