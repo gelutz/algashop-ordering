@@ -13,7 +13,7 @@ public class RapiDexAPIClientConfig {
 	@Bean
 	public RapiDexAPIClient rapiDexAPIClient(
 			RestClient.Builder builder,
-			@Value("${algashop.integrations.rapidex.url}") String rapiDexUrl
+			@Value("${algashop.integrations.shipping.rapidex.url}") String rapiDexUrl
 	                                        ) {
 		RestClient restClient = builder.baseUrl(rapiDexUrl).build();
 		RestClientAdapter adapter = RestClientAdapter.create(restClient);

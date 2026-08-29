@@ -17,5 +17,11 @@ spring:
 
 algashop:
   integrations:
-    shipping.provider: "FAKE"
-    rapidex.url: "http://localhost:8087"
+    shipping:
+      provider: "FAKE" # RAPIDEX | FAKE
+      wiremock.port: 8087
+      rapidex.url: "http://localhost:${algashop.integrations.shipping.wiremock.port}"
+    product-catalog:
+      provider: "HTTP" # HTTP | FAKE
+      wiremock.port: 8187
+      url: "http://localhost:${algashop.integrations.product-catalog.wiremock.port}"

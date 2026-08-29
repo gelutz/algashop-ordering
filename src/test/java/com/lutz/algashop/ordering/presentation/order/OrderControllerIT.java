@@ -1,5 +1,8 @@
 package com.lutz.algashop.ordering.presentation.order;
 
+import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
+import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
 import com.lutz.algashop.ordering.domain.order.OrderId;
 import com.lutz.algashop.ordering.infrastructure.persistence.customer.CustomerPersistenceEntityRepository;
 import com.lutz.algashop.ordering.infrastructure.persistence.customer.CustomerPersistenceEntityTestBuilder;
@@ -9,10 +12,12 @@ import io.restassured.RestAssured;
 import io.restassured.config.JsonConfig;
 import io.restassured.path.json.config.JsonPathConfig;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
@@ -30,23 +35,54 @@ public class OrderControllerIT {
 	private OrderPersistenceEntityRepository orderRepository;
 
 	@LocalServerPort
-	private int port;
+	private int localServerPort;
 
 	private static boolean databaseInitialized;
 	private static final UUID validCustomerId = UUID.fromString("6e148bd5-47f6-4022-b9da-07cfaa294f7a");
+
+	@Value("${algashop.integrations.product-catalog.wiremock.port:8187}")
+	private int productCatalogWireMockPort;
+	@Value("${algashop.integrations.shipping.wiremock.port:8087}")
+	private int rapidexWireMockPort;
+
+	private WireMockServer productCatalogWireMockServer;
+	private WireMockServer rapidexWireMockServer;
+
+
 	@BeforeEach
 	public void setup() {
+		RestAssured.port = localServerPort;
 		RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
-		RestAssured.port = port;
-
 
 		RestAssured.config()
 		           .jsonConfig(JsonConfig.jsonConfig()
 		                                 .numberReturnType(JsonPathConfig.NumberReturnType.BIG_DECIMAL)
 		           );
 		initDatabase();
+
+		productCatalogWireMockServer = new WireMockServer(
+				WireMockConfiguration.options()
+				                     .port(productCatalogWireMockPort)
+						.usingFilesUnderClasspath("wiremock/product-catalog")
+						.extensions(new ResponseTemplateTransformer(true))
+		);
+
+		rapidexWireMockServer = new WireMockServer(
+				WireMockConfiguration.options()
+				                     .port(rapidexWireMockPort)
+				                     .usingFilesUnderClasspath("wiremock/rapidex")
+				                     .extensions(new ResponseTemplateTransformer(true))
+		);
+
+		productCatalogWireMockServer.start();
+		rapidexWireMockServer.start();
 	}
 
+	@AfterEach
+	public void destroy() {
+		productCatalogWireMockServer.stop();
+		rapidexWireMockServer.stop();
+	}
 	private void initDatabase() {
 		if (databaseInitialized) return;
 
