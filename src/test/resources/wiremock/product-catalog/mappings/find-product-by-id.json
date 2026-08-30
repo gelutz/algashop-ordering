@@ -1,5 +1,5 @@
 {
-  "id" : "b199be03-b303-4a64-b71c-983ac12df256",
+  "id" : "3e7d27d3-dd0c-4115-b570-ea86f5a6597f",
   "request" : {
     "url" : "/api/v1/products/28fcd9fb-4ce7-44d6-9583-14d8b3dc5aff",
     "method" : "GET",
@@ -11,11 +11,11 @@
   },
   "response" : {
     "status" : 200,
-    "body" : "{\"id\":\"94bed5db-53f3-4333-b7e4-7e746a434bf2\",\"addedAt\":\"2014-04-14T12:23:34.123Z\",\"name\":\"Notebook Linux\",\"brand\":\"VAIO\",\"regularPrice\":1500.00,\"salePrice\":1000.00,\"inStock\":true,\"enabled\":true,\"category\":{\"id\":\"3f5a8821-cea4-4437-a889-1eeed5d81735\",\"name\":\"A category\"},\"description\":\"A Gamer Notebook\"}",
+    "body" : "{\"id\":\"2ce650ed-1a96-421f-bff0-4437a54d2b58\",\"addedAt\":\"2016-06-16T12:23:34.123Z\",\"name\":\"Notebook Linux\",\"brand\":\"VAIO\",\"regularPrice\":1500.00,\"salePrice\":1000.00,\"inStock\":true,\"enabled\":true,\"category\":{\"id\":\"1efa4326-ab32-425b-99b1-9ff09c743771\",\"name\":\"A category\"},\"description\":\"A Gamer Notebook\"}",
     "headers" : {
       "Content-Type" : "application/json"
     },
     "transformers" : [ "response-template", "spring-cloud-contract" ]
   },
-  "uuid" : "b199be03-b303-4a64-b71c-983ac12df256"
+  "uuid" : "3e7d27d3-dd0c-4115-b570-ea86f5a6597f"
 }

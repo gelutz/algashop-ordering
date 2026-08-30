@@ -1,7 +1,7 @@
 {
-  "id" : "3b185fb3-384a-44ea-b20f-a8b09d5dc962",
+  "id" : "a38b4f61-7831-4981-8713-b27fd9070fbc",
   "request" : {
-    "url" : "/api/v1/products/28fcd9fb-4ce7-44d6-9583-14d8b3dc5aff",
+    "url" : "/api/v1/products/03ff97bf-c376-41c6-85ed-79b4ffd86e2c",
     "method" : "GET",
     "headers" : {
       "Accept" : {
@@ -17,5 +17,5 @@
     },
     "transformers" : [ "response-template", "spring-cloud-contract" ]
   },
-  "uuid" : "3b185fb3-384a-44ea-b20f-a8b09d5dc962"
+  "uuid" : "a38b4f61-7831-4981-8713-b27fd9070fbc"
 }
