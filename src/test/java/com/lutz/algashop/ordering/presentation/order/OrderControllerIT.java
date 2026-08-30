@@ -58,7 +58,6 @@ public class OrderControllerIT {
 		           .jsonConfig(JsonConfig.jsonConfig()
 		                                 .numberReturnType(JsonPathConfig.NumberReturnType.BIG_DECIMAL)
 		           );
-		initDatabase();
 
 		productCatalogWireMockServer = new WireMockServer(
 				WireMockConfiguration.options()
@@ -76,6 +75,8 @@ public class OrderControllerIT {
 
 		productCatalogWireMockServer.start();
 		rapidexWireMockServer.start();
+
+		initDatabase();
 	}
 
 	@AfterEach
@@ -134,5 +135,39 @@ public class OrderControllerIT {
 				.assertThat()
 				.contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE)
 				.statusCode(HttpStatus.UNPROCESSABLE_ENTITY.value());
+	}
+
+	@Test
+	public void shouldNotCreateOrderUsingProductWhenProductAPIIsNotAvailable() {
+		productCatalogWireMockServer.stop();
+
+		String createInput = AlgaShopResourceUtils.readContent("json/createOrderWithProductInput.json");
+		RestAssured
+				.given()
+				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.contentType("application/vnd.order-with-product.v1+json")
+				.body(createInput)
+				.when()
+				.post("/api/v1/orders")
+				.then()
+				.assertThat()
+				.contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE)
+				.statusCode(HttpStatus.GATEWAY_TIMEOUT.value());
+	}
+
+	@Test
+	public void shouldNotCreateOrderUsingProductWhenInvalidProductInput() {
+		String createInput = AlgaShopResourceUtils.readContent("json/createOrderWithInvalidProductInput.json");
+		RestAssured
+				.given()
+				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.contentType("application/vnd.order-with-product.v1+json")
+				.body(createInput)
+				.when()
+				.post("/api/v1/orders")
+				.then()
+				.assertThat()
+				.contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE)
+				.statusCode(HttpStatus.BAD_GATEWAY.value());
 	}
 }
