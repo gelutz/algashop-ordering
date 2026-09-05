@@ -14,6 +14,13 @@ public interface ShoppingCartPersistenceEntityRepository extends JpaRepository<S
 	@Query("SELECT s FROM ShoppingCartPersistenceEntity s WHERE s.customer.id = :customerId")
 	Optional<ShoppingCartPersistenceEntity> findByCustomerId(UUID customerId);
 
+	@Query("""
+			SELECT COUNT(i)
+			  FROM ShoppingCartItemPersistenceEntity i
+			  WHERE i.shoppingCart.id = :shoppingCartId
+			""")
+	long countItemsByShoppingCartId(@Param("shoppingCartId") UUID shoppingCartId);
+
 	@Modifying
 	@Transactional
 	@Query("""
