@@ -1,4 +1,4 @@
-package com.lutz.algashop.ordering.presentation.customer;
+ package com.lutz.algashop.ordering.presentation.customer;
 
 import com.lutz.algashop.ordering.application.customer.management.CustomerInput;
 import com.lutz.algashop.ordering.application.customer.management.CustomerUpdateInput;

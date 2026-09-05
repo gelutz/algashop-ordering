@@ -2,6 +2,7 @@ package com.lutz.algashop.ordering.presentation;
 
 import com.lutz.algashop.ordering.application.customer.management.CustomerManagementApplicationService;
 import com.lutz.algashop.ordering.application.customer.query.CustomerQueryService;
+import com.lutz.algashop.ordering.application.shoppingcart.query.ShoppingCartQueryService;
 import com.lutz.algashop.ordering.presentation.customer.CustomerController;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,6 +26,9 @@ public abstract class AbstractCustomerControllerTest {
 
 	@MockitoBean
 	protected CustomerQueryService customerQueryServiceMock;
+
+	@MockitoBean
+	protected ShoppingCartQueryService shoppingCartQueryServiceMock;
 
 	protected final DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
 

@@ -20,7 +20,7 @@ algashop:
     shipping:
       provider: "FAKE" # RAPIDEX | FAKE
       wiremock.port: 8087
-      rapidex.url: "http://localhost:${algashop.integrations.shipping.wiremock.port}"
+    rapidex.url: "http://localhost:${algashop.integrations.shipping.wiremock.port}"
     product-catalog:
       provider: "HTTP" # HTTP | FAKE
       wiremock.port: 8187

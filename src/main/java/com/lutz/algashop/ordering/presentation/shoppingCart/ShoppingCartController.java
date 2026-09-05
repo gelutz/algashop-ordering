@@ -6,6 +6,10 @@ import com.lutz.algashop.ordering.application.shoppingcart.management.ShoppingCa
 import com.lutz.algashop.ordering.application.shoppingcart.query.ShoppingCartItemListModel;
 import com.lutz.algashop.ordering.application.shoppingcart.query.ShoppingCartOutput;
 import com.lutz.algashop.ordering.application.shoppingcart.query.ShoppingCartQueryService;
+import com.lutz.algashop.ordering.domain.customer.CustomerNotFoundException;
+import com.lutz.algashop.ordering.domain.product.ProductNotFoundException;
+import com.lutz.algashop.ordering.domain.shoppingCart.exception.CustomerAlreadyHasShoppingCartException;
+import com.lutz.algashop.ordering.presentation.UnprocessableException;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +30,13 @@ public class ShoppingCartController {
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public ShoppingCartOutput create(@RequestBody @Valid ShoppingCartInput input, HttpServletResponse httpServletResponse) {
-		UUID shoppingCartId = shoppingCartManagementApplicationService.createNew(input.getCustomerId());
+		UUID shoppingCartId;
+
+		try {
+			shoppingCartId = shoppingCartManagementApplicationService.createNew(input.getCustomerId());
+		} catch (CustomerNotFoundException | CustomerAlreadyHasShoppingCartException e) {
+			throw new UnprocessableException(e.getMessage(), e);
+		}
 
 		UriComponentsBuilder builder = MvcUriComponentsBuilder.fromMethodCall(
 				MvcUriComponentsBuilder.on(ShoppingCartController.class).findById(shoppingCartId)
@@ -65,7 +75,11 @@ public class ShoppingCartController {
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void addItem(@PathVariable UUID shoppingCartId, @RequestBody @Valid ShoppingCartItemInput input) {
 		input.setShoppingCartId(shoppingCartId);
-		shoppingCartManagementApplicationService.addItem(input);
+		try {
+			shoppingCartManagementApplicationService.addItem(input);
+		} catch(ProductNotFoundException e) {
+			throw new UnprocessableException(e.getMessage(), e);
+		}
 	}
 
 	@DeleteMapping("/{shoppingCartId}/items/{itemId}")

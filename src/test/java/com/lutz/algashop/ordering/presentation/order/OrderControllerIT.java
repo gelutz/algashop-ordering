@@ -22,10 +22,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.UUID;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class OrderControllerIT {
 
 	@Autowired
@@ -37,7 +39,6 @@ public class OrderControllerIT {
 	@LocalServerPort
 	private int localServerPort;
 
-	private static boolean databaseInitialized;
 	private static final UUID validCustomerId = UUID.fromString("6e148bd5-47f6-4022-b9da-07cfaa294f7a");
 
 	@Value("${algashop.integrations.product-catalog.wiremock.port:8187}")
@@ -85,16 +86,12 @@ public class OrderControllerIT {
 		rapidexWireMockServer.stop();
 	}
 	private void initDatabase() {
-		if (databaseInitialized) return;
-
 		customerRepository.saveAndFlush(
 				CustomerPersistenceEntityTestBuilder
 						.existing()
 						.id(validCustomerId)
 						.build()
 		);
-
-		databaseInitialized = true;
 	}
 
 	@Test
@@ -168,6 +165,6 @@ public class OrderControllerIT {
 				.then()
 				.assertThat()
 				.contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE)
-				.statusCode(HttpStatus.BAD_GATEWAY.value());
+				.statusCode(HttpStatus.UNPROCESSABLE_ENTITY.value());
 	}
 }
